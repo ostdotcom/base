@@ -1,5 +1,5 @@
 {
-  "name": "openst-core",
+  "name": "@openstfoundation/openst-core",
   "version": "1.0.0",
   "description": "openst-core provides basic blockchain interaction capabilities.",
   "main": "index.js",
