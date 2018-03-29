@@ -17,7 +17,7 @@ const testDeadConnection = function () {
     const web3 = new OstWeb3( deadEndPoint, null, {
           providerOptions: {
             maxReconnectTries: 2,
-            killOnReconnectFailuer: false
+            killOnReconnectFailure: false
           }
         })
         , currentProvider = web3.currentProvider
@@ -88,7 +88,7 @@ const testEthTransfer = function ( ensureReceipt ) {
     const web3 = new OstWeb3( wsEndPoint, null, {
           providerOptions: {
             maxReconnectTries: 20,
-            killOnReconnectFailuer: false
+            killOnReconnectFailure: false
           }
         })
         , currentProvider = web3.currentProvider
@@ -207,7 +207,7 @@ const testOrgEthTransfer = function () {
     const web3 = new Web3( wsEndPoint, null, {
           providerOptions: {
             maxReconnectTries: 20,
-            killOnReconnectFailuer: false
+            killOnReconnectFailure: false
           }
         })
         , currentProvider = web3.currentProvider
