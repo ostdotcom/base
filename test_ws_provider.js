@@ -12,13 +12,20 @@ const OstCore       = require(rootPrefix + "/index")
 const Web3 = require("web3");
 
 //Test 1 :: Test for dead connection.
-const testDeadConnection = function () {
+const testDeadConnection = function ( testName, wsProviderOptions ) {
+  testName = testName ? testName + " :: " : "";
+  wsProviderOptions = wsProviderOptions || {};
+
+  const defaultOptions = {
+    maxReconnectTries: 2,
+    killOnReconnectFailure: false 
+  };
+
+  const finalProviderOptions = Object.assign({}, defaultOptions, wsProviderOptions);
+
   return new Promise( function ( resolve, reject ) {
     const web3 = new OstWeb3( deadEndPoint, null, {
-          providerOptions: {
-            maxReconnectTries: 2,
-            killOnReconnectFailure: false
-          }
+          providerOptions: finalProviderOptions
         })
         , currentProvider = web3.currentProvider
     ;
@@ -27,7 +34,7 @@ const testDeadConnection = function () {
     if ( currentProvider instanceof OstWSProvider ) {
       logger.win("currentProvider is an instanceof OstWSProvider");
     } else {
-      reject("testDeadConnection :: currentProvider is NOT instanceof OstWSProvider")
+      reject(testName + "testDeadConnection :: currentProvider is NOT instanceof OstWSProvider")
     }
 
     var receivedConnect = 0
@@ -46,7 +53,7 @@ const testDeadConnection = function () {
 
     setTimeout( function () {
       logger.info(
-        "testDeadConnection :: Validating Events ::"
+        testName, "testDeadConnection :: Validating Events ::"
         ,"\n\t receivedConnect:", receivedConnect
         ,"\n\t receivedEnd:", receivedEnd
         ,"\n\t receivedDead:", receivedDead
@@ -55,35 +62,36 @@ const testDeadConnection = function () {
 
       //Make sure we got dead event.
       if ( !receivedDead ) {
-        reject("testDeadConnection :: did not receive dead event.");
+        reject(testName + "testDeadConnection :: did not receive dead event.");
         return;
       } 
 
       //Make sure we got end event.
       else if( !receivedEnd ) {
-        reject("testDeadConnection :: did not receive end event.");
+        reject(testName + "testDeadConnection :: did not receive end event.");
         return;
       } 
 
       //Make sure we got error event.
       else if( !receivedError ) {
-        reject("testDeadConnection :: did not receive error event.");
+        reject(testName + "testDeadConnection :: did not receive error event.");
         return;
       } 
 
       //Make sure we DID NOT get connect event.
       else if ( receivedConnect ) {
-        reject("testDeadConnection :: Receive connect event on a dead endpoint. Something seriously broken.");
+        reject(testName + "testDeadConnection :: Receive connect event on a dead endpoint. Something seriously broken.");
         return;
       }
 
-      logger.win("testDeadConnection :: All sub-tests passed.");
+      logger.win(testName + "testDeadConnection :: All sub-tests passed.");
       resolve();
     }, expectedValidationTime);
   });
 };
 
 const testEthTransfer = function ( ensureReceipt ) {
+  ensureReceipt = ensureReceipt || false;
   return new Promise( function( resolve, reject ) {
     const web3 = new OstWeb3( wsEndPoint, null, {
           providerOptions: {
@@ -293,24 +301,120 @@ const testOrgEthTransfer = function () {
       });
 
   });
-}
+};
 
+const testSigTerm = function () {
+
+  var receivedSigTerm = false
+    , exitAfter       = 2 * 1000
+  ;
+  const sigTermHandler = function () {
+    receivedSigTerm = true;
+    logger.win("testSigTerm :: sigTermHandler :: SIGTERM received.... exiting in", exitAfter, " miliseconds");
+    setTimeout(function () {
+      logger.info("testSigTerm :: sigTermHandler :: exiting...");
+      process.exit(0);
+    }, exitAfter);
+  };
+  process.on('SIGTERM', sigTermHandler);
+
+  return testDeadConnection("testSigTerm", {
+    killOnReconnectFailure: true
+  }).then( function (i_d_k) {
+    if ( receivedSigTerm ) {
+      return Promise.resolve("testSigTerm :: All test passed");
+    } else {
+      return Promise.reject("receivedSigTerm was not set.");
+    }
+  });
+};
+
+const testEthBalance = function () {
+  const addr        = process.env.OST_UTILITY_CHAIN_OWNER_ADDR
+      , interval    = 1 * 1000
+      , maxCnt      = 30
+  ;
+  const web3 = new OstWeb3( wsEndPoint, null, {
+        providerOptions: {
+          maxReconnectTries: 20,
+          killOnReconnectFailure: false
+        }
+      })
+      , currentProvider = web3.currentProvider
+  ;
+
+  var count       = maxCnt
+    , resolvedCnt = 0
+    , rejectedCnt = 0
+    , lastRejectedTimeStamp
+    , lastResolvedTimeStamp
+    , allPromises = []
+    , promiseObj
+  ;
+
+
+  while( count-- ) {
+
+    promiseObj = (function ( myInterval ) {
+      return new Promise( function ( resolve, reject ) {
+        setTimeout(resolve, myInterval);
+      }).then( function () {
+        return web3.eth.getBalance( addr )
+          .then( function ( balance ) {
+            logger.log("testEthBalance :: balance received :: ", balance);
+            resolvedCnt++;
+            lastResolvedTimeStamp = Date.now();
+            return balance;
+          })
+          .catch( function (reason) {
+            logger.error( "testEthBalance :: Failed to fetch balance. reason ::\n", reason );
+            rejectedCnt++;
+            lastRejectedTimeStamp = Date.now();
+          });
+      });
+    })( (interval) * ( count + 1) );
+    allPromises.push( promiseObj )
+  }
+
+
+  return Promise.all( allPromises ). then( function () {
+    lastRejectedTimeStamp = lastRejectedTimeStamp || 0;
+    lastResolvedTimeStamp = lastResolvedTimeStamp || 0;
+    logger.info(
+      "testEthBalance :: final stats ::"
+      ,"\n\t maxCnt", maxCnt
+      ,"\n\t resolvedCnt", resolvedCnt
+      ,"\n\t rejectedCnt", rejectedCnt
+      ,"\n\t lastRejectedTimeStamp", lastRejectedTimeStamp
+      ,"\n\t lastResolvedTimeStamp", lastResolvedTimeStamp
+    );
+
+    if ( lastRejectedTimeStamp > lastResolvedTimeStamp ) {
+      Promise.reject("testEthBalance :: lastRejectedTimeStamp is greater than lastResolvedTimeStamp");
+    } else {
+      logger.win("testEthBalance :: Test Successful")
+      Promise.resolve("testEthBalance :: Test Successful");
+    }
+  });
+};
 
 
 const run = async function () {
-  await testOrgEthTransfer()
+  await testEthBalance()
     .then( function ( i_d_k ) {
       return testDeadConnection();
     })
     .then( function ( i_d_k ) {
-      return testEthTransfer( true );
+      return testOrgEthTransfer( true );
     })
     .then( function ( i_d_k ) {
-      return testOrgEthTransfer();
+      return testEthTransfer();
+    })
+    .then( function () {
+      return testSigTerm();
     })
     .then( function ( i_d_k ) {
-      logger.win("All tests passed");
-      process.exit( 0 );
+      logger.win("All tests passed. Waiting for testSigTerm to exit the process.");
     })
     .catch( function ( reason ) {
       logger.error("Tests have failed. Reason:\n", reason);
