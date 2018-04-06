@@ -4,10 +4,12 @@
 
 "use strict";
 
-const rootPrefix    = "."
-    , OstWeb3       = require( rootPrefix + "/lib/ost-web3" )
-    , OstWSProvider = require( rootPrefix + '/lib/ost-web3-providers-ws' )
-    , logger        = require( rootPrefix + "/lib/custom_console_logger" )
+const rootPrefix      = '.'
+    , OstWeb3         = require( rootPrefix + '/lib/ost_web3/ost-web3' )
+    , OstWSProvider   = require( rootPrefix + '/lib/ost_web3/ost-web3-providers-ws' )
+    , Logger          = require( rootPrefix + '/lib/logger/custom_console_logger' )
+    , PromiseContext  = require( rootPrefix + '/lib/promise_context/promise_context' )
+    , PCQueueManager  = require( rootPrefix + '/lib/promise_context/promise_queue_manager' )
 ;
 
 // Expose all libs here. 
@@ -15,6 +17,32 @@ const rootPrefix    = "."
 // All instances/objects should begin with small letter.
 module.exports = {
   OstWeb3         : OstWeb3
-  , OstWSProvider : OstWSProvider
-  , logger        : logger
+  , logger        : new Logger()
+  , Logger        : Logger
+  , OSTPromise    : {
+    Context         : PromiseContext
+    , QueueManager  : PCQueueManager
+  }
 };
+
+
+
+/*
+  OSTCore = require("./index");
+
+  //Test Logger
+  logger = new OSTCore.Logger("Test");
+  logger.testLogger()
+
+  //Test PromiseQueueManager
+  PQM = OSTCore.OSTPromise.QueueManager;
+
+  //Run these one by one.
+  PQM.Examples.allReject();
+
+  PQM.Examples.allResolve();
+  PQM.Examples.allReject();
+  PQM.Examples.allTimeout();
+  PQM.Examples.executorWithParams();
+  PQM.Examples.maxZombieCount();
+*/
