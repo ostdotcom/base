@@ -5,7 +5,7 @@ const rootPrefix = "."
 
 const OstCore       = require(rootPrefix + "/index")
     , OstWeb3       = OstCore.OstWeb3
-    , OstWSProvider = OstCore.OstWSProvider
+    , OstWSProvider = OstWeb3.OstWSProvider
     , logger        = OstCore.logger
 ;
 
@@ -377,24 +377,25 @@ const testEthBalance = function () {
   }
 
 
-  return Promise.all( allPromises ). then( function () {
-    lastRejectedTimeStamp = lastRejectedTimeStamp || 0;
-    lastResolvedTimeStamp = lastResolvedTimeStamp || 0;
-    logger.info(
-      "testEthBalance :: final stats ::"
-      ,"\n\t maxCnt", maxCnt
-      ,"\n\t resolvedCnt", resolvedCnt
-      ,"\n\t rejectedCnt", rejectedCnt
-      ,"\n\t lastRejectedTimeStamp", lastRejectedTimeStamp
-      ,"\n\t lastResolvedTimeStamp", lastResolvedTimeStamp
-    );
+  return Promise.all( allPromises )
+    .then( function () {
+      lastRejectedTimeStamp = lastRejectedTimeStamp || 0;
+      lastResolvedTimeStamp = lastResolvedTimeStamp || 0;
+      logger.info(
+        "testEthBalance :: final stats ::"
+        ,"\n\t maxCnt", maxCnt
+        ,"\n\t resolvedCnt", resolvedCnt
+        ,"\n\t rejectedCnt", rejectedCnt
+        ,"\n\t lastRejectedTimeStamp", lastRejectedTimeStamp
+        ,"\n\t lastResolvedTimeStamp", lastResolvedTimeStamp
+      );
 
-    if ( lastRejectedTimeStamp > lastResolvedTimeStamp ) {
-      Promise.reject("testEthBalance :: lastRejectedTimeStamp is greater than lastResolvedTimeStamp");
-    } else {
-      logger.win("testEthBalance :: Test Successful")
-      Promise.resolve("testEthBalance :: Test Successful");
-    }
+      if ( lastRejectedTimeStamp > lastResolvedTimeStamp ) {
+        return Promise.reject("testEthBalance :: lastRejectedTimeStamp is greater than lastResolvedTimeStamp");
+      } else {
+        logger.win("testEthBalance :: Test Successful")
+        return Promise.resolve("testEthBalance :: Test Successful");
+      }
   });
 };
 
