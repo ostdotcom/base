@@ -136,7 +136,8 @@ for( var cnt = 0; cnt < 50; cnt++ ) {
 # OpenST Logger Usage
 ```bash
 const OSTCore = require('@openstfoundation/openst-core')
-    , logger  = new OSTCore.Logger("my_module_name")
+    , Logger  = OSTCore.Logger
+    , logger  = new Logger("my_module_name", Logger.LOG_LEVELS.TRACE)
 ;
 
 logger.step("step Invoked");
