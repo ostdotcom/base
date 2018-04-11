@@ -5,6 +5,7 @@
 "use strict";
 
 const rootPrefix      = '.'
+    , Web3            = require( 'web3' )
     , OstWeb3         = require( rootPrefix + '/lib/ost_web3/ost-web3' )
     , OstWSProvider   = require( rootPrefix + '/lib/ost_web3/ost-web3-providers-ws' )
     , Logger          = require( rootPrefix + '/lib/logger/custom_console_logger' )
@@ -17,6 +18,7 @@ const rootPrefix      = '.'
 // All instances/objects should begin with small letter.
 module.exports = {
   OstWeb3         : OstWeb3
+  , Web3          : Web3
   , logger        : new Logger()
   , Logger        : Logger
   , OSTPromise    : {
