@@ -7,7 +7,7 @@
 const rootPrefix      = '.'
     , Web3            = require( 'web3' )
     , OstWeb3         = require( rootPrefix + '/lib/ost_web3/ost-web3' )
-    , OstWSProvider   = require( rootPrefix + '/lib/ost_web3/ost-web3-providers-ws' )
+    //, OstWSProvider   = require( rootPrefix + '/lib/ost_web3/ost-web3-providers-ws' )
     , Logger          = require( rootPrefix + '/lib/logger/custom_console_logger' )
     , PromiseContext  = require( rootPrefix + '/lib/promise_context/promise_context' )
     , PCQueueManager  = require( rootPrefix + '/lib/promise_context/promise_queue_manager' )
