@@ -136,17 +136,47 @@ for( var cnt = 0; cnt < 50; cnt++ ) {
 # OpenST Logger Usage
 ```bash
 const OSTCore = require('@openstfoundation/openst-core')
-    , logger  = new OSTCore.Logger("my_module_name")
+    , Logger  = OSTCore.Logger
+    , logger  = new Logger("my_module_name", Logger.LOG_LEVELS.TRACE)
 ;
 
-logger.step("step Invoked");
-logger.info("info Invoked");
+//Log Level FATAL 
+logger.notify("notify called");
+
+//Log Level ERROR
 logger.error("error called");
+
+//Log Level WARN
 logger.warn("warn called");
+
+//Log Level INFO
+logger.info("info Invoked");
+logger.step("step Invoked");
 logger.win("win called");
+
+//Log Level DEBUG
 logger.log("log called");
 logger.debug("debug called");
-logger.trace("trace called");
 logger.dir({ l1: { l2 : { l3Val: "val3", l3: { l4Val: { val: "val"  }}} }});
 
+//Log Level TRACE
+logger.trace("trace called");
+
+
 ```
+All methods will be available for use irrespcetive of configured log level.
+Log Level only controls what needs to be logged.
+
+### Method to Log Level Map
+| Method | Enabling Log Level |
+| :----- | :----------------- |
+| notify | FATAL |
+| error | ERROR |
+| warn | WARN |
+| info | INFO |
+| step | INFO |
+| win | INFO |
+| debug | DEBUG |
+| log | DEBUG |
+| dir | DEBUG |
+| trace | TRACE |
