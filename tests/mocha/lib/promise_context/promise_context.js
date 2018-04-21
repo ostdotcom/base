@@ -39,72 +39,46 @@ const executorThatTimesout = function (resolve, reject) {
   //...still nothing.
 };
 
+const configTestcases = [
+{name: 'resolved', executor: executorThatResolves},
+{name: 'rejected', executor: executorThatRejects},
+{name: 'timedout', executor:executorThatTimesout}
+];
+
 const createTestCasesForOptions = function ( optionsDesc , options ) {
   optionsDesc = optionsDesc || "";
-  options = options || {};  
-
-  // Resolve Test Case
-  let promiseThatResolves = new PromiseContext(executorThatResolves, options, {
-    resolved: true
-    , timedout: false
-    , rejected: false
-    , completedAfterTimeout: false
+  options = options || {};
+  let defaultExecutorParams = {  resolved: false
+                                 , timedout: false
+                                 , rejected: false
+                                 , completedAfterTimeout: false
+                              };
+  let executorParams = Object.assign({}, defaultExecutorParams);
+  configTestcases.forEach(function(obj){       
+      executorParams[obj.name] = true;
+      if (obj.name == 'timedout'){
+        if ( options.resolvePromiseOnTimeout ) {
+          executorParams.resolved = true;
+          executorParams.completedAfterTimeout = true;
+          if ( options.resolvedValueOnTimeout ) {
+            executorParams.resolvedValue = options.resolvedValueOnTimeout;   
+          }
+        } else if ( options.rejectPromiseOnTimeout ) {
+          executorParams.rejected = true;
+          executorParams.completedAfterTimeout = true;
+          if ( options.rejectedReasonOnTimeout ) {
+            executorParams.rejectedReason = options.rejectedReasonOnTimeout;
+          }
+        }  
+      }
+      let promise = new PromiseContext(obj.executor, options, executorParams);
+      let outParamsOfPromise = bindPromiseContextCallbacks( promise);
+      let Validator = function ( done ) {
+        validatePromiseContext( promise, options, done, outParamsOfPromise );
+      };
+      it( optionsDesc + " :: Promise should be "+ obj.name, Validator );
+      executorParams = Object.assign({},defaultExecutorParams);
   });
-  let outParamsOfPromiseThatResolves = bindPromiseContextCallbacks( promiseThatResolves );
-  let resolvesValidator = function ( done ) {
-    validatePromiseContext( promiseThatResolves, options, done, outParamsOfPromiseThatResolves );
-  };
-  it( optionsDesc + " :: Promise should resolve", resolvesValidator );
-
-
-
-  // Reject Test Case
-  let promiseThatRejects = new PromiseContext(executorThatRejects, options, {
-    resolved: false
-    , timedout: false
-    , rejected: true
-    , completedAfterTimeout: false
-  });
-
-  let outParamsOfPromiseThatRejects = bindPromiseContextCallbacks( promiseThatRejects );
-
-
-  let rejectsValidator = function ( done ) {
-    validatePromiseContext( promiseThatRejects, options, done, outParamsOfPromiseThatRejects );
-  };
-  it( optionsDesc + " :: Promise should reject", rejectsValidator );
-
-  // Timeout Test Case
-  let timeoutExpectedFlags = {
-    resolved: false
-    , timedout: true
-    , rejected: false
-    , completedAfterTimeout: false
-  };
-  if ( options.resolvePromiseOnTimeout ) {
-    timeoutExpectedFlags.resolved = true;
-    timeoutExpectedFlags.completedAfterTimeout = true;
-
-    if ( options.resolvedValueOnTimeout ) {
-      timeoutExpectedFlags.resolvedValue = options.resolvedValueOnTimeout;   
-    }
-
-
-  } else if ( options.rejectPromiseOnTimeout ) {
-    timeoutExpectedFlags.rejected = true;
-    timeoutExpectedFlags.completedAfterTimeout = true;
-
-    if ( options.rejectedReasonOnTimeout ) {
-      timeoutExpectedFlags.rejectedReason = options.rejectedReasonOnTimeout;
-    }
-
-  }
-  let promiseThatWillTimeout = new PromiseContext(executorThatTimesout, options, timeoutExpectedFlags);
-  let outParamsOfPromiseThatWillTimeout = bindPromiseContextCallbacks( promiseThatWillTimeout );
-  let timeoutValidator = function ( done ) {
-    validatePromiseContext( promiseThatWillTimeout, options, done, outParamsOfPromiseThatWillTimeout );
-  };
-  it( optionsDesc + " :: Promise should timeout", timeoutValidator );
 
 };    
 
