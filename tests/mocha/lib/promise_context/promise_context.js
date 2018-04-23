@@ -40,9 +40,9 @@ const executorThatTimesout = function (resolve, reject) {
 };
 
 const configTestcases = [
-{name: 'resolved', executor: executorThatResolves},
-{name: 'rejected', executor: executorThatRejects},
-{name: 'timedout', executor:executorThatTimesout}
+{type: 'resolved', executor: executorThatResolves},
+{type: 'rejected', executor: executorThatRejects},
+{type: 'timedout', executor:executorThatTimesout}
 ];
 
 const createTestCasesForOptions = function ( optionsDesc , options ) {
@@ -52,11 +52,15 @@ const createTestCasesForOptions = function ( optionsDesc , options ) {
                                  , timedout: false
                                  , rejected: false
                                  , completedAfterTimeout: false
-                              };
-  let executorParams = Object.assign({}, defaultExecutorParams);
-  configTestcases.forEach(function(obj){       
-      executorParams[obj.name] = true;
-      if (obj.name == 'timedout'){
+                              }   
+    , executorParams 
+, type 
+  ;                                           
+  configTestcases.forEach(function(testCase){  
+      executorParams = Object.create(defaultExecutorParams);  
+      type = testCase.type ; 
+      executorParams[type] = true;
+      if (type == 'timedout'){
         if ( options.resolvePromiseOnTimeout ) {
           executorParams.resolved = true;
           executorParams.completedAfterTimeout = true;
@@ -71,13 +75,12 @@ const createTestCasesForOptions = function ( optionsDesc , options ) {
           }
         }  
       }
-      let promise = new PromiseContext(obj.executor, options, executorParams);
+      let promise = new PromiseContext(testCase.executor, options, executorParams);
       let outParamsOfPromise = bindPromiseContextCallbacks( promise);
       let Validator = function ( done ) {
         validatePromiseContext( promise, options, done, outParamsOfPromise );
       };
-      it( optionsDesc + " :: Promise should be "+ obj.name, Validator );
-      executorParams = Object.assign({},defaultExecutorParams);
+      it( optionsDesc + " :: Promise should be "+ type, Validator );
   });
 
 };    
