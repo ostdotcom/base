@@ -1,25 +1,25 @@
 {
-  "name": "@openstfoundation/openst-core",
+  "name": "@openstfoundation/openst-base",
   "version": "0.9.0-beta.10",
-  "description": "openst-core provides basic blockchain interaction capabilities.",
+  "description": "openst-base provides basic blockchain interaction capabilities.",
   "main": "index.js",
   "scripts": {},
   "repository": {
     "type": "git",
-    "url": "https://github.com/OpenSTFoundation/openst-core.git"
+    "url": "https://github.com/OpenSTFoundation/openst-base.git"
   },
   "keywords": [
     "openst",
     "OST",
     "simpletoken",
-    "openst-core"
+    "openst-base"
   ],
   "author": "OpenST Foundation Ltd.",
   "license": "LGPL-3.0",
   "bugs": {
-    "url": "https://github.com/OpenSTFoundation/openst-core/issues"
+    "url": "https://github.com/OpenSTFoundation/openst-base/issues"
   },
-  "homepage": "https://github.com/OpenSTFoundation/openst-core#readme",
+  "homepage": "https://github.com/OpenSTFoundation/openst-base#readme",
   "dependencies": {
     "npm": "^5.8.0",
     "web3": "^1.0.0-beta.33"

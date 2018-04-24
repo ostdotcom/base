@@ -5,14 +5,14 @@ While OpenST 0.9 is available as-is for anyone to use, we caution that this is e
 # Install OpenST Payments
 
 ```bash
-npm install @openstfoundation/openst-core --save
+npm install @openstfoundation/openst-base --save
 ```
 
 
 
 # OSTWeb3 Usage
 ```bash
-const OSTCore    = require('@openstfoundation/openst-core')
+const OSTCore    = require('@openstfoundation/openst-base')
     , wsEndPoint = "ws://127.0.0.1:8546"
     , httpEndPoint = "http://127.0.0.1:8545"
 ;
@@ -29,7 +29,7 @@ let httpWeb3 = new OSTCore.OSTWeb3( httpEndPoint );
 
 # PromiseQueueManager Usage
 ```bash
-const OSTCore = require('@openstfoundation/openst-core')
+const OSTCore = require('@openstfoundation/openst-base')
     , logger  = new OSTCore.Logger("my_module_name")
 ;
 
@@ -135,7 +135,7 @@ for( var cnt = 0; cnt < 50; cnt++ ) {
 
 # OpenST Logger Usage
 ```bash
-const OSTCore = require('@openstfoundation/openst-core')
+const OSTCore = require('@openstfoundation/openst-base')
     , Logger  = OSTCore.Logger
     , logger  = new Logger("my_module_name", Logger.LOG_LEVELS.TRACE)
 ;
