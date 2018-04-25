@@ -39,14 +39,14 @@ module.exports = {
 
 
 /*
-  OSTCore = require("./index");
+  OSTBase = require("./index");
 
   //Test Logger
-  logger = new OSTCore.Logger("Test");
+  logger = new OSTBase.Logger("Test");
   logger.testLogger()
 
   //Test PromiseQueueManager
-  PQM = OSTCore.OSTPromise.QueueManager;
+  PQM = OSTBase.OSTPromise.QueueManager;
 
   //Run these one by one.
   PQM.Examples.allReject();
