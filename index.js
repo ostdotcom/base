@@ -1,5 +1,5 @@
 /**
- * Index File for openst-core
+ * Index File for openst-base
  */
 
 "use strict";
