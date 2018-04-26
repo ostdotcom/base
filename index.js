@@ -14,6 +14,10 @@ const rootPrefix      = '.'
     , Web3PoolFactory = require( rootPrefix + '/lib/web3_pool/ost_web3_pool_factory' )
     , Web3Pool        = require( rootPrefix + '/lib/web3_pool/ost_web3_pool' )
     , responseHelper  = require(rootPrefix + '/lib/formatter/response')
+    , ShardMigrationKlass  = require(rootPrefix + '/services/shard_management/shard_migration')
+    , AddShardKlass        = require(rootPrefix +  '/services/shard_management/available_shard/add_shard')
+    , ConfigureShardKlass  = require(rootPrefix + '/services/shard_management/available_shard/configure_shard')
+    , GetShardsKlass       = require(rootPrefix + '/services/shard_management/available_shard/get_shards')
 ;
 
 // Expose all libs here. 
@@ -32,6 +36,14 @@ module.exports = {
   , OstWeb3Pool   : {
     Factory : Web3PoolFactory
     , Pool  : Web3Pool
+  }
+  , ShardManagement: {
+    Migration: ShardMigrationKlass
+    , Add: AddShardKlass
+    , Configure: ConfigureShardKlass
+    , Get: GetShardsKlass
+  }
+  , DynamoDb: {
   }
 
 };
