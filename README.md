@@ -180,3 +180,20 @@ Log Level only controls what needs to be logged.
 | log | DEBUG |
 | dir | DEBUG |
 | trace | TRACE |
+
+
+# OpenST formatter usage
+
+```bash
+const OSTCore = require('@openstfoundation/openst-base')
+    , ResponseHelper  = OSTCore.responseHelper;
+    
+    responseHelper = new ResponseHelper();
+    
+    //using successWithData function
+    responseHelper.successWithData({field: value});
+    
+    //using error function
+    responseHelper.error("err_code", "Unhandled result", {}, {sendErrorEmail: false});
+    
+```
