@@ -5,9 +5,9 @@
 // Load external packages
 const Chai    = require('chai')
   , assert    = Chai.assert
-  , rootPrefix  = "../../../.."
-  , Core    = require( rootPrefix + "/index" )
-  , PromiseContext  = Core.OSTPromise.Context
+  , rootPrefix      = "../../../.."
+  , OSTBase         = require( rootPrefix + "/index" )
+  , PromiseContext  = OSTBase.OSTPromise.Context
 ;
 
 // For the purpose of test, set default timeout to 3 seconds.
@@ -39,10 +39,10 @@ const executorThatTimesout = function (resolve, reject) {
   //...still nothing.
 };
 
-const configTestcases = [
-{type: 'resolved', executor: executorThatResolves},
-{type: 'rejected', executor: executorThatRejects},
-{type: 'timedout', executor:executorThatTimesout}
+const configTestCases = [
+  {name: 'resolved', executor: executorThatResolves},
+  {name: 'rejected', executor: executorThatRejects},
+  {name: 'timedout', executor:executorThatTimesout}
 ];
 
 const createTestCasesForOptions = function ( optionsDesc , options ) {
@@ -53,14 +53,13 @@ const createTestCasesForOptions = function ( optionsDesc , options ) {
                                  , rejected: false
                                  , completedAfterTimeout: false
                               }   
-    , executorParams 
-, type 
+    , executorParams, testCaseName
   ;                                           
-  configTestcases.forEach(function(testCase){  
-      executorParams = Object.create(defaultExecutorParams);  
-      type = testCase.type ; 
-      executorParams[type] = true;
-      if (type == 'timedout'){
+  configTestCases.forEach(function(testCase){
+      executorParams = Object.create(defaultExecutorParams);
+      testCaseName   = testCase.name ;
+      executorParams[testCaseName] = true;
+      if (testCaseName == 'timedout'){
         if ( options.resolvePromiseOnTimeout ) {
           executorParams.resolved = true;
           executorParams.completedAfterTimeout = true;
@@ -80,7 +79,7 @@ const createTestCasesForOptions = function ( optionsDesc , options ) {
       let Validator = function ( done ) {
         validatePromiseContext( promise, options, done, outParamsOfPromise );
       };
-      it( optionsDesc + " :: Promise should be "+ type, Validator );
+      it( optionsDesc + " :: Promise should be "+ testCaseName, Validator );
   });
 
 };    
