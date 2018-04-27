@@ -9,9 +9,12 @@
  */
 
 const rootPrefix = '../..'
-  , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , logger = require(rootPrefix + '/lib/logger/custom_console_logger')
-  , CreateTableKlass     = require( rootPrefix + "/services/dynamodb/create_table" )
+  , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
+  , moduleName = 'services/shard_management/shard_migration'
+  , responseHelper = new ResponseHelper({module_name: moduleName})
+  , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
+  , logger            = new Logger()
+  , CreateTableKlass = require(rootPrefix + "/services/dynamodb/create_table")
 ;
 
 /**
@@ -70,7 +73,7 @@ ShardMigration.prototype = {
         return onResolve(responseHelper.successWithData({}));
 
       } catch (err) {
-        return onResolve(responseHelper.error('s_am_r_runRegister_1', 'Error creating airdrop record. ' + err));
+        return onResolve(responseHelper.error('s_am_r_runRegister_1', 'Error creating running migration. ' + err));
       }
     });
 
@@ -86,8 +89,34 @@ ShardMigration.prototype = {
 
     logger.debug("========ShardMigration.runShardMigration.createAvailableShards=======");
 
-    const availableShardsParams = {}
-      , createAvailableShardObject = CreateTableKlass(availableShardsParams)
+    const availableShardsParams = {
+        AttributeDefinitions: [
+          {
+            AttributeName: "Name",
+            AttributeType: "S"
+          },
+          {
+            AttributeName: "Allocation",
+            AttributeType: "B"
+          }
+        ],
+        KeySchema: [
+          {
+            AttributeName: "Name",
+            KeyType: "HASH"
+          },
+          {
+            AttributeName: "Allocation",
+            KeyType: "RANGE"
+          }
+        ],
+        ProvisionedThroughput: {
+          ReadCapacityUnits: 5,
+          WriteCapacityUnits: 5
+        },
+        TableName: "AvailableShard"
+      }
+      , createAvailableShardObject = new CreateTableKlass(availableShardsParams)
       , createTableAvailableShardsResponse = await createAvailableShardObject.perform()
     ;
 
@@ -109,7 +138,37 @@ ShardMigration.prototype = {
 
     logger.debug("========ShardMigration.runShardMigration.createManagedShards=======");
 
-    const managedShardsParams = {}
+    const managedShardsParams = {
+      AttributeDefinitions: [
+        {
+          AttributeName: "Id",
+          AttributeType: "S"
+        },
+        {
+          AttributeName: "ET",
+          AttributeType: "S"
+        },
+        {
+          AttributeName: "Sr",
+          AttributeType: "N"
+        }
+      ],
+      KeySchema: [
+        {
+          AttributeName: "Id",
+          KeyType: "HASH"
+        },
+        {
+          AttributeName: "ET",
+          KeyType: "RANGE"
+        }
+      ],
+      ProvisionedThroughput: {
+        ReadCapacityUnits: 5,
+        WriteCapacityUnits: 5
+      },
+      TableName: "ManagedShard"
+    }
       , createManagedShardObject = new CreateTableKlass(managedShardsParams)
       , createTableManagedShardsResponse = await createManagedShardObject.perform();
 

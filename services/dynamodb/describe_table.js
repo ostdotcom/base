@@ -1,9 +1,9 @@
 "use strict";
 
 /**
- * DynamoDB Create Table service
+ * DynamoDB Describe Table service
  *
- * @module services/dynamodb/create_table
+ * @module services/dynamodb/describe_table
  *
  */
 
@@ -17,17 +17,17 @@ const rootPrefix  = "../.."
 ;
 
 /**
- * Constructor for create table service class
+ * Constructor for describe table service class
  *
  * @constructor
  */
-const CreateTable = function(params) {
+const DescribeTable = function(params) {
   const oThis = this
   ;
   oThis.params = params;
 };
 
-CreateTable.prototype = {
+DescribeTable.prototype = {
 
   /**
    * Perform method
@@ -51,7 +51,7 @@ CreateTable.prototype = {
       logger.debug("=======CreateTable.perform.result=======");
       logger.debug(r);
     } catch(err){
-      return responseHelper.error('s_dy_ct_perform_1', 'Something went wrong. ' + err.message);
+      return responseHelper.error('s_dy_dt_perform_1', 'Something went wrong. ' + err.message);
     }
 
   },
@@ -67,7 +67,7 @@ CreateTable.prototype = {
     ;
 
     if (!oThis.params) {
-      return responseHelper.error('l_dy_ct_validateParams_1', 'Create table params is mandatory');
+      return responseHelper.error('l_dy_dt_validateParams_1', 'Describe table params is mandatory');
     }
 
     return responseHelper.successWithData({});
@@ -75,4 +75,4 @@ CreateTable.prototype = {
 
 };
 
-module.exports = CreateTable;
+module.exports = DescribeTable;

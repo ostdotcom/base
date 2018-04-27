@@ -9,8 +9,11 @@
  */
 
 const rootPrefix = '../../..'
-  , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , logger = require(rootPrefix + '/helpers/custom_console_logger')
+  , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
+  , moduleName = 'services/shard_management/available_shard/get_shards'
+  , responseHelper = new ResponseHelper({module_name: moduleName})
+  , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
+  , logger            = new Logger()
 ;
 
 /**

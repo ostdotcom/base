@@ -19,9 +19,9 @@ const createTestCasesForOptions = function (optionsDesc, options) {
     managedShard: false
   };
 
-  let Validator = function (done) {
-
-
+  let Validator = async function () {
+    let response  = await new ShardMigrationKlass().perform();
+    assert.isTrue(response.isSuccess(), "Success");
   };
   it(optionsDesc, Validator);
 

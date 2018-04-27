@@ -11,7 +11,9 @@ const rootPrefix  = "../.."
   , UpdateItemKlass = require(rootPrefix+'/services/dynamodb/update_item')
   , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new Logger()
-  , responseHelper = require(rootPrefix + '/lib/formatter/response')
+  , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
+  , moduleName = 'services/dynamodb/update_item'
+  , responseHelper = new ResponseHelper({module_name: moduleName})
 ;
 
 /**

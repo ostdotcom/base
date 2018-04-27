@@ -11,7 +11,9 @@ const rootPrefix  = "../.."
   , ScanKlass = require(rootPrefix+'/services/dynamodb/scan')
   , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new Logger()
-  , responseHelper = require(rootPrefix + '/lib/formatter/response')
+  , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
+  , moduleName = 'services/dynamodb/scan'
+  , responseHelper = new ResponseHelper({module_name: moduleName})
 ;
 
 /**
