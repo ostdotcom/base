@@ -33,8 +33,40 @@ CreateTable.prototype = {
   perform: function () {
     const oThis = this
     ;
-    new CreateTableKlass(oThis.params).perform();
-  }
+
+    try {
+
+      var r = null;
+      r = oThis.validateParams();
+      logger.debug("=======CreateTable.validateParams.result=======");
+      logger.debug(r);
+      if (r.isFailure()) return r;
+
+      r = new CreateTableKlass(oThis.params).perform();
+      logger.debug("=======CreateTable.perform.result=======");
+      logger.debug(r);
+    } catch(err){
+      return responseHelper.error('s_dy_ct_perform_1', 'Something went wrong. ' + err.message);
+    }
+
+  },
+
+  /**
+   * Validation of params
+   *
+   * @return {promise<result>}
+   *
+   */
+  validateParams: function () {
+    const oThis = this
+    ;
+
+    if (!oThis.createTableParams) {
+      return responseHelper.error('l_dy_ct_validateParams_1', 'Create table params is mandatory');
+    }
+
+    return responseHelper.successWithData({});
+  },
 
 };
 
