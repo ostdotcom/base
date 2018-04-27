@@ -25,7 +25,7 @@ const rootPrefix = '../../..'
  * @return {Object}
  *
  */
-const ConfigureShardKlass = function (params) {
+const ConfigureShard = function (params) {
   const oThis = this;
   params = params || {};
   logger.debug("=======addShard.params=======");
@@ -35,7 +35,7 @@ const ConfigureShardKlass = function (params) {
   oThis.enableAlloction = params.enable_allocation;
 };
 
-ConfigureShardKlass.prototype = {
+ConfigureShard.prototype = {
 
   /**
    * Perform method
@@ -51,12 +51,12 @@ ConfigureShardKlass.prototype = {
       let r = null;
 
       r = await oThis.validateParams();
-      logger.debug("=======configure_shard.validateParams.result=======");
+      logger.debug("=======ConfigureShard.validateParams.result=======");
       logger.debug(r);
       if (r.isFailure()) return r;
 
       r = await oThis.configureShard();
-      logger.debug("=======configure_shard.configureShard.result=======");
+      logger.debug("=======ConfigureShard.configureShard.result=======");
       logger.debug(r);
       return r;
     } catch(err) {
@@ -112,4 +112,4 @@ ConfigureShardKlass.prototype = {
   }
 };
 
-module.exports = ConfigureShardKlass;
+module.exports = ConfigureShard;

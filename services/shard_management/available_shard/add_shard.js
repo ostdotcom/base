@@ -25,7 +25,7 @@ const rootPrefix = '../../..'
  * @return {Object}
  *
  */
-const AddShardKlass = function (params) {
+const AddShard = function (params) {
   const oThis = this;
   params = params || {};
   logger.debug("=======addShard.params=======");
@@ -35,7 +35,7 @@ const AddShardKlass = function (params) {
   oThis.tableSchema = params.table_schema;
 };
 
-AddShardKlass.prototype = {
+AddShard.prototype = {
 
   /**
    * Perform method
@@ -51,12 +51,12 @@ AddShardKlass.prototype = {
       let r = null;
 
       r = await oThis.validateParams();
-      logger.debug("=======add_shard.validateParams.result=======");
+      logger.debug("=======AddShard.validateParams.result=======");
       logger.debug(r);
       if (r.isFailure()) return r;
 
       r = await oThis.addShard();
-      logger.debug("=======add_shard.addShard.result=======");
+      logger.debug("=======AddShard.addShard.result=======");
       logger.debug(r);
       return r;
     } catch(err) {
@@ -106,18 +106,18 @@ AddShardKlass.prototype = {
       try {
 
         const createShardNameResponse = await oThis.buildShardName();
-        logger.debug("=======add_shard.addShard.buildShardName=======");
+        logger.debug("=======AddShard.addShard.buildShardName=======");
         logger.debug(r);
         if (createShardNameResponse.isFailure()) return createShardNameResponse;
 
         const shardTableName = createShardNameResponse.data
           , addShardResponse = await oThis.createShardTable(shardTableName);
-        logger.debug("=======add_shard.addShard.createShardTable=======");
+        logger.debug("=======AddShard.addShard.createShardTable=======");
         logger.debug(addShardResponse);
         if (addShardResponse.isFailure()) return addShardResponse;
 
         const addShardEntryResponse = await oThis.addShardTableEntry(shardTableName);
-        logger.debug("=======add_shard.addShard.addShardTableEntry=======");
+        logger.debug("=======AddShard.addShard.addShardTableEntry=======");
         logger.debug(addShardEntryResponse);
         if (addShardEntryResponse.isFailure()) return addShardEntryResponse;
 
@@ -152,4 +152,4 @@ AddShardKlass.prototype = {
   }
 };
 
-module.exports = AddShardKlass;
+module.exports = AddShard;

@@ -25,16 +25,16 @@ const rootPrefix = '../../..'
  * @return {Object}
  *
  */
-const GetShardsKlass = function (params) {
+const GetShards = function (params) {
   const oThis = this;
   params = params || {shard_type: 'all'};
-  logger.debug("=======get_shards.params=======");
+  logger.debug("=======GetShards.params=======");
   logger.debug(params);
 
   oThis.shardType = params.shard_type;
 };
 
-GetShardsKlass.prototype = {
+GetShards.prototype = {
 
   /**
    * Perform method
@@ -50,12 +50,12 @@ GetShardsKlass.prototype = {
       let r = null;
 
       r = await oThis.validateParams();
-      logger.debug("=======get_shards.validateParams.result=======");
+      logger.debug("=======GetShards.validateParams.result=======");
       logger.debug(r);
       if (r.isFailure()) return r;
 
       r = await oThis.getShards();
-      logger.debug("=======get_shards.addShard.result=======");
+      logger.debug("=======GetShards.addShard.result=======");
       logger.debug(r);
       return r;
     } catch(err) {
@@ -106,4 +106,4 @@ GetShardsKlass.prototype = {
   }
 };
 
-module.exports = GetShardsKlass;
+module.exports = GetShards;

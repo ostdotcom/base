@@ -22,10 +22,10 @@ const rootPrefix = '../..'
  * @return {Object}
  *
  */
-const ShardMigrationKlass = function () {
+const ShardMigration = function () {
 };
 
-ShardMigrationKlass.prototype = {
+ShardMigration.prototype = {
 
   /**
    * Perform method
@@ -39,9 +39,9 @@ ShardMigrationKlass.prototype = {
 
     try {
       let r = null;
-      logger.info("=======shard_migration.runShardMigration.started=======");
+      logger.info("=======ShardMigration.runShardMigration.started=======");
       r = await oThis.runShardMigration();
-      logger.info("=======shard_migration.runShardMigration.finished=======");
+      logger.info("=======ShardMigration.runShardMigration.finished=======");
       logger.debug(r);
       return r;
     } catch (err) {
@@ -84,7 +84,7 @@ ShardMigrationKlass.prototype = {
     const oThis = this
     ;
 
-    logger.debug("========shard_migration.runShardMigration.createAvailableShards=======");
+    logger.debug("========ShardMigration.runShardMigration.createAvailableShards=======");
 
     const availableShardsParams = {}
       , createAvailableShardObject = CreateTableKlass(availableShardsParams)
@@ -107,7 +107,7 @@ ShardMigrationKlass.prototype = {
     const oThis = this
     ;
 
-    logger.debug("========shard_migration.runShardMigration.createManagedShards=======");
+    logger.debug("========ShardMigration.runShardMigration.createManagedShards=======");
 
     const managedShardsParams = {}
       , createManagedShardObject = new CreateTableKlass(managedShardsParams)
@@ -122,4 +122,4 @@ ShardMigrationKlass.prototype = {
   }
 };
 
-module.exports = ShardMigrationKlass;
+module.exports = ShardMigration;

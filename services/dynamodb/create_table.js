@@ -9,6 +9,9 @@
 
 const rootPrefix  = "../.."
   , CreateTableKlass = require(rootPrefix+'/lib/dynamodb/create_table')
+  , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
+  , logger = new Logger()
+  , responseHelper = require(rootPrefix + '/lib/formatter/response')
 ;
 
 /**
@@ -30,19 +33,19 @@ CreateTable.prototype = {
    * @return {promise<result>}
    *
    */
-  perform: function () {
+  perform: async function () {
     const oThis = this
     ;
 
     try {
 
-      var r = null;
+      let r = null;
       r = oThis.validateParams();
       logger.debug("=======CreateTable.validateParams.result=======");
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      r = new CreateTableKlass(oThis.params).perform();
+      r = await new CreateTableKlass(oThis.params).perform();
       logger.debug("=======CreateTable.perform.result=======");
       logger.debug(r);
     } catch(err){
