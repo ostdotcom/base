@@ -2,7 +2,7 @@
 
 While OpenST 0.9 is available as-is for anyone to use, we caution that this is early stage software and under heavy ongoing development and improvement. Please report bugs and suggested improvements.
 
-# Install OpenST Payments
+# Install OpenST Base
 
 ```bash
 npm install @openstfoundation/openst-base --save
