@@ -43,12 +43,12 @@ DescribeTable.prototype = {
 
       let r = null;
       r = oThis.validateParams();
-      logger.debug("=======CreateTable.validateParams.result=======");
+      logger.debug("=======DescribeTable.validateParams.result=======");
       logger.debug(r);
       if (r.isFailure()) return r;
 
       r = await new CreateTableKlass(oThis.params).perform();
-      logger.debug("=======CreateTable.perform.result=======");
+      logger.debug("=======DescribeTable.perform.result=======");
       logger.debug(r);
     } catch(err){
       return responseHelper.error('s_dy_dt_perform_1', 'Something went wrong. ' + err.message);

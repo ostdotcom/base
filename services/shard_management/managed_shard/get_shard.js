@@ -2,44 +2,42 @@
 
 /**
  *
- * This class would be used to assign shard based on id.<br><br>
+ * This class would be used for getting shard based on id.<br><br>
  *
- * @module services/shard_management/managed_shard/assign_shard
+ * @module services/shard_management/managed_shard/get_shard
  *
  */
 
 const rootPrefix = '../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
-  , moduleName = 'services/shard_management/managed_shard/assign_shard'
+  , moduleName = 'services/shard_management/managed_shard/get_shard'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
   , logger            = new Logger()
 ;
 
 /**
- * Constructor to create object of Assign Shard
+ * Constructor to create object of Get Shard
  *
  * @constructor
  *
  * @params {object} params -
- * @param {string} params.id - id of the shard
- * @param {string} params.entity_type - schema of the table in shard
- * @param {integer} params.serial_number - Serial number of the shard
+ * @param {string} params.shard_type - get shard type Example :- 'all', 'enabled', 'disabled' (Default 'All')
+ * @param {JSON} params.table_schema - schema of the table in shard
  *
  * @return {Object}
  *
  */
-const AssignShard = function (params) {
+const GetShards = function (params) {
   const oThis = this;
-  logger.debug("=======AssignShard.params=======");
+  params = params || {shard_type: 'all'};
+  logger.debug("=======GetShards.params=======");
   logger.debug(params);
-  oThis.id = params.id;
-  oThis.entityType = params.entity_type;
-  oThis.serialNumber = params.serial_number;
 
+  oThis.shardType = params.shard_type;
 };
 
-AssignShard.prototype = {
+GetShards.prototype = {
 
   /**
    * Perform method
@@ -55,12 +53,12 @@ AssignShard.prototype = {
       let r = null;
 
       r = await oThis.validateParams();
-      logger.debug("=======AssignShard.validateParams.result=======");
+      logger.debug("=======GetShards.validateParams.result=======");
       logger.debug(r);
       if (r.isFailure()) return r;
 
       r = await oThis.getShards();
-      logger.debug("=======AssignShard.addShard.result=======");
+      logger.debug("=======GetShards.addShard.result=======");
       logger.debug(r);
       return r;
     } catch(err) {
@@ -102,7 +100,7 @@ AssignShard.prototype = {
 
     return new Promise(async function (onResolve) {
       try {
-        // Todo:: Get shard based on params
+        // Todo:: Get shards based on params
         return onResolve(responseHelper.successWithData({}));
       } catch (err) {
         return onResolve(responseHelper.error('s_sm_as_gs_getShards_1', 'Error getting shards. ' + err));
@@ -111,4 +109,4 @@ AssignShard.prototype = {
   }
 };
 
-module.exports = AssignShard;
+module.exports = GetShards;

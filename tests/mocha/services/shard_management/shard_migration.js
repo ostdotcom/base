@@ -20,6 +20,7 @@ const createTestCasesForOptions = function (optionsDesc, options) {
   };
 
   let Validator = async function () {
+    this.timeout(50000);
     let response  = await new ShardMigrationKlass().perform();
     assert.isTrue(response.isSuccess(), "Success");
   };

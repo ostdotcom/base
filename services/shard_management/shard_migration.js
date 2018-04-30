@@ -147,10 +147,6 @@ ShardMigration.prototype = {
         {
           AttributeName: "ET",
           AttributeType: "S"
-        },
-        {
-          AttributeName: "Sr",
-          AttributeType: "N"
         }
       ],
       KeySchema: [
