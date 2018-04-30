@@ -1,78 +1,53 @@
 "use strict";
 
 /**
- * DynamoDB Create Table service
+ * DynamoDB create table service
  *
  * @module services/dynamodb/create_table
  *
  */
 
 const rootPrefix  = "../.."
-  , CreateTableKlass = require(rootPrefix+'/lib/dynamodb/create_table')
-  , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , logger = new Logger()
-  , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
-  , moduleName = 'services/dynamodb/create_table'
-  , responseHelper = new ResponseHelper({module_name: moduleName})
+  , base = require(rootPrefix + "/services/dynamodb/base")
+  , ResponseHelperKlass = require(rootPrefix + '/lib/formatter/response')
+  , responseHelper = new ResponseHelperKlass({module_name: "DDBCreateTableService"})
 ;
+
 
 /**
  * Constructor for create table service class
+ * @param params -
  *
  * @constructor
  */
-const CreateTable = function(params) {
+const CreateTable = function(params, ddbObject) {
   const oThis = this
   ;
-  oThis.params = params;
+  base.call(this, 'createTable', params, ddbObject);
 };
+CreateTable.prototype = Object.create(base.prototype);
 
-CreateTable.prototype = {
-
-  /**
-   * Perform method
-   *
-   * @return {promise<result>}
-   *
-   */
-  perform: async function () {
-    const oThis = this
-    ;
-
-    try {
-
-      let r = null;
-      r = oThis.validateParams();
-      logger.debug("=======CreateTable.validateParams.result=======");
-      logger.debug(r);
-      if (r.isFailure()) return r;
-
-      r = await new CreateTableKlass(oThis.params).perform();
-      logger.debug("=======CreateTable.perform.result=======");
-      logger.debug(r);
-    } catch(err){
-      return responseHelper.error('s_dy_ct_perform_1', 'Something went wrong. ' + err.message);
-    }
-
-  },
+const createTablePrototype = {
 
   /**
    * Validation of params
    *
-   * @return {promise<result>}
+   * @return {<result>}
    *
    */
   validateParams: function () {
-    const oThis = this
-    ;
 
-    if (!oThis.params) {
-      return responseHelper.error('l_dy_ct_validateParams_1', 'Create table params is mandatory');
-    }
+    const oThis = this
+      ,validationResponse = base.validateParams.call(oThis)
+    ;
+    if (validationResponse.isFailure()) return validationResponse;
 
     return responseHelper.successWithData({});
   },
 
 };
+
+Object.assign(CreateTable.prototype, createTablePrototype);
+CreateTable.prototype.constructor = CreateTable;
 
 module.exports = CreateTable;

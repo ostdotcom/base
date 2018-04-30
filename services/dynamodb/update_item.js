@@ -1,85 +1,53 @@
 "use strict";
 
 /**
- * DynamoDB Update item service
+ * DynamoDB update item service
  *
  * @module services/dynamodb/update_item
  *
  */
 
 const rootPrefix  = "../.."
-  , UpdateItemKlass = require(rootPrefix+'/services/dynamodb/update_item')
-  , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , logger = new Logger()
-  , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
-  , moduleName = 'services/dynamodb/update_item'
-  , responseHelper = new ResponseHelper({module_name: moduleName})
+  , base = require(rootPrefix + "/services/dynamodb/base")
+  , ResponseHelperKlass = require(rootPrefix + '/lib/formatter/response')
+  , responseHelper = new ResponseHelperKlass({module_name: "DDBUpdateItemService"})
 ;
 
+
 /**
- * Constructor for Update item service class
- *
+ * Constructor for update item service class
  * @param params -
  *
  * @constructor
  */
-const UpdateItem = function(params) {
+const UpdateItem = function(params, ddbObject) {
   const oThis = this
   ;
-  oThis.updateItemParams = params.update_item_params;
+  base.call(this, 'updateItem', params, ddbObject);
 };
 
-UpdateItem.prototype = {
+UpdateItem.prototype = Object.create(base.prototype);
 
-  /**
-   * Perform method
-   *
-   * @return {promise<result>}
-   *
-   */
-  perform: async function () {
-    const oThis = this
-    ;
-
-    try {
-
-      var r = null;
-      r = oThis.validateParams();
-      logger.debug("=======UpdateItem.validateParams.result=======");
-      logger.debug(r);
-      if (r.isFailure()) return r;
-
-      r = await new UpdateItemKlass({update_item_params: oThis.updateItemParams}).perform();
-      logger.debug("=======UpdateItem.perform.result=======");
-      logger.debug(r);
-    } catch (err) {
-      return responseHelper.error('s_dy_ui_perform_1', 'Something went wrong. ' + err.message);
-    }
-
-  },
+const updateItemPrototype = {
 
   /**
    * Validation of params
    *
-   * @return {promise<result>}
+   * @return {<result>}
    *
    */
   validateParams: function () {
     const oThis = this
-      , MINIMUM_KEYS = 3
+      ,validationResponse = base.validateParams.call(oThis)
     ;
-
-    if (!oThis.updateItemParams) {
-      return responseHelper.error('l_dy_ui_validateParams_1', 'Update Item params is mandatory');
-    }
-
-    if (Object.keys(oThis.updateItemParams) > MINIMUM_KEYS ) {
-      return responseHelper.error('l_dy_ui_validateParams_2', 'Update Item params have some mandatory keys missing');
-    }
+    if (validationResponse.isFailure()) return validationResponse;
 
     return responseHelper.successWithData({});
   },
 
 };
+
+Object.assign(UpdateItem.prototype, scanPrototype);
+UpdateItem.prototype.constructor = updateItemPrototype;
 
 module.exports = UpdateItem;

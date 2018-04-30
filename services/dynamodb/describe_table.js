@@ -1,78 +1,53 @@
 "use strict";
 
 /**
- * DynamoDB Describe Table service
+ * DynamoDB describe table service
  *
  * @module services/dynamodb/describe_table
  *
  */
 
 const rootPrefix  = "../.."
-  , CreateTableKlass = require(rootPrefix+'/lib/dynamodb/create_table')
-  , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , logger = new Logger()
-  , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
-  , moduleName = 'services/dynamodb/create_table'
-  , responseHelper = new ResponseHelper({module_name: moduleName})
+  , base = require(rootPrefix + "/services/dynamodb/base")
+  , ResponseHelperKlass = require(rootPrefix + '/lib/formatter/response')
+  , responseHelper = new ResponseHelperKlass({module_name: "DDBDescribeTableService"})
 ;
+
 
 /**
  * Constructor for describe table service class
+ * @param params -
  *
  * @constructor
  */
-const DescribeTable = function(params) {
+const DescribeTable = function(params, ddbObject) {
   const oThis = this
   ;
-  oThis.params = params;
+  base.call(this, 'describeTable', params, ddbObject);
 };
 
-DescribeTable.prototype = {
+DescribeTable.prototype = Object.create(base.prototype);
 
-  /**
-   * Perform method
-   *
-   * @return {promise<result>}
-   *
-   */
-  perform: async function () {
-    const oThis = this
-    ;
-
-    try {
-
-      let r = null;
-      r = oThis.validateParams();
-      logger.debug("=======DescribeTable.validateParams.result=======");
-      logger.debug(r);
-      if (r.isFailure()) return r;
-
-      r = await new CreateTableKlass(oThis.params).perform();
-      logger.debug("=======DescribeTable.perform.result=======");
-      logger.debug(r);
-    } catch(err){
-      return responseHelper.error('s_dy_dt_perform_1', 'Something went wrong. ' + err.message);
-    }
-
-  },
+const describeTablePrototype = {
 
   /**
    * Validation of params
    *
-   * @return {promise<result>}
+   * @return {<result>}
    *
    */
   validateParams: function () {
     const oThis = this
+      ,validationResponse = base.validateParams.call(oThis)
     ;
-
-    if (!oThis.params) {
-      return responseHelper.error('l_dy_dt_validateParams_1', 'Describe table params is mandatory');
-    }
+    if (validationResponse.isFailure()) return validationResponse;
 
     return responseHelper.successWithData({});
   },
 
 };
+Object.assign(DescribeTable.prototype, describeTablePrototype);
+DescribeTable.prototype.constructor = DescribeTable;
+
 
 module.exports = DescribeTable;
