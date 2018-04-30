@@ -14,9 +14,9 @@ const rootPrefix  = "../.."
 ;
 
 /**
- * Constructor for Dynamo DB api service class
+ * Constructor for DynamoDB api service class
  *
- * @params {object} params - DynamoDB configurations
+ * @params {object} params - DynamoDB connection configurations
  *
  * @constructor
  */
@@ -145,7 +145,7 @@ module.exports = DynamoDBService;
 /*
 Example code for ddb config params
 const ddbConfigParams = {};
-    ddbConfigParams[keyConstants.KEY_DDB_API_VERSION] = coreConstants.DYNAMODB_API_VERSION;
+    ddbConfigParams["apiVersion"] = coreConstants.DYNAMODB_API_VERSION;
     ddbConfigParams[keyConstants.KEY_DDB_ACCESS_KEY_ID] = coreConstants.DYNAMODB_ACCESS_KEY_ID;
     ddbConfigParams[keyConstants.KEY_DDB_SECRET_ACCESS_KEY] = coreConstants.DYNAMODB_SECRET_ACCESS_KEY;
     ddbConfigParams[keyConstants.KEY_DDB_REGION] = coreConstants.DYNAMODB_REGION;

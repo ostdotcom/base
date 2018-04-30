@@ -40,8 +40,13 @@ const batchGetPrototype = {
   validateParams: function () {
     const oThis = this
       ,validationResponse = base.validateParams.call(oThis)
+      , MINIMUM_KEYS = 3
     ;
     if (validationResponse.isFailure()) return validationResponse;
+
+    if (Object.keys(oThis.params) > MINIMUM_KEYS ) {
+      return responseHelper.error('l_dy_bg_validateParams_1', 'params have some mandatory keys missing');
+    }
 
     return responseHelper.successWithData({});
   },

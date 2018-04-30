@@ -8,9 +8,8 @@
  */
 
 const rootPrefix  = "../.."
-  //, dbBase = require(rootPrefix + "/lib/dynamodb/base")
-  , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , logger = new Logger()
+  , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
+  , logger = new LoggerKlass()
   , ResponseHelperKlass = require(rootPrefix + '/lib/formatter/response')
   , responseHelper = new ResponseHelperKlass({module_name: "DDBBaseService"})
 ;
@@ -19,23 +18,19 @@ const rootPrefix  = "../.."
 /**
  * Constructor for base service class
  *
- * @param params -
+ * @param {string} methodName - DDB method name
+ * @param {object} params - DDB method params
+ * @param {object} ddbObject - connection object
  *
  * @constructor
  */
 const Base = function(methodName, params, ddbObject) {
   const oThis = this
   ;
+
   oThis.params = params;
   oThis.ddbObject = ddbObject;
   oThis.methodName = methodName;
-
-  /*if (!ddbConfigParams) {
-    oThis.dbObject = getdefaultDDBObject();
-  } else {
-    oThis.dbObject = new dbBase(ddbConfigParams);
-  }
-  */
 };
 
 Base.prototype = {
@@ -61,6 +56,9 @@ Base.prototype = {
       r = await oThis.dbObject.call(oThis.methodName, oThis.params);
       logger.debug("=======Base.perform.result=======");
       logger.debug(r);
+
+      return r;
+
     } catch (err) {
       logger.error("services/dynamodb/base.js:perform inside catch ", err);
       return responseHelper.error('s_dy_b_perform_2', 'Something went wrong. ' + err.message);
@@ -75,9 +73,7 @@ Base.prototype = {
    *
    */
   validateParams: function () {
-    const oThis = this
-      , MINIMUM_KEYS = 3
-    ;
+    const oThis = this;
 
     if (!oThis.methodName) {
       return responseHelper.error('l_dy_b_validateParams_1', 'method name is missing.');
@@ -89,10 +85,6 @@ Base.prototype = {
 
     if (!oThis.params) {
       return responseHelper.error('l_dy_b_validateParams_3', 'params is mandatory');
-    }
-
-    if (Object.keys(oThis.params) > MINIMUM_KEYS ) {
-      return responseHelper.error('l_dy_b_validateParams_4', 'params have some mandatory keys missing');
     }
 
     return responseHelper.successWithData({});
