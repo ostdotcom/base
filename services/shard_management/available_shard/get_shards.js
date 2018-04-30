@@ -12,6 +12,7 @@ const rootPrefix = '../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
   , moduleName = 'services/shard_management/available_shard/get_shards'
   , responseHelper = new ResponseHelper({module_name: moduleName})
+  , availableShardGlobalConstant = require(rootPrefix + '/lib/global_constant/available_shard')
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
   , logger            = new Logger()
 ;
@@ -30,11 +31,10 @@ const rootPrefix = '../../..'
  */
 const GetShards = function (params) {
   const oThis = this;
-  params = params || {shard_type: 'all'};
   logger.debug("=======GetShards.params=======");
   logger.debug(params);
 
-  oThis.shardType = params.shard_type;
+  oThis.shardType = params.shard_type || 'all';
 };
 
 GetShards.prototype = {
@@ -79,7 +79,7 @@ GetShards.prototype = {
 
     return new Promise(async function (onResolve) {
 
-      if (!oThis.shardType || !(oThis.shardType === 'all' || oThis.shardType === 'enabled' || oThis.shardType === 'disabled')) {
+      if (!oThis.shardType || (availableShardGlobalConstant.getShardTypes().indexOf(oThis.shardType) === -1) ) {
         logger.debug('s_sm_as_gs_validateParams_1', 'shardType is', oThis.shardType);
         return onResolve(responseHelper.error('s_sm_as_gs_validateParams_1', 'shardType is invalid'));
       }
@@ -100,7 +100,7 @@ GetShards.prototype = {
 
     return new Promise(async function (onResolve) {
       try {
-        // Todo:: Get shards based on params
+        // TODO:: Get shards based on params
         return onResolve(responseHelper.successWithData({}));
       } catch (err) {
         return onResolve(responseHelper.error('s_sm_as_gs_getShards_1', 'Error getting shards. ' + err));

@@ -30,7 +30,6 @@ const rootPrefix = '../../..'
  */
 const AddShard = function (params) {
   const oThis = this;
-  params = params || {};
   logger.debug("=======addShard.params=======");
   logger.debug(params);
 
