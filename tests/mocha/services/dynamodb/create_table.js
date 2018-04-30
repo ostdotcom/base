@@ -6,28 +6,31 @@ const rootPrefix = "../../../.."
   , testConstants = require(rootPrefix + '/tests/mocha/services/dynamodb/constants')
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
+  , helper = require(rootPrefix + "/tests/mocha/services/dynamodb/helper")
 ;
 
 describe('Create Table', function() {
 
   var dynamodbApiObject = null;
-  const tableName = "shard_00001_transaction_logs";
 
   before(async function() {
 
     // create dynamodbApiObject
     dynamodbApiObject = new DdbApiKlass(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
+    helper.assertDynamodbApiObject(dynamodbApiObject);
+  });
 
-    // validate if the dynamodbApiObject object is created
-    assert.exists(dynamodbApiObject, 'dynamodbApiObject is not created');
-
+  it('should delete table successfully', async function () {
+    const deleteTableParams = {
+      TableName: testConstants.transactionLogsTableName
+    };
+    await helper.deleteTable(dynamodbApiObject, deleteTableParams);
   });
 
   it('should create table successfully', async function () {
-    this.timeout(10000);
     // build create table params
     const createTableParams = {
-      TableName : tableName,
+      TableName : testConstants.transactionLogsTableName,
       KeySchema: [
         {
           AttributeName: "tuid",
@@ -44,8 +47,8 @@ describe('Create Table', function() {
         { AttributeName: "thash", AttributeType: "S" }
       ],
       ProvisionedThroughput: {
-        ReadCapacityUnits: 10,
-        WriteCapacityUnits: 10
+        ReadCapacityUnits: 5,
+        WriteCapacityUnits: 5
       },
       GlobalSecondaryIndexes: [
         {
@@ -69,22 +72,19 @@ describe('Create Table', function() {
         Enabled: false
       },
     };
-    const createTableResponse = await dynamodbApiObject.createTable(createTableParams);
-    assert.equal(createTableResponse.isSuccess(), true);
-
+    await helper.createTable(dynamodbApiObject, createTableParams);
   });
 
-  // it('should enable continous backup successfully', async function () {
-  //   // build create table params
-  //   const enableContinousBackupParams = {
-  //     TableName: tableName,
-  //     PointInTimeRecoverySpecification: {
-  //       PointInTimeRecoveryEnabled: true
-  //     }
-  //   };
-  //   const enableContinousResponse = await dynamodbApiObject.updateContinuousBackup(enableContinousBackupParams);
-  //   assert.equal(enableContinousResponse.isSuccess(), true);
-  // });
+  it('should enable continous backup successfully', async function () {
+    // build create table params
+    const enableContinousBackupParams = {
+      TableName: testConstants.transactionLogsTableName,
+      PointInTimeRecoverySpecification: {
+        PointInTimeRecoveryEnabled: true
+      }
+    };
+    await helper.updateContinousBackup(dynamodbApiObject, enableContinousBackupParams);
+  });
 
   after(function() {
     logger.debug("Create Table Mocha Tests Complete");

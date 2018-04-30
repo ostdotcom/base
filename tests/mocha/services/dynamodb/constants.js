@@ -51,6 +51,7 @@ MochaTestConstants.prototype = {
     'endpoint': "http://localhost:8000"
   },
 
+  transactionLogsTableName: 'shard_00001_transaction_logs'
 
 
 };
