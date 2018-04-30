@@ -75,21 +75,6 @@ DynamoDBService.prototype = {
   },
 
   /**
-   * Delete table
-   *
-   * @params {object} params
-   *
-   * @return {promise<result>}
-   *
-   */
-  deleteTable: function(params) {
-    const oThis = this
-      , deleteTableObject = new DDBServiceBaseKlass('deleteTable', params, oThis.ddbObject)
-    ;
-    return deleteTableObject.perform();
-  },
-
-  /**
    * Enables or disables point in time recovery for the specified table
    *
    * @params {object} params
@@ -102,6 +87,21 @@ DynamoDBService.prototype = {
       , updateContinuousBackupObject = new DDBServiceBaseKlass('updateContinuousBackups', params, oThis.ddbObject)
     ;
     return updateContinuousBackupObject.perform();
+  },
+
+  /**
+   * Delete table
+   *
+   * @params {object} params
+   *
+   * @return {promise<result>}
+   *
+   */
+  deleteTable: function(params) {
+    const oThis = this
+      , deleteTableObject = new DDBServiceBaseKlass('deleteTable', params, oThis.ddbObject)
+    ;
+    return deleteTableObject.perform();
   },
 
   /**

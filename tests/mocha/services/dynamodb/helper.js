@@ -15,7 +15,7 @@ const helper = function() {};
 
 helper.prototype = {
 
-  assertDynamodbApiObject: function(dynamodbApiObject) {
+  validateDynamodbApiObject: function(dynamodbApiObject) {
     assert.exists(dynamodbApiObject, 'dynamodbApiObject is not created');
     assert.equal(typeof dynamodbApiObject, "object");
     assert.equal(dynamodbApiObject.constructor.name, "DynamoDBService");

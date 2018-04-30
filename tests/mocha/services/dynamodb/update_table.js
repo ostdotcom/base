@@ -16,7 +16,7 @@ describe('Delete Table', function() {
   before(async function() {
     // create dynamodbApiObject
     dynamodbApiObject = new DdbApiKlass(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
-    helper.assertDynamodbApiObject(dynamodbApiObject);
+    helper.validateDynamodbApiObject(dynamodbApiObject);
   });
 
   it('should delete table successfully if exists', async function () {
