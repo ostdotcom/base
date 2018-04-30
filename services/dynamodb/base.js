@@ -15,25 +15,6 @@ const rootPrefix  = "../.."
   , responseHelper = new ResponseHelperKlass({module_name: "DDBBaseService"})
 ;
 
-/*
-let dynamoDBInstance = null ;
-
-function getdefaultDDBObject() {
-  if (!dynamoDBInstance) {
-    const ddbConfigParams = {};
-    ddbConfigParams[keyConstants.KEY_DDB_API_VERSION] = coreConstants.DYNAMODB_API_VERSION;
-    ddbConfigParams[keyConstants.KEY_DDB_ACCESS_KEY_ID] = coreConstants.DYNAMODB_ACCESS_KEY_ID;
-    ddbConfigParams[keyConstants.KEY_DDB_SECRET_ACCESS_KEY] = coreConstants.DYNAMODB_SECRET_ACCESS_KEY;
-    ddbConfigParams[keyConstants.KEY_DDB_REGION] = coreConstants.DYNAMODB_REGION;
-    ddbConfigParams[keyConstants.KEY_DDB_LOGGER] = coreConstants.DYNAMODB_LOGGER;
-    ddbConfigParams[keyConstants.KEY_DDB_SSL_ENABLED] = false;
-    ddbConfigParams[keyConstants.KEY_DDB_MAX_RETRIES] = coreConstants.DYNAMODB_MAX_RETRIES;
-
-    dynamoDBInstance = new dbBase(ddbConfigParams);
-  }
-  return dynamoDBInstance;
-}
-*/
 
 /**
  * Constructor for base service class

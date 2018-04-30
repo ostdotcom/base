@@ -9,13 +9,8 @@
 
 const rootPrefix  = "../.."
   , DdbBase = require(rootPrefix+'/lib/dynamodb/base')
-  , BatchGetServiceKlass = require(rootPrefix + '/services/dynamodb/batch_get')
-  , BatchWriteServiceKlass = require(rootPrefix + '/services/dynamodb/batch_write')
   , CreateTableServiceKlass = require(rootPrefix + '/services/dynamodb/create_table')
-  , DescribeTableServiceKlass = require(rootPrefix + '/services/dynamodb/describe_table')
-  , QueryServiceKlass = require(rootPrefix + '/services/dynamodb/query')
-  , ScanServiceKlass = require(rootPrefix + '/services/dynamodb/scan')
-  , UpdateItemServiceKlass = require(rootPrefix + '/services/dynamodb/update_item')
+  , DDBServiceBaseKlass = require(rootPrefix + "/services/dynamodb/base")
 ;
 
 /**
@@ -44,7 +39,7 @@ DynamoDBService.prototype = {
    */
   batchGet: async function(params) {
     const oThis = this
-      , bathGetObject = new BatchGetServiceKlass('batchGet', params, oThis.dbObject)
+      , bathGetObject = new DDBServiceBaseKlass('batchGet', params, oThis.dbObject)
     ;
     return bathGetObject.perform();
   },
@@ -59,7 +54,7 @@ DynamoDBService.prototype = {
    */
   batchWrite: async function(params) {
     const oThis = this
-      , bathWriteObject = new BatchWriteServiceKlass('batchWrite', params, oThis.dbObject)
+      , bathWriteObject = new DDBServiceBaseKlass('batchWrite', params, oThis.dbObject)
     ;
     return bathWriteObject.perform();
   },
@@ -74,7 +69,7 @@ DynamoDBService.prototype = {
    */
   createTable: async function(params) {
     const oThis = this
-      , createTableObject = new CreateTableServiceKlass('createTable', params, oThis.dbObject)
+      , createTableObject = new CreateTableServiceKlass(params, oThis.dbObject)
     ;
     return createTableObject.perform();
   },
@@ -89,7 +84,7 @@ DynamoDBService.prototype = {
    */
   describeTable: async function(params) {
     const oThis = this
-      , describeTableObject = new DescribeTableServiceKlass('describeTable', params, oThis.dbObject)
+      , describeTableObject = new DDBServiceBaseKlass('describeTable', params, oThis.dbObject)
     ;
     return describeTableObject.perform();
   },
@@ -105,7 +100,7 @@ DynamoDBService.prototype = {
    */
   query: async function(params) {
     const oThis = this
-      , queryObject = new QueryServiceKlass('query', params, oThis.dbObject)
+      , queryObject = new DDBServiceBaseKlass('query', params, oThis.dbObject)
     ;
     return queryObject.perform();
   },
@@ -120,7 +115,7 @@ DynamoDBService.prototype = {
    */
   scan: async function() {
     const oThis = this
-      , scanObject = new ScanServiceKlass('scan', params, oThis.dbObject)
+      , scanObject = new DDBServiceBaseKlass('scan', params, oThis.dbObject)
     ;
     return scanObject.perform();
   },
@@ -136,7 +131,7 @@ DynamoDBService.prototype = {
    */
   updateItem: async function() {
     const oThis = this
-      , updateItemObject = new UpdateItemServiceKlass('updateItem', params, oThis.dbObject)
+      , updateItemObject = new DDBServiceBaseKlass('updateItem', params, oThis.dbObject)
     ;
     return updateItemObject.perform();
   }
@@ -144,3 +139,18 @@ DynamoDBService.prototype = {
 };
 
 module.exports = DynamoDBService;
+
+
+
+/*
+Example code for ddb config params
+const ddbConfigParams = {};
+    ddbConfigParams[keyConstants.KEY_DDB_API_VERSION] = coreConstants.DYNAMODB_API_VERSION;
+    ddbConfigParams[keyConstants.KEY_DDB_ACCESS_KEY_ID] = coreConstants.DYNAMODB_ACCESS_KEY_ID;
+    ddbConfigParams[keyConstants.KEY_DDB_SECRET_ACCESS_KEY] = coreConstants.DYNAMODB_SECRET_ACCESS_KEY;
+    ddbConfigParams[keyConstants.KEY_DDB_REGION] = coreConstants.DYNAMODB_REGION;
+    ddbConfigParams[keyConstants.KEY_DDB_LOGGER] = coreConstants.DYNAMODB_LOGGER;
+    ddbConfigParams[keyConstants.KEY_DDB_SSL_ENABLED] = false;
+    ddbConfigParams[keyConstants.KEY_DDB_MAX_RETRIES] = coreConstants.DYNAMODB_MAX_RETRIES;
+
+*/
