@@ -23,9 +23,10 @@ describe('Batch get', function () {
     // validate if the dynamoDBApi object is created
     assert.exists(dynamoDBApi, 'dynamoDBApi is not created');
 
+/*
     // build create table params
     const createTableParams = {
-      TableName : "Movies1",
+      TableName : "Movies4",
       KeySchema: [
         { AttributeName: "year", KeyType: "HASH"},  //Partition key
         { AttributeName: "title", KeyType: "RANGE" }  //Sort key
@@ -43,10 +44,30 @@ describe('Batch get', function () {
     // call create table.
     const createTableResponse = await dynamoDBApi.createTable(createTableParams);
 
-    console.log("createTableResponse: ",createTableResponse);
     // validate if the table is created
     assert.isTrue(createTableResponse.isSuccess(), 'Create table failed');
+*/
 
+    var tableExistsParams = { TableName: 'Movies1'};
+    var tableExistsResponse = await  dynamoDBApi.tableExists(tableExistsParams);
+    console.log('tableExistsResponse: ',JSON.stringify(tableExistsResponse));
+
+/*
+    tableExistsParams = { TableName: 'Movies10'};
+    tableExistsResponse = await  dynamoDBApi.tableExists(tableExistsParams);
+    console.log('tableExistsResponse: ',JSON.stringify(tableExistsResponse));
+*/
+
+
+    tableNotExistsParams = { TableName: 'Movies15'};
+    tableNotExistsResponse = await  dynamoDBApi.tableNotExists(tableNotExistsParams);
+    console.log('tableNotExistsResponse: ',JSON.stringify(tableNotExistsResponse));
+
+/*
+    tableNotExistsParams = { TableName: 'Movies1'};
+    tableNotExistsResponse = await  dynamoDBApi.tableNotExists(tableNotExistsParams);
+    console.log('tableNotExistsResponse: ',JSON.stringify(tableNotExistsResponse));
+*/
 
   });
 

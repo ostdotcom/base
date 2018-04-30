@@ -14,7 +14,7 @@ const rootPrefix = '../../..'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
   , logger            = new Logger()
-  , CreateTableKlass = require(rootPrefix + "/services/dynamodb/create_table")
+  //, CreateTableKlass = require(rootPrefix + "/services/dynamodb/create_table")
 ;
 
 /**

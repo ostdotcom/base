@@ -18,13 +18,13 @@ const rootPrefix  = "../.."
 /**
  * Constructor for base service class
  *
+ * @param {object} ddbObject - connection object
  * @param {string} methodName - DDB method name
  * @param {object} params - DDB method params
- * @param {object} ddbObject - connection object
  *
  * @constructor
  */
-const Base = function(methodName, params, ddbObject) {
+const Base = function(ddbObject, methodName, params) {
   const oThis = this
   ;
 
@@ -45,23 +45,36 @@ Base.prototype = {
     const oThis = this
     ;
 
+    var r = null;
+    r = oThis.validateParams();
+    logger.debug("=======Base.validateParams.result=======");
+    logger.debug(r);
+    if (r.isFailure()) return r;
+
+    return oThis.executeDdbRequest();
+
+  },
+
+  /**
+   * Execute dynamoDB request
+   *
+   * @return {promise<result>}
+   *
+   */
+  executeDdbRequest: async function () {
+    const oThis = this
+    ;
+
     try {
 
-      var r = null;
-      r = oThis.validateParams();
-      logger.debug("=======Base.validateParams.result=======");
-      logger.debug(r);
-      if (r.isFailure()) return r;
-
-      r = await oThis.ddbObject.call(oThis.methodName, oThis.params);
+      const r = await oThis.ddbObject.call(oThis.methodName, oThis.params);
       logger.debug("=======Base.perform.result=======");
       logger.debug(r);
-
       return r;
 
     } catch (err) {
-      logger.error("services/dynamodb/base.js:perform inside catch ", err);
-      return responseHelper.error('s_dy_b_perform_2', 'Something went wrong. ' + err.message);
+      logger.error("services/dynamodb/base.js:executeDdbRequest inside catch ", err);
+      return responseHelper.error('s_dy_b_executeDdbRequest_1', 'Something went wrong. ' + err.message);
     }
 
   },
