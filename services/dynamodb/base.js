@@ -53,7 +53,7 @@ Base.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      r = await oThis.dbObject.call(oThis.methodName, oThis.params);
+      r = await oThis.ddbObject.call(oThis.methodName, oThis.params);
       logger.debug("=======Base.perform.result=======");
       logger.debug(r);
 
@@ -79,7 +79,7 @@ Base.prototype = {
       return responseHelper.error('l_dy_b_validateParams_1', 'method name is missing.');
     }
 
-    if (!oThis.dbObject){
+    if (!oThis.ddbObject){
       return responseHelper.error('l_dy_b_validateParams_2', 'DDB object is missing');
     }
 

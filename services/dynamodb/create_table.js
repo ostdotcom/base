@@ -23,7 +23,7 @@ const rootPrefix  = "../.."
 const CreateTable = function(params, ddbObject) {
   const oThis = this
   ;
-  base.call(this, 'createTable', params, ddbObject);
+  base.call(oThis, 'createTable', params, ddbObject);
 };
 
 CreateTable.prototype = Object.create(base.prototype);
@@ -39,7 +39,7 @@ const createTablePrototype = {
   validateParams: function () {
 
     const oThis = this
-      ,validationResponse = base.validateParams.call(oThis)
+      ,validationResponse = base.prototype.validateParams.call(oThis)
     ;
     if (validationResponse.isFailure()) return validationResponse;
 
