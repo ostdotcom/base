@@ -9,21 +9,22 @@ const rootPrefix = "../../../.."
   , helper = require(rootPrefix + "/tests/mocha/services/dynamodb/helper")
 ;
 
-describe('Create Table', function() {
+describe('Describe Dynamodb Table', function() {
 
   var dynamodbApiObject = null;
 
   before(async function() {
-
     // create dynamodbApiObject
     dynamodbApiObject = new DdbApiKlass(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
     helper.assertDynamodbApiObject(dynamodbApiObject);
   });
 
-  it('should delete table successfully', async function () {
+  it('should delete table successfully if exists', async function () {
+    // build create table params
     const deleteTableParams = {
       TableName: testConstants.transactionLogsTableName
     };
+
     await helper.deleteTable(dynamodbApiObject, deleteTableParams);
   });
 
@@ -75,19 +76,16 @@ describe('Create Table', function() {
     await helper.createTable(dynamodbApiObject, createTableParams);
   });
 
-  // it('should enable continous backup successfully', async function () {
-  //   // build create table params
-  //   const enableContinousBackupParams = {
-  //     TableName: testConstants.transactionLogsTableName,
-  //     PointInTimeRecoverySpecification: {
-  //       PointInTimeRecoveryEnabled: true
-  //     }
-  //   };
-  //   await helper.updateContinuousBackup(dynamodbApiObject, enableContinousBackupParams);
-  // });
+  it('should describe table successfully', async function () {
+    const describeTableParams = {
+      TableName: testConstants.transactionLogsTableName
+    }
+    await helper.describeTable(dynamodbApiObject, describeTableParams);
+  });
+
 
   after(function() {
-    logger.debug("Create Table Mocha Tests Complete");
+    logger.debug("Update Table Mocha Tests Complete");
   });
 
 

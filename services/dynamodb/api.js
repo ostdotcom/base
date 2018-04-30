@@ -9,7 +9,6 @@
 
 const rootPrefix  = "../.."
   , DdbBase = require(rootPrefix+'/lib/dynamodb/base')
-  , CreateTableServiceKlass = require(rootPrefix + '/services/dynamodb/create_table')
   , DDBServiceBaseKlass = require(rootPrefix + "/services/dynamodb/base")
 ;
 
@@ -156,7 +155,7 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  scan: function() {
+  scan: function(params) {
     const oThis = this
       , scanObject = new DDBServiceBaseKlass('scan', params, oThis.ddbObject)
     ;
@@ -171,7 +170,7 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  putItem: function() {
+  putItem: function(params) {
     const oThis = this
       , putItemObject = new DDBServiceBaseKlass('putItem', params, oThis.ddbObject)
     ;
@@ -186,7 +185,7 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  updateItem: function() {
+  updateItem: function(params) {
     const oThis = this
       , updateItemObject = new DDBServiceBaseKlass('updateItem', params, oThis.ddbObject)
     ;
@@ -201,7 +200,7 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  deleteItem: function() {
+  deleteItem: function(params) {
     const oThis = this
       , deleteItemObject = new DDBServiceBaseKlass('deleteItem', params, oThis.ddbObject)
     ;
@@ -210,5 +209,6 @@ DynamoDBService.prototype = {
 
 };
 
+DynamoDBService.prototype.constructor = DynamoDBService;
 module.exports = DynamoDBService;
 

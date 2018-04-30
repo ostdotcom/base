@@ -24,10 +24,9 @@ MochaTestConstants.prototype = {
    *
    */
   DYNAMODB_DEFAULT_CONFIGURATIONS : {
-    'maxRetries': 10,
     'apiVersion': '2012-08-10',
-    'accessKeyId': '',
-    'secretAccessKey': '',
+    'accessKeyId': 'x',
+    'secretAccessKey': 'x',
     'region': 'localhost',
     'logger': console,
     'sslEnabled': false,
@@ -41,10 +40,9 @@ MochaTestConstants.prototype = {
    *
    */
   DYNAMODB_CONFIGURATIONS_1 : {
-    'maxRetries': 10,
     'apiVersion': '2012-08-10',
-    'accessKeyId': '',
-    'secretAccessKey': '',
+    'accessKeyId': 'x',
+    'secretAccessKey': 'x',
     'region': 'localhost',
     'logger': console,
     'sslEnabled': false,
@@ -52,7 +50,6 @@ MochaTestConstants.prototype = {
   },
 
   transactionLogsTableName: 'shard_00001_transaction_logs'
-
 
 };
 
