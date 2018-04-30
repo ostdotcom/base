@@ -70,3 +70,35 @@
 //     StreamViewType: NEW_IMAGE | OLD_IMAGE | NEW_AND_OLD_IMAGES | KEYS_ONLY
 //   }
 // };
+
+
+const chai = require('chai')
+  , assert = chai.assert;
+
+const rootPrefix = "../../.."
+  , DdbApiKlass = require(rootPrefix + '/services/dynamodb/api')
+;
+
+describe('Create Table', function() {
+
+  var DdbApiObject = null;
+
+  it('Should Create API Base Object', async function() {
+    DdbApiObject = new DdbApiKlass({
+
+    })
+
+  });
+
+  it('Should Create DDB Table', async function() {
+
+
+  });
+
+  it('Should Update Coninous Backup', async function() {
+
+
+  });
+
+
+});
