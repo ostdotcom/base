@@ -8,10 +8,10 @@
  *
  */
 
-const rootPrefix = '../../..'
+const rootPrefix = '../../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
-  , managedShard = require(rootPrefix + 'lib/models/dynamodb/managed_shard')
-  , managedShardConst = require(rootPrefix + 'lib/global_constant/managed_shard')
+  , managedShard = require(rootPrefix + '/lib/models/dynamodb/managed_shard')
+  , managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard')
   , moduleName = 'services/shard_management/managed_shard/get_shard'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")

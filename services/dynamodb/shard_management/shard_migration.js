@@ -8,7 +8,7 @@
  *
  */
 
-const rootPrefix = '../..'
+const rootPrefix = '../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
   , moduleName = 'services/shard_management/shard_migration'
   , responseHelper = new ResponseHelper({module_name: moduleName})
@@ -25,7 +25,9 @@ const rootPrefix = '../..'
  * @return {Object}
  *
  */
-const ShardMigration = function () {
+const ShardMigration = function (params) {
+  const oThis = this;
+  oThis.ddbObject = params.ddb_object;
 };
 
 ShardMigration.prototype = {
@@ -116,7 +118,7 @@ ShardMigration.prototype = {
         },
         TableName: "AvailableShard"
       }
-      , createAvailableShardObject = new CreateTableKlass(availableShardsParams)
+      , createAvailableShardObject = new CreateTableKlass(availableShardsParams, oThis.ddbObject)
       , createTableAvailableShardsResponse = await createAvailableShardObject.perform()
     ;
 
@@ -165,7 +167,7 @@ ShardMigration.prototype = {
       },
       TableName: "ManagedShard"
     }
-      , createManagedShardObject = new CreateTableKlass(managedShardsParams)
+      , createManagedShardObject = new CreateTableKlass(managedShardsParams, oThis.ddbObject)
       , createTableManagedShardsResponse = await createManagedShardObject.perform();
 
     logger.debug(createManagedShardObject);

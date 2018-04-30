@@ -8,7 +8,7 @@
  *
  */
 
-const rootPrefix = '../../..'
+const rootPrefix = '../../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
   , availableShard = require( rootPrefix + '/lib/models/dynamodb/available_shard')
   , moduleName = 'services/shard_management/available_shard/get_shards'

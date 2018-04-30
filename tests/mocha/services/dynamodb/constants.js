@@ -26,8 +26,8 @@ MochaTestConstants.prototype = {
   DYNAMODB_DEFAULT_CONFIGURATIONS : {
     'maxRetries': 10,
     'apiVersion': '2012-08-10',
-    'accessKeyId': '',
-    'secretAccessKey': '',
+    'accessKeyId': 'x',
+    'secretAccessKey': 'x',
     'region': 'localhost',
     'logger': console,
     'sslEnabled': false,

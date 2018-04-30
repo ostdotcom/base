@@ -11,6 +11,7 @@ const rootPrefix  = "../.."
   , DdbBase = require(rootPrefix+'/lib/dynamodb/base')
   , CreateTableServiceKlass = require(rootPrefix + '/services/dynamodb/create_table')
   , DDBServiceBaseKlass = require(rootPrefix + "/services/dynamodb/base")
+  , ShardServiceApiKlass = require(rootPrefix + '/services/dynamodb/shard_management/shard_api')
 ;
 
 /**
@@ -23,6 +24,7 @@ const rootPrefix  = "../.."
 const DynamoDBService = function(params) {
   const oThis = this
   ;
+
   oThis.ddbObject = new DdbBase(params);
 };
 
@@ -206,6 +208,15 @@ DynamoDBService.prototype = {
       , deleteItemObject = new DDBServiceBaseKlass('deleteItem', params, oThis.ddbObject)
     ;
     return deleteItemObject.perform();
+  },
+
+  /**
+   * To run shard service apis
+   */
+  shardManagement: function() {
+    const oThis = this
+    ;
+    return new ShardServiceApiKlass({ddb_object: oThis.ddbObject});
   }
 
 };
