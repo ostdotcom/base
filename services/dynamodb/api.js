@@ -81,7 +81,7 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  updateContinuousBackup: function() {
+  updateContinuousBackup: function(params) {
     const oThis = this
       , updateContinuousBackupObject = new DDBServiceBaseKlass('updateContinuousBackups', params, oThis.ddbObject)
     ;
