@@ -10,6 +10,8 @@
 
 const rootPrefix = '../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
+  , managedShard = require(rootPrefix + 'lib/models/dynamodb/managed_shard')
+  , managedShardConst = require(rootPrefix + 'lib/global_constant/managed_shard')
   , moduleName = 'services/shard_management/managed_shard/assign_shard'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
@@ -22,9 +24,8 @@ const rootPrefix = '../../..'
  * @constructor
  *
  * @params {object} params -
- * @param {string} params.id - id of the shard
+ * @param {string} params.identifier - identifier of the shard
  * @param {string} params.entity_type - schema of the table in shard
- * @param {integer} params.serial_number - Serial number of the shard
  *
  * @return {Object}
  *
@@ -33,10 +34,8 @@ const AssignShard = function (params) {
   const oThis = this;
   logger.debug("=======AssignShard.params=======");
   logger.debug(params);
-  oThis.id = params.id;
+  oThis.identifier = params.identifier;
   oThis.entityType = params.entity_type;
-  oThis.serialNumber = params.serial_number;
-
 };
 
 AssignShard.prototype = {
@@ -59,12 +58,12 @@ AssignShard.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      r = await oThis.getShards();
+      r = await managedShard.assignShard({identifier: oThis.identifier, entity_type: oThis.entityType});
       logger.debug("=======AssignShard.addShard.result=======");
       logger.debug(r);
       return r;
     } catch(err) {
-      return responseHelper.error('s_sm_as_gs_perform_1', 'Something went wrong. ' + err.message);
+      return responseHelper.error('s_sm_as_as_perform_1', 'Something went wrong. ' + err.message);
     }
 
   },
@@ -81,32 +80,17 @@ AssignShard.prototype = {
 
     return new Promise(async function (onResolve) {
 
-      if (!oThis.shardType || !(oThis.shardType === 'all' || oThis.shardType === 'enabled' || oThis.shardType === 'disabled')) {
-        logger.debug('s_sm_as_gs_validateParams_1', 'shardType is', oThis.shardType);
-        return onResolve(responseHelper.error('s_sm_as_gs_validateParams_1', 'shardType is invalid'));
+      if (!oThis.identifier) {
+        logger.debug('s_sm_as_as_validateParams_1', 'identifier is', oThis.identifier);
+        return onResolve(responseHelper.error('s_sm_as_as_validateParams_1', 'identifier is undefined'));
+      }
+
+      if (!(managedShardConst.getSupportedEntityTypes()[oThis.entityType])) {
+        logger.debug('s_sm_as_as_validateParams_2', 'entityType is', oThis.entityType);
+        return onResolve(responseHelper.error('s_sm_as_as_validateParams_2', 'entityType is not supported'));
       }
 
       return onResolve(responseHelper.successWithData({}));
-    });
-  },
-
-  /**
-   * Run add shard
-   *
-   * @return {Promise<any>}
-   *
-   */
-  getShards: function () {
-    const oThis = this
-    ;
-
-    return new Promise(async function (onResolve) {
-      try {
-        // Todo:: Get shard based on params
-        return onResolve(responseHelper.successWithData({}));
-      } catch (err) {
-        return onResolve(responseHelper.error('s_sm_as_gs_getShards_1', 'Error getting shards. ' + err));
-      }
     });
   }
 };

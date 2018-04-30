@@ -10,6 +10,7 @@
 
 const rootPrefix = '../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
+  , availableShard = require( rootPrefix + '/lib/models/dynamodb/available_shard')
   , moduleName = 'services/shard_management/available_shard/get_shards'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , availableShardGlobalConstant = require(rootPrefix + '/lib/global_constant/available_shard')
@@ -57,7 +58,7 @@ GetShards.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      r = await oThis.getShards();
+      r = await availableShard.getShards();
       logger.debug("=======GetShards.addShard.result=======");
       logger.debug(r);
       return r;
@@ -79,32 +80,12 @@ GetShards.prototype = {
 
     return new Promise(async function (onResolve) {
 
-      if (!oThis.shardType || (availableShardGlobalConstant.getShardTypes().indexOf(oThis.shardType) === -1) ) {
+      if (!oThis.shardType || !(availableShardGlobalConstant.getShardTypes()[oThis.shardType]) ) {
         logger.debug('s_sm_as_gs_validateParams_1', 'shardType is', oThis.shardType);
         return onResolve(responseHelper.error('s_sm_as_gs_validateParams_1', 'shardType is invalid'));
       }
 
       return onResolve(responseHelper.successWithData({}));
-    });
-  },
-
-  /**
-   * Run add shard
-   *
-   * @return {Promise<any>}
-   *
-   */
-  getShards: function () {
-    const oThis = this
-    ;
-
-    return new Promise(async function (onResolve) {
-      try {
-        // TODO:: Get shards based on params
-        return onResolve(responseHelper.successWithData({}));
-      } catch (err) {
-        return onResolve(responseHelper.error('s_sm_as_gs_getShards_1', 'Error getting shards. ' + err));
-      }
     });
   }
 };

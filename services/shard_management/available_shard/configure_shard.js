@@ -10,8 +10,10 @@
 
 const rootPrefix = '../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
+  , availableShard = require( rootPrefix + '/lib/models/dynamodb/available_shard')
   , moduleName = 'services/shard_management/available_shard/configure_shard'
-  , responseHelper = new ResponseHelper({module_name: moduleName})  , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
+  , responseHelper = new ResponseHelper({module_name: moduleName})
+  , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
   , logger            = new Logger()
 ;
 
@@ -34,7 +36,7 @@ const ConfigureShard = function (params) {
   logger.debug(params);
 
   oThis.shardName = params.shard_name;
-  oThis.enableAlloction = params.enable_allocation;
+  oThis.enableAllocation = params.enable_allocation;
 };
 
 ConfigureShard.prototype = {
@@ -57,7 +59,7 @@ ConfigureShard.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      r = await oThis.configureShard();
+      r = await availableShard.configureShard({shard_name: oThis.shardName, enable_allocation: oThis.enableAllocation});
       logger.debug("=======ConfigureShard.configureShard.result=======");
       logger.debug(r);
       return r;
@@ -84,32 +86,12 @@ ConfigureShard.prototype = {
         return onResolve(responseHelper.error('s_sm_as_cs_validateParams_1', 'shardName is invalid'));
       }
 
-      if (typeof(oThis.enable_allocation) !== 'boolean') {
-        logger.debug('s_sm_as_cs__validateParams_2', 'enable_allocation is', oThis.enable_allocation);
-        return onResolve(responseHelper.error('s_sm_as_cs__validateParams_2', 'enable_allocation is invalid'));
+      if (typeof(oThis.enableAllocation) !== 'boolean') {
+        logger.debug('s_sm_as_cs__validateParams_2', 'enableAllocation is', oThis.enableAllocation);
+        return onResolve(responseHelper.error('s_sm_as_cs__validateParams_2', 'enableAllocation is invalid'));
       }
 
       return onResolve(responseHelper.successWithData({}));
-    });
-  },
-
-  /**
-   * Run configure shard
-   *
-   * @return {Promise<any>}
-   *
-   */
-  configureShard: function () {
-    const oThis = this
-    ;
-
-    return new Promise(async function (onResolve) {
-      try {
-        // Todo::
-        return onResolve(responseHelper.successWithData({}));
-      } catch (err) {
-        return onResolve(responseHelper.error('s_sm_as_as_configureShard_1', 'Error configuring shard. ' + err));
-      }
     });
   }
 };

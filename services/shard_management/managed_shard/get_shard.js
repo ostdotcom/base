@@ -2,7 +2,7 @@
 
 /**
  *
- * This class would be used for getting shard based on id.<br><br>
+ * This class would be used for getting shard based on id and entity type.<br><br>
  *
  * @module services/shard_management/managed_shard/get_shard
  *
@@ -10,6 +10,8 @@
 
 const rootPrefix = '../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
+  , managedShard = require(rootPrefix + 'lib/models/dynamodb/managed_shard')
+  , managedShardConst = require(rootPrefix + 'lib/global_constant/managed_shard')
   , moduleName = 'services/shard_management/managed_shard/get_shard'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
@@ -22,22 +24,21 @@ const rootPrefix = '../../..'
  * @constructor
  *
  * @params {object} params -
- * @param {string} params.shard_type - get shard type Example :- 'all', 'enabled', 'disabled' (Default 'All')
- * @param {JSON} params.table_schema - schema of the table in shard
- *
+ * @param {string} params.identifier - Identifier
+ * @param {string} params.entity_type - entity type
  * @return {Object}
  *
  */
-const GetShards = function (params) {
+const GetShard = function (params) {
   const oThis = this;
-  params = params || {shard_type: 'all'};
   logger.debug("=======GetShards.params=======");
   logger.debug(params);
 
-  oThis.shardType = params.shard_type;
+  oThis.identifier = params.identifier;
+  oThis.entityType = params.entity_type;
 };
 
-GetShards.prototype = {
+GetShard.prototype = {
 
   /**
    * Perform method
@@ -57,7 +58,7 @@ GetShards.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      r = await oThis.getShards();
+      r = await managedShard.getShard({identifier: oThis.identifier, entity_type: oThis.entityType});
       logger.debug("=======GetShards.addShard.result=======");
       logger.debug(r);
       return r;
@@ -79,34 +80,19 @@ GetShards.prototype = {
 
     return new Promise(async function (onResolve) {
 
-      if (!oThis.shardType || !(oThis.shardType === 'all' || oThis.shardType === 'enabled' || oThis.shardType === 'disabled')) {
-        logger.debug('s_sm_as_gs_validateParams_1', 'shardType is', oThis.shardType);
-        return onResolve(responseHelper.error('s_sm_as_gs_validateParams_1', 'shardType is invalid'));
+      if (!oThis.identifier) {
+        logger.debug('s_sm_as_gs_validateParams_1', 'identifier is', oThis.identifier);
+        return onResolve(responseHelper.error('s_sm_as_gs_validateParams_1', 'identifier is undefined'));
+      }
+
+      if (!(managedShardConst.getSupportedEntityTypes()[oThis.entityType])) {
+        logger.debug('s_sm_as_gs_validateParams_2', 'entityType is', oThis.entityType);
+        return onResolve(responseHelper.error('s_sm_as_gs_validateParams_2', 'entityType is not supported'));
       }
 
       return onResolve(responseHelper.successWithData({}));
     });
-  },
-
-  /**
-   * Run add shard
-   *
-   * @return {Promise<any>}
-   *
-   */
-  getShards: function () {
-    const oThis = this
-    ;
-
-    return new Promise(async function (onResolve) {
-      try {
-        // Todo:: Get shards based on params
-        return onResolve(responseHelper.successWithData({}));
-      } catch (err) {
-        return onResolve(responseHelper.error('s_sm_as_gs_getShards_1', 'Error getting shards. ' + err));
-      }
-    });
   }
 };
 
-module.exports = GetShards;
+module.exports = GetShard;

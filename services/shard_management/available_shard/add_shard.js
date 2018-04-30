@@ -10,6 +10,7 @@
 
 const rootPrefix = '../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
+  , availableShard = require( rootPrefix + '/lib/models/dynamodb/available_shard')
   , moduleName = 'services/shard_management/available_shard/add_shard'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
@@ -57,7 +58,7 @@ AddShard.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      r = await oThis.addShard();
+      r = await availableShard.addShard({entity_type: oThis.entityType, table_schema: oThis.tableSchema});
       logger.debug("=======AddShard.addShard.result=======");
       logger.debug(r);
       return r;
@@ -92,66 +93,8 @@ AddShard.prototype = {
 
       return onResolve(responseHelper.successWithData({}));
     });
-  },
-
-  /**
-   * Run add shard
-   *
-   * @return {Promise<any>}
-   *
-   */
-  addShard: function () {
-    const oThis = this
-    ;
-
-    return new Promise(async function (onResolve) {
-      try {
-
-        const createShardNameResponse = await oThis.buildShardName();
-        logger.debug("=======AddShard.addShard.buildShardName=======");
-        logger.debug(r);
-        if (createShardNameResponse.isFailure()) return createShardNameResponse;
-
-        const shardTableName = createShardNameResponse.data
-          , addShardResponse = await oThis.createShardTable(shardTableName);
-        logger.debug("=======AddShard.addShard.createShardTable=======");
-        logger.debug(addShardResponse);
-        if (addShardResponse.isFailure()) return addShardResponse;
-
-        const addShardEntryResponse = await oThis.addShardTableEntry(shardTableName);
-        logger.debug("=======AddShard.addShard.addShardTableEntry=======");
-        logger.debug(addShardEntryResponse);
-        if (addShardEntryResponse.isFailure()) return addShardEntryResponse;
-
-        return onResolve(responseHelper.successWithData({}));
-      } catch (err) {
-        return onResolve(responseHelper.error('s_sm_as_as_addShard_1', 'Error adding shard. ' + err));
-      }
-    });
-  },
-
-  /**
-   * To build shard Name by fetching last shard entry.
-   */
-  buildShardName: function () {
-    //Todo :: build shard name
-  },
-
-  /**
-   * To Create Shard table
-   * @param shardTableName Shard Table Name
-   */
-  createShardTable: function (shardTableName) {
-    //Todo :: create shard table
-  },
-
-  /**
-   * To add Shard table entry in available shard table
-   * @param shardTableName Shard Table Name
-   */
-  addShardTableEntry: function (shardTableName) {
-    //Todo :: add shard table entry
   }
+
 };
 
 module.exports = AddShard;
