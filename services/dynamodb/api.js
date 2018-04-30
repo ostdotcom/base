@@ -23,11 +23,70 @@ const rootPrefix  = "../.."
 const DynamoDBService = function(params) {
   const oThis = this
   ;
-  oThis.dbObject = new DdbBase(params);
+  oThis.ddbObject = new DdbBase(params);
 };
 
 DynamoDBService.prototype = {
 
+  /**
+   * Create table
+   *
+   * @params {object} params
+   *
+   * @return {promise<result>}
+   *
+   */
+  createTable: function(params) {
+    const oThis = this
+      , createTableObject = new DDBServiceBaseKlass('createTable', params, oThis.ddbObject)
+    ;
+    return createTableObject.perform();
+  },
+
+  /**
+   * Update table
+   *
+   * @params {object} params
+   *
+   * @return {promise<result>}
+   *
+   */
+  updateTable: function(params) {
+    const oThis = this
+      , updateTableObject = new DDBServiceBaseKlass('updateTable', params, oThis.ddbObject)
+    ;
+    return updateTableObject.perform();
+  },
+
+  /**
+   * Describe table
+   *
+   * @params {object} params
+   *
+   * @return {promise<result>}
+   *
+   */
+  describeTable: function(params) {
+    const oThis = this
+      , describeTableObject = new DDBServiceBaseKlass('describeTable', params, oThis.ddbObject)
+    ;
+    return describeTableObject.perform();
+  },
+
+  /**
+   * Enables or disables point in time recovery for the specified table
+   *
+   * @params {object} params
+   *
+   * @return {promise<result>}
+   *
+   */
+  updateContinuousBackup: function() {
+    const oThis = this
+      , updateContinuousBackupObject = new DDBServiceBaseKlass('updateContinuousBackups', params, oThis.ddbObject)
+    ;
+    return updateContinuousBackupObject.perform();
+  },
 
   /**
    * Batch get
@@ -37,9 +96,9 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  batchGet: async function(params) {
+  batchGet: function(params) {
     const oThis = this
-      , bathGetObject = new DDBServiceBaseKlass('batchGet', params, oThis.dbObject)
+      , bathGetObject = new DDBServiceBaseKlass('batchGet', params, oThis.ddbObject)
     ;
     return bathGetObject.perform();
   },
@@ -52,43 +111,12 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  batchWrite: async function(params) {
+  batchWrite: function(params) {
     const oThis = this
-      , bathWriteObject = new DDBServiceBaseKlass('batchWrite', params, oThis.dbObject)
+      , bathWriteObject = new DDBServiceBaseKlass('batchWrite', params, oThis.ddbObject)
     ;
     return bathWriteObject.perform();
   },
-
-  /**
-   * Create table
-   *
-   * @params {object} params
-   *
-   * @return {promise<result>}
-   *
-   */
-  createTable: async function(params) {
-    const oThis = this
-      , createTableObject = new CreateTableServiceKlass(params, oThis.dbObject)
-    ;
-    return createTableObject.perform();
-  },
-
-  /**
-   * Describe table
-   *
-   * @params {object} params
-   *
-   * @return {promise<result>}
-   *
-   */
-  describeTable: async function(params) {
-    const oThis = this
-      , describeTableObject = new DDBServiceBaseKlass('describeTable', params, oThis.dbObject)
-    ;
-    return describeTableObject.perform();
-  },
-
 
   /**
    * Query
@@ -98,9 +126,9 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  query: async function(params) {
+  query: function(params) {
     const oThis = this
-      , queryObject = new DDBServiceBaseKlass('query', params, oThis.dbObject)
+      , queryObject = new DDBServiceBaseKlass('query', params, oThis.ddbObject)
     ;
     return queryObject.perform();
   },
@@ -113,13 +141,27 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  scan: async function() {
+  scan: function() {
     const oThis = this
-      , scanObject = new DDBServiceBaseKlass('scan', params, oThis.dbObject)
+      , scanObject = new DDBServiceBaseKlass('scan', params, oThis.ddbObject)
     ;
     return scanObject.perform();
   },
 
+  /**
+   * Put item
+   *
+   * @params {object} params
+   *
+   * @return {promise<result>}
+   *
+   */
+  putItem: function() {
+    const oThis = this
+      , putItemObject = new DDBServiceBaseKlass('putItem', params, oThis.ddbObject)
+    ;
+    return putItemObject.perform();
+  },
 
   /**
    * Update item
@@ -129,11 +171,26 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  updateItem: async function() {
+  updateItem: function() {
     const oThis = this
-      , updateItemObject = new DDBServiceBaseKlass('updateItem', params, oThis.dbObject)
+      , updateItemObject = new DDBServiceBaseKlass('updateItem', params, oThis.ddbObject)
     ;
     return updateItemObject.perform();
+  },
+
+  /**
+   * Delete item
+   *
+   * @params {object} params
+   *
+   * @return {promise<result>}
+   *
+   */
+  deleteItem: function() {
+    const oThis = this
+      , deleteItemObject = new DDBServiceBaseKlass('deleteItem', params, oThis.ddbObject)
+    ;
+    return deleteItemObject.perform();
   }
 
 };

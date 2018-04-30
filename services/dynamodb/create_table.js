@@ -25,6 +25,7 @@ const CreateTable = function(params, ddbObject) {
   ;
   base.call(this, 'createTable', params, ddbObject);
 };
+
 CreateTable.prototype = Object.create(base.prototype);
 
 const createTablePrototype = {
