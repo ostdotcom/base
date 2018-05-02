@@ -15,6 +15,8 @@ const rootPrefix = '../../../..'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
   , logger            = new Logger()
+  , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
+
 ;
 
 /**
@@ -23,6 +25,7 @@ const rootPrefix = '../../../..'
  * @constructor
  *
  * @params {object} params -
+ * @param {string} params.ddb_object - dynamoDbObject
  * @param {string} params.shard_name - Name of the shard
  * @param {boolean} params.enable_allocation - to enable or disable allocation
  *
@@ -35,6 +38,8 @@ const ConfigureShard = function (params) {
   logger.debug("=======addShard.params=======");
   logger.debug(params);
 
+  oThis.params = params;
+  oThis.ddbObject = params.ddb_object;
   oThis.shardName = params.shard_name;
   oThis.enableAllocation = params.enable_allocation;
 };
@@ -59,7 +64,7 @@ ConfigureShard.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      r = await availableShard.configureShard({shard_name: oThis.shardName, enable_allocation: oThis.enableAllocation});
+      r = await availableShard.configureShard(oThis.params);
       logger.debug("=======ConfigureShard.configureShard.result=======");
       logger.debug(r);
       return r;
@@ -86,7 +91,7 @@ ConfigureShard.prototype = {
         return onResolve(responseHelper.error('s_sm_as_cs_validateParams_1', 'shardName is invalid'));
       }
 
-      if (typeof(oThis.enableAllocation) !== 'boolean') {
+      if (typeof(oThis.enableAllocation) !== 'number') {
         logger.debug('s_sm_as_cs__validateParams_2', 'enableAllocation is', oThis.enableAllocation);
         return onResolve(responseHelper.error('s_sm_as_cs__validateParams_2', 'enableAllocation is invalid'));
       }

@@ -12,9 +12,11 @@ const rootPrefix = '../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
   , moduleName = 'services/shard_management/shard_migration'
   , responseHelper = new ResponseHelper({module_name: moduleName})
-  , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
-  , logger            = new Logger()
-  //, CreateTableKlass = require(rootPrefix + "/services/dynamodb/create_table")
+  , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
+  , logger = new Logger()
+  , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
+  , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
+  // , CreateTableKlass = require(rootPrefix + "/services/dynamodb/create_table")
 ;
 
 /**
@@ -94,35 +96,72 @@ ShardMigration.prototype = {
     const availableShardsParams = {
         AttributeDefinitions: [
           {
-            AttributeName: "Name",
+            AttributeName: "NA",
             AttributeType: "S"
           },
           {
-            AttributeName: "Allocation",
-            AttributeType: "B"
+            AttributeName: "ET",
+            AttributeType: "S"
+          },
+          {
+            AttributeName: "AL",
+            AttributeType: "N"
           }
         ],
         KeySchema: [
           {
-            AttributeName: "Name",
+            AttributeName: "NA",
             KeyType: "HASH"
-          },
-          {
-            AttributeName: "Allocation",
-            KeyType: "RANGE"
           }
         ],
+        GlobalSecondaryIndexes: [{
+          IndexName: 'AS-ET-index',
+          KeySchema: [
+            {
+              AttributeName: 'ET',
+              KeyType: 'HASH'
+            }
+          ],
+          Projection: {
+            ProjectionType: 'KEYS_ONLY'
+          },
+          ProvisionedThroughput: {
+            ReadCapacityUnits: 1,
+            WriteCapacityUnits: 1
+          }
+        },
+          {
+            IndexName: 'AS-AL-index',
+            KeySchema: [
+              {
+                AttributeName: 'AL',
+                KeyType: 'HASH'
+              },
+              {
+                AttributeName: 'NA',
+                KeyType: 'RANGE'
+              }
+            ],
+            Projection: {
+              ProjectionType: 'KEYS_ONLY'
+            },
+            ProvisionedThroughput: {
+              ReadCapacityUnits: 1,
+              WriteCapacityUnits: 1
+            }
+          }],
         ProvisionedThroughput: {
           ReadCapacityUnits: 5,
           WriteCapacityUnits: 5
         },
-        TableName: "AvailableShard"
+        TableName: availableShardConst.getTableName()
       }
-      , createAvailableShardObject = new CreateTableKlass(availableShardsParams, oThis.ddbObject)
-      , createTableAvailableShardsResponse = await createAvailableShardObject.perform()
+      // , createAvailableShardObject = new CreateTableKlass(availableShardsParams, oThis.ddbObject)
+      // , createTableAvailableShardsResponse = await createAvailableShardObject.perform()
+      , createTableAvailableShardsResponse = await oThis.ddbObject.createTable(availableShardsParams)
     ;
 
-    logger.debug(createAvailableShardObject);
+    logger.debug(createTableAvailableShardsResponse);
     if (createTableAvailableShardsResponse.isFailure()) {
       logger.debug("Is Failure having err ", createTableAvailableShardsResponse.err);
       throw 'Error migrating createAvailableShards.' + createTableAvailableShardsResponse.err;
@@ -141,36 +180,38 @@ ShardMigration.prototype = {
     logger.debug("========ShardMigration.runShardMigration.createManagedShards=======");
 
     const managedShardsParams = {
-      AttributeDefinitions: [
-        {
-          AttributeName: "Id",
-          AttributeType: "S"
+        AttributeDefinitions: [
+          {
+            AttributeName: "ID",
+            AttributeType: "S"
+          },
+          {
+            AttributeName: "ET",
+            AttributeType: "S"
+          }
+        ],
+        KeySchema: [
+          {
+            AttributeName: "ID",
+            KeyType: "HASH"
+          },
+          {
+            AttributeName: "ET",
+            KeyType: "RANGE"
+          }
+        ],
+        ProvisionedThroughput: {
+          ReadCapacityUnits: 5,
+          WriteCapacityUnits: 5
         },
-        {
-          AttributeName: "ET",
-          AttributeType: "S"
-        }
-      ],
-      KeySchema: [
-        {
-          AttributeName: "Id",
-          KeyType: "HASH"
-        },
-        {
-          AttributeName: "ET",
-          KeyType: "RANGE"
-        }
-      ],
-      ProvisionedThroughput: {
-        ReadCapacityUnits: 5,
-        WriteCapacityUnits: 5
-      },
-      TableName: "ManagedShard"
-    }
-      , createManagedShardObject = new CreateTableKlass(managedShardsParams, oThis.ddbObject)
-      , createTableManagedShardsResponse = await createManagedShardObject.perform();
+        TableName: managedShardConst.getTableName()
+      }
+      // , createManagedShardObject = new CreateTableKlass(managedShardsParams, oThis.ddbObject)
+      // , createTableManagedShardsResponse = await createManagedShardObject.perform();
+      , createTableManagedShardsResponse = await oThis.ddbObject.createTable(managedShardsParams)
+    ;
 
-    logger.debug(createManagedShardObject);
+    logger.debug(createTableManagedShardsResponse);
     if (createTableManagedShardsResponse.isFailure()) {
       logger.debug("Is Failure having err ", createTableManagedShardsResponse.err);
       throw 'Error migrating createManagedShards.' + createTableManagedShardsResponse.err;

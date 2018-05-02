@@ -35,6 +35,7 @@ const GetShards = function (params) {
   logger.debug("=======GetShards.params=======");
   logger.debug(params);
 
+  oThis.params = params;
   oThis.shardType = params.shard_type || 'all';
 };
 
@@ -58,7 +59,7 @@ GetShards.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      r = await availableShard.getShards();
+      r = await availableShard.getShards(oThis.params);
       logger.debug("=======GetShards.addShard.result=======");
       logger.debug(r);
       return r;
@@ -80,7 +81,7 @@ GetShards.prototype = {
 
     return new Promise(async function (onResolve) {
 
-      if (!oThis.shardType || !(availableShardGlobalConstant.getShardTypes()[oThis.shardType]) ) {
+      if (!oThis.shardType || (availableShardGlobalConstant.getShardTypes()[oThis.shardType] === undefined) ) {
         logger.debug('s_sm_as_gs_validateParams_1', 'shardType is', oThis.shardType);
         return onResolve(responseHelper.error('s_sm_as_gs_validateParams_1', 'shardType is invalid'));
       }

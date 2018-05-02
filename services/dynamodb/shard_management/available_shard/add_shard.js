@@ -23,6 +23,7 @@ const rootPrefix = '../../../..'
  * @constructor
  *
  * @params {object} params -
+ * @param {string} params.ddb_object - dynamoDbObject
  * @param {string} params.entity_type - entity type of shard
  * @param {JSON} params.table_schema - schema of the table in shard
  *
@@ -34,6 +35,8 @@ const AddShard = function (params) {
   logger.debug("=======addShard.params=======");
   logger.debug(params);
 
+  oThis.params = params;
+  oThis.ddbObject = params.ddb_object;
   oThis.entityType = params.entity_type;
   oThis.tableSchema = params.table_schema;
 };
@@ -58,7 +61,7 @@ AddShard.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      r = await availableShard.addShard({entity_type: oThis.entityType, table_schema: oThis.tableSchema});
+      r = await availableShard.addShard(oThis.params);
       logger.debug("=======AddShard.addShard.result=======");
       logger.debug(r);
       return r;
@@ -86,7 +89,7 @@ AddShard.prototype = {
         return onResolve(responseHelper.error('s_sm_as_as_validateParams_1', 'entityType is invalid'));
       }
 
-      if (!oThis.tableSchema || Object.keys(oThis.tableSchema).length > MINIMUM_SCHEMA_KEYS) {
+      if (!oThis.tableSchema || Object.keys(oThis.tableSchema).length < MINIMUM_SCHEMA_KEYS) {
         logger.debug('s_sm_as_as_validateParams_2', 'tableSchema is', oThis.tableSchema);
         return onResolve(responseHelper.error('s_sm_as_as_validateParams_2', 'tableSchema is invalid'));
       }
