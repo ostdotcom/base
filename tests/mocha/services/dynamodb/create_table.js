@@ -78,6 +78,53 @@ describe('Create Table', function() {
     await helper.createTable(dynamodbApiObject, createTableParams, true);
   });
 
+  it('create table should fail when table name is not passed', async function () {
+    // build create table params
+    const createTableParams = {
+      KeySchema: [
+        {
+          AttributeName: "tuid",
+          KeyType: "HASH"
+        },  //Partition key
+        {
+          AttributeName: "cid",
+          KeyType: "RANGE"
+        }  //Sort key
+      ],
+      AttributeDefinitions: [
+        { AttributeName: "tuid", AttributeType: "S" },
+        { AttributeName: "cid", AttributeType: "N" },
+        { AttributeName: "thash", AttributeType: "S" }
+      ],
+      ProvisionedThroughput: {
+        ReadCapacityUnits: 5,
+        WriteCapacityUnits: 5
+      },
+      GlobalSecondaryIndexes: [
+        {
+          IndexName: 'thash_global_secondary_index',
+          KeySchema: [
+            {
+              AttributeName: 'thash',
+              KeyType: "HASH"
+            }
+          ],
+          Projection: {
+            ProjectionType: "KEYS_ONLY"
+          },
+          ProvisionedThroughput: {
+            ReadCapacityUnits: 1,
+            WriteCapacityUnits: 1
+          }
+        },
+      ],
+      SSESpecification: {
+        Enabled: false
+      },
+    };
+    await helper.createTable(dynamodbApiObject, createTableParams, false);
+  });
+
   // it('should enable continous backup successfully', async function () {
   //   // build create table params
   //   const enableContinousBackupParams = {

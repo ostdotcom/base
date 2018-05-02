@@ -78,6 +78,15 @@ describe('Delete Table', function() {
     await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
   });
 
+  it('should fail when table name is not passed', async function () {
+    // build delete table params
+    const deleteTableParams = {
+      TableName: testConstants.transactionLogsTableName
+    };
+
+    await helper.deleteTable(dynamodbApiObject, deleteTableParams, false);
+  });
+
   after(function() {
     logger.debug("Delete Table Mocha Tests Complete");
   });

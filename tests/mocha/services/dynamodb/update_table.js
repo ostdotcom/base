@@ -19,15 +19,6 @@ describe('Delete Table', function() {
     helper.validateDynamodbApiObject(dynamodbApiObject);
   });
 
-  it('should delete table successfully if exists', async function () {
-    // build create table params
-    const deleteTableParams = {
-      TableName: testConstants.transactionLogsTableName
-    };
-
-    await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
-  });
-
   it('should create table successfully', async function () {
     // build create table params
     const createTableParams = {
@@ -44,8 +35,7 @@ describe('Delete Table', function() {
       ],
       AttributeDefinitions: [
         { AttributeName: "tuid", AttributeType: "S" },
-        { AttributeName: "cid", AttributeType: "N" },
-        { AttributeName: "thash", AttributeType: "S" }
+        { AttributeName: "cid", AttributeType: "N" }
       ],
       ProvisionedThroughput: {
         ReadCapacityUnits: 1,
@@ -62,31 +52,27 @@ describe('Delete Table', function() {
     // build create table params
     const updateTableParams = {
       TableName: testConstants.transactionLogsTableName,
-      GlobalSecondaryIndexUpdates: [
-        {
-          Create: {
-            IndexName: 'thash_global_secondary_index',
-            KeySchema: [
-              {
-                AttributeName: 'thash',
-                KeyType: "HASH"
-              }
-            ],
-            Projection: {
-              ProjectionType: "KEYS_ONLY"
-            },
-            ProvisionedThroughput: {
-              ReadCapacityUnits: 1,
-              WriteCapacityUnits: 1
-            }
-          }
-        }
-      ]
+      ProvisionedThroughput: {
+        ReadCapacityUnits: 5,
+        WriteCapacityUnits: 5
+      }
     };
-    await helper.updateTable(dynamodbApiObject, updateTableParams);
+    await helper.updateTable(dynamodbApiObject, updateTableParams, true);
   });
 
-  after(function() {
+  it('should fail when no update config data is passed', async function () {
+    // build create table params
+    const updateTableParams = {
+      TableName: testConstants.transactionLogsTableName
+    };
+    await helper.updateTable(dynamodbApiObject, updateTableParams, false);
+  });
+
+  after(async function() {
+    const deleteTableParams = {
+      TableName: testConstants.transactionLogsTableName
+    };
+    await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
     logger.debug("Update Table Mocha Tests Complete");
   });
 

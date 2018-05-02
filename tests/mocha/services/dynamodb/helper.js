@@ -19,12 +19,30 @@ const helper = function() {};
 
 helper.prototype = {
 
+  /**
+   * Validate DynamoDB API Object
+   *
+   * @params {object} dynamodbApiObject - DynamoDB Api object
+   *
+   * @return {result}
+   *
+   */
   validateDynamodbApiObject: function(dynamodbApiObject) {
     assert.exists(dynamodbApiObject, 'dynamodbApiObject is not created');
     assert.equal(typeof dynamodbApiObject, "object");
     assert.equal(dynamodbApiObject.constructor.name, "DynamoDBService");
   },
 
+  /**
+   * Create Table Helper method
+   *
+   * @params {object} dynamodbApiObject - DynamoDB Api object
+   * @params {object} params - batch get params
+   * @params {object} isResultSuccess - expected result
+   *
+   * @return {result}
+   *
+   */
   createTable: async function(dynamodbApiObject, params, isResultSuccess) {
     const createTableResponse = await dynamodbApiObject.createTable(params);
 
@@ -32,15 +50,25 @@ helper.prototype = {
       assert.equal(createTableResponse.isSuccess(), true);
       assert.exists(createTableResponse.data.TableDescription, params.TableName);
     } else{
-      assert.equal(createTableResponse.isFailure(), true, "createTable: successfull, should fail for this case");
+      assert.equal(createTableResponse.isSuccess(), false, "createTable: successfull, should fail for this case");
     }
     return createTableResponse;
   },
 
+  /**
+   * Delete Table Helper method
+   *
+   * @params {object} dynamodbApiObject - DynamoDB Api object
+   * @params {object} params - batch get params
+   * @params {object} isResultSuccess - expected result
+   *
+   * @return {result}
+   *
+   */
   deleteTable: async function(dynamodbApiObject, params, isResultSuccess) {
     const deleteTableResponse = await dynamodbApiObject.deleteTable(params);
 
-    if(isResultSuccess == true){
+    if(isResultSuccess === true){
       assert.equal(deleteTableResponse.isSuccess(), true);
       logger.debug("deleteTableResponse.data.TableDescription",deleteTableResponse.data.TableDescription);
       assert.exists(deleteTableResponse.data.TableDescription, params.TableName);
@@ -53,34 +81,91 @@ helper.prototype = {
 
   },
 
-  updateContinuousBackup: async function(dynamodbApiObject, params) {
+  /**
+   * Update Continuous Backup Table Helper method
+   *
+   * @params {object} dynamodbApiObject - DynamoDB Api object
+   * @params {object} params - batch get params
+   * @params {object} isResultSuccess - expected result
+   *
+   * @return {result}
+   *
+   */
+  updateContinuousBackup: async function(dynamodbApiObject, params, isResultSuccess) {
     const enableContinousBackupResponse = await dynamodbApiObject.updateContinuousBackup(params);
-    assert.equal(enableContinousBackupResponse.isSuccess(), true);
-    assert.equal(enableContinousBackupResponse.data.ContinuousBackupsStatus, 'ENABLED');
+    if(isResultSuccess === true){
+      assert.equal(enableContinousBackupResponse.isSuccess(), true);
+      assert.equal(enableContinousBackupResponse.data.ContinuousBackupsStatus, 'ENABLED');
+    } else {
+      assert.equal(updateTableResponse.isSuccess(), false);
+    }
     return enableContinousBackupResponse;
   },
 
-  updateTable: async function(dynamodbApiObject, params) {
-    const updateTableResponse = await dynamodbApiObject.deleteTable(params);
-    assert.equal(updateTableResponse.isSuccess(), true);
-    assert.equal(updateTableResponse.data.TableName, params.TableName);
+  /**
+   * Update Table Helper method
+   *
+   * @params {object} dynamodbApiObject - DynamoDB Api object
+   * @params {object} params - batch get params
+   * @params {object} isResultSuccess - expected result
+   *
+   * @return {result}
+   *
+   */
+  updateTable: async function(dynamodbApiObject, params, isResultSuccess) {
+    const updateTableResponse = await dynamodbApiObject.updateTable(params);
+    if(isResultSuccess === true){
+      assert.equal(updateTableResponse.isSuccess(), true);
+      assert.exists(updateTableResponse.data.TableDescription, params.TableName);
+    } else {
+      assert.equal(updateTableResponse.isSuccess(), false);
+    }
     return updateTableResponse;
   },
 
-  describeTable: async function(dynamodbApiObject, params) {
+  /**
+   * Describe Table Helper method
+   *
+   * @params {object} dynamodbApiObject - DynamoDB Api object
+   * @params {object} params - batch get params
+   * @params {object} isResultSuccess - expected result
+   *
+   * @return {result}
+   *
+   */
+  describeTable: async function(dynamodbApiObject, params, isResultSuccess) {
     const describeTableResponse = await dynamodbApiObject.describeTable(params);
-    assert.equal(describeTableResponse.isSuccess(), true);
-    assert.exists(describeTableResponse.data.Table.TableName, params.TableName);
+    if(isResultSuccess === true){
+      assert.equal(describeTableResponse.isSuccess(), true);
+      assert.exists(describeTableResponse.data.Table.TableName, params.TableName);
+    } else {
+      assert.equal(describeTableResponse.isSuccess(), false);
+    }
+
     return describeTableResponse;
   },
 
-  listTables: async function(dynamodbApiObject, params) {
+  /**
+   * List Tables Helper method
+   *
+   * @params {object} dynamodbApiObject - DynamoDB Api object
+   * @params {object} params - batch get params
+   * @params {object} isResultSuccess - expected result
+   *
+   * @return {result}
+   *
+   */
+  listTables: async function(dynamodbApiObject, params, isResultSuccess) {
     const listTablesResponse = await dynamodbApiObject.listTables(params);
-    assert.equal(listTablesResponse.isSuccess(), true);
-    assert.include(listTablesResponse.data.TableNames, testConstants.transactionLogsTableName);
+    if(isResultSuccess === true){
+      assert.equal(listTablesResponse.isSuccess(), true);
+      assert.include(listTablesResponse.data.TableNames, testConstants.transactionLogsTableName);
+    } else {
+      assert.equal(listTablesResponse.isSuccess(), false);
+    }
+
     return listTablesResponse;
   },
-
 
   /**
    * Get dynamoDBApi object

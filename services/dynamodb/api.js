@@ -86,7 +86,7 @@ DynamoDBService.prototype = {
    */
   listTables: function(params) {
     const oThis = this
-      , listTablesObject = new DDBServiceBaseKlass(oThis.ddbObject, 'listTable', params)
+      , listTablesObject = new DDBServiceBaseKlass(oThis.ddbObject, 'listTables', params)
     ;
     return listTablesObject.perform();
   },

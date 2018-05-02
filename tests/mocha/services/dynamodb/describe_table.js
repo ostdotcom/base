@@ -70,8 +70,13 @@ describe('Describe Dynamodb Table', function() {
   it('should describe table successfully', async function () {
     const describeTableParams = {
       TableName: testConstants.transactionLogsTableName
-    }
-    await helper.describeTable(dynamodbApiObject, describeTableParams);
+    };
+    await helper.describeTable(dynamodbApiObject, describeTableParams, true);
+  });
+
+  it('should fail when table name is not passed', async function () {
+    const describeTableParams = {};
+    await helper.describeTable(dynamodbApiObject, describeTableParams, false);
   });
 
 
