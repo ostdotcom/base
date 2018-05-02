@@ -76,6 +76,21 @@ DynamoDBService.prototype = {
   },
 
   /**
+   * List table
+   *
+   * @params {object} params
+   *
+   * @return {promise<result>}
+   *
+   */
+  listTables: function(params) {
+    const oThis = this
+      , listTablesObject = new DDBServiceBaseKlass(oThis.ddbObject, 'listTables', params)
+    ;
+    return listTablesObject.perform();
+  },
+
+  /**
    * Enables or disables point in time recovery for the specified table
    *
    * @params {object} params
