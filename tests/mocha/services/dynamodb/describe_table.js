@@ -19,15 +19,6 @@ describe('Describe Dynamodb Table', function() {
     helper.validateDynamodbApiObject(dynamodbApiObject);
   });
 
-  it('should delete table successfully if exists', async function () {
-    // build create table params
-    const deleteTableParams = {
-      TableName: testConstants.transactionLogsTableName
-    };
-
-    await helper.deleteTable(dynamodbApiObject, deleteTableParams);
-  });
-
   it('should create table successfully', async function () {
     // build create table params
     const createTableParams = {
@@ -73,7 +64,7 @@ describe('Describe Dynamodb Table', function() {
         Enabled: false
       },
     };
-    await helper.createTable(dynamodbApiObject, createTableParams);
+    await helper.createTable(dynamodbApiObject, createTableParams, true);
   });
 
   it('should describe table successfully', async function () {
@@ -84,7 +75,13 @@ describe('Describe Dynamodb Table', function() {
   });
 
 
-  after(function() {
+  after(async function() {
+    // build delete table params
+    const deleteTableParams = {
+      TableName: testConstants.transactionLogsTableName
+    };
+
+    await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
     logger.debug("Update Table Mocha Tests Complete");
   });
 

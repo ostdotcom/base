@@ -11,6 +11,7 @@ const rootPrefix  = "../.."
   , DdbBase = require(rootPrefix+'/lib/dynamodb/base')
   , DDBServiceBaseKlass = require(rootPrefix + "/services/dynamodb/base")
   , WaitForServiceKlass = require(rootPrefix + "/services/dynamodb/wait_for")
+  , TableExistServiceApiKlass = require(rootPrefix + '/services/dynamodb/table_exist')
   , ShardServiceApiKlass = require(rootPrefix + '/services/dynamodb/shard_management/shard_api')
 ;
 
@@ -85,7 +86,7 @@ DynamoDBService.prototype = {
    */
   listTables: function(params) {
     const oThis = this
-      , listTablesObject = new DDBServiceBaseKlass(oThis.ddbObject, 'listTables', params)
+      , listTablesObject = new DDBServiceBaseKlass(oThis.ddbObject, 'listTable', params)
     ;
     return listTablesObject.perform();
   },
@@ -145,7 +146,7 @@ DynamoDBService.prototype = {
    */
   batchWrite: function(params) {
     const oThis = this
-      , bathWriteObject = new DDBServiceBaseKlass(oThis.ddbObject, 'batchWrite', params)
+      , bathWriteObject = new DDBServiceBaseKlass(oThis.ddbObject, 'batchWriteItem', params)
     ;
     return bathWriteObject.perform();
   },
@@ -226,6 +227,21 @@ DynamoDBService.prototype = {
   },
 
   /**
+   * Check if Table exists using describe table
+   *
+   * @params {object} params
+   *
+   * @return {promise<result>}
+   *
+   */
+  checkTableExists: function(params) {
+    const oThis = this
+      , tableExistObject = new TableExistServiceApiKlass(oThis.ddbObject, params)
+    ;
+    return tableExistObject.perform();
+  },
+
+  /**
    * Table exists
    *
    * @params {object} params
@@ -233,7 +249,7 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  tableExists: function(params) {
+  checkTableExistsWithWaitFor: function(params) {
     const oThis = this
       , tableExistsObject = new WaitForServiceKlass(oThis.ddbObject, 'tableExists', params)
     ;
@@ -248,7 +264,7 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  tableNotExists: function(params) {
+  checkTableNotExistsWithWaitFor: function(params) {
     const oThis = this
       , tableExistsObject = new WaitForServiceKlass(oThis.ddbObject, 'tableNotExists', params)
     ;
@@ -263,6 +279,7 @@ DynamoDBService.prototype = {
     ;
     return new ShardServiceApiKlass({ddb_object: oThis});
   }
+
 
 };
 

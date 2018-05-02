@@ -56,30 +56,6 @@ Base.prototype = {
   },
 
   /**
-   * Execute dynamoDB request
-   *
-   * @return {promise<result>}
-   *
-   */
-  executeDdbRequest: async function () {
-    const oThis = this
-    ;
-
-    try {
-
-      const r = await oThis.ddbObject.call(oThis.methodName, oThis.params);
-      logger.debug("=======Base.perform.result=======");
-      logger.debug(r);
-      return r;
-
-    } catch (err) {
-      logger.error("services/dynamodb/base.js:executeDdbRequest inside catch ", err);
-      return responseHelper.error('s_dy_b_executeDdbRequest_1', 'Something went wrong. ' + err.message);
-    }
-
-  },
-
-  /**
    * Validation of params
    *
    * @return {result}
@@ -101,6 +77,30 @@ Base.prototype = {
     }
 
     return responseHelper.successWithData({});
+  },
+
+  /**
+   * Execute dynamoDB request
+   *
+   * @return {promise<result>}
+   *
+   */
+  executeDdbRequest: async function () {
+    const oThis = this
+    ;
+
+    try {
+
+      const r = await oThis.ddbObject.call(oThis.methodName, oThis.params);
+      logger.debug("=======Base.perform.result=======");
+      logger.debug(r);
+      return r;
+
+    } catch (err) {
+      logger.error("services/dynamodb/base.js:executeDdbRequest inside catch ", err);
+      return responseHelper.error('s_dy_b_executeDdbRequest_1', 'Something went wrong. ' + err.message);
+    }
+
   },
 
 };

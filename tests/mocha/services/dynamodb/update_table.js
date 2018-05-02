@@ -25,7 +25,7 @@ describe('Delete Table', function() {
       TableName: testConstants.transactionLogsTableName
     };
 
-    await helper.deleteTable(dynamodbApiObject, deleteTableParams);
+    await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
   });
 
   it('should create table successfully', async function () {
@@ -55,7 +55,7 @@ describe('Delete Table', function() {
         Enabled: false
       },
     };
-    await helper.createTable(dynamodbApiObject, createTableParams);
+    await helper.createTable(dynamodbApiObject, createTableParams, true);
   });
 
   it('should update table successfully', async function () {
