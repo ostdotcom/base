@@ -12,9 +12,21 @@ const Chai            = require('chai')
 ;
 
 // For the purpose of test, set default timeout to 3 seconds.
-const _default_timeout_val = PromiseContext.prototype.timeoutInMilliSecs = PCQueueManager.prototype.timeoutInMilliSecs = 3000;
-const default_auto_resolve_val = PromiseContext.prototype.resolvedValueOnTimeout = "default_auto_resolved";
-const default_auto_reject_reason = PromiseContext.prototype.rejectedReasonOnTimeout = new Error("default_auto_rejected");
+const _default_timeout_val 
+      = PromiseContext.prototype.timeoutInMilliSecs 
+      = PCQueueManager.prototype.timeoutInMilliSecs 
+      = 3000
+;
+const default_auto_resolve_val 
+      = PCQueueManager.prototype.resolvedValueOnTimeout 
+      = PromiseContext.prototype.resolvedValueOnTimeout 
+      = "default_auto_resolved"
+;
+const default_auto_reject_reason 
+      = PCQueueManager.prototype.rejectedReasonOnTimeout 
+      = PromiseContext.prototype.rejectedReasonOnTimeout 
+      = new Error("default_auto_rejected")
+;
 
 //Do not log info.
 PCQueueManager.prototype.logInfoTimeInterval = 0;
@@ -28,7 +40,7 @@ const _rejected_in_milisecs = 1000;
 const _rejected_error = new Error("This promise is supposed to be rejected");
 const _promise_indx_key = "promise_indx_key";
 const _expected_value_keys = "expected";
-const _actual_value_keys = "expected";
+const _actual_value_keys = "actual";
 
 const defaultExecutor = function (resolve, reject, executorParams, promiseContext ) {
   // Define Expected Values.
@@ -69,20 +81,27 @@ const defaultExecutor = function (resolve, reject, executorParams, promiseContex
 
   //Define Actual Value.
   let actualVals = executorParams[ _actual_value_keys ] = executorParams[ _actual_value_keys ] || {};
-  actualVals[ "resolvedValue" ]   = null;
-  actualVals[ "rejectedReason" ]  = null;
+  actualVals[ "resolved" ] = false;
+  actualVals[ "resolvedValue" ] = null;
+  actualVals[ "rejected" ] = false;
+  actualVals[ "rejectedReason" ] = null;
 
   setTimeout( function () {
     let promiseObj = promiseContext.getPromise();
     promiseObj
       .then( function ( resolvedValue ) {
-        actualVals.resolvedValue = resolvedValue;
+        actualVals[ "resolved" ] = true;
+        actualVals[ "resolvedValue" ] = resolvedValue;
+        return resolvedValue;
       })
       .catch( function ( rejectedReason ) {
         //Do nothing. Validator should get the required reason.
-        actualVals.rejectedReason = rejectedReason;
+        actualVals[ "rejected" ] = true;
+        actualVals[ "rejectedReason" ] = rejectedReason;
       })
     ;
+
+
 
     if ( typeof promiseContext === "undefined" ) {
       reject( new Error("promiseContext not passed into excutor") );
@@ -196,15 +215,15 @@ const validatePromiseQueue = function ( promiseQueue, options, expectedParamsOfQ
     pcActual       = executorParams[ _actual_value_keys ];
     
     for( let valKey in pcExpected ) {
-      if ( pcActual.hasOwnProperty( valKey ) ) {
+      if ( pcExpected.hasOwnProperty( valKey ) && pcActual.hasOwnProperty(valKey) ) {
         assert.strictEqual( pcActual[ valKey ], pcExpected[ valKey ], "actual value of (PromiseContext) " + valKey + "(" + pcActual[ valKey ] + ") did not match expected value " + pcExpected[ valKey ] );
       }
 
       if ( queueActual[ valKey ] !== pcExpected[ valKey ] ) {
-        console.log("---valKey", valKey, "--- queueActual");
-        console.log( queueActual );
-        console.log("--- pcExpected");
-        console.log( pcExpected );
+        logger.log("---valKey", valKey, "--- queueActual");
+        logger.log( queueActual );
+        logger.log("--- pcExpected");
+        logger.log( pcExpected );
       }
 
       assert.strictEqual( queueActual[ valKey ], pcExpected[ valKey ], "actual value of (PromiseContext)" + valKey + "(" + queueActual[ valKey ] + ") did not match expected value " + pcExpected[ valKey ] );
