@@ -66,7 +66,7 @@ describe('List Tables', function() {
         Enabled: false
       },
     };
-    await helper.createTable(dynamodbApiObject, createTableParams);
+    await helper.createTable(dynamodbApiObject, createTableParams, true);
   });
 
   it('should list table successfully', async function () {
@@ -80,7 +80,7 @@ describe('List Tables', function() {
       TableName: testConstants.transactionLogsTableName
     };
 
-    await helper.deleteTable(dynamodbApiObject, deleteTableParams);
+    await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
 
     logger.debug("List Tables Mocha Tests Complete");
   });

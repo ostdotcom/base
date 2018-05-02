@@ -26,7 +26,7 @@ describe('Create Table', function() {
     };
     const checkTableExistsResponse = await dynamodbApiObject.checkTableExists(params);
     if (checkTableExistsResponse.data.response === true) {
-      await helper.deleteTable(dynamodbApiObject, params);
+      await helper.deleteTable(dynamodbApiObject, params, true);
     }
   });
 
@@ -75,7 +75,7 @@ describe('Create Table', function() {
         Enabled: false
       },
     };
-    await helper.createTable(dynamodbApiObject, createTableParams);
+    await helper.createTable(dynamodbApiObject, createTableParams, true);
   });
 
   // it('should enable continous backup successfully', async function () {
@@ -93,7 +93,7 @@ describe('Create Table', function() {
     const params = {
       TableName: testConstants.transactionLogsTableName
     };
-    await helper.deleteTable(dynamodbApiObject, params);
+    await helper.deleteTable(dynamodbApiObject, params, true);
 
     logger.debug("Create Table Mocha Tests Complete");
   });
