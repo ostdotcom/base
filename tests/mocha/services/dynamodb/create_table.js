@@ -21,10 +21,13 @@ describe('Create Table', function() {
   });
 
   it('should delete table successfully', async function () {
-    const deleteTableParams = {
+    const params = {
       TableName: testConstants.transactionLogsTableName
     };
-    await helper.deleteTable(dynamodbApiObject, deleteTableParams);
+    const checkTableExistsResponse = await dynamodbApiObject.checkTableExists(params);
+    if (checkTableExistsResponse.data.response === true) {
+      await helper.deleteTable(dynamodbApiObject, params);
+    }
   });
 
   it('should create table successfully', async function () {

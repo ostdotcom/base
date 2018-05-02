@@ -9,6 +9,7 @@
 
 const rootPrefix  = "../.."
   , DDBServiceBaseKlass = require(rootPrefix + "/services/dynamodb/base")
+  , ResponseHelperKlass = require(rootPrefix + '/lib/formatter/response')
   , responseHelper = new ResponseHelperKlass({module_name: "TableExist"})
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
@@ -48,7 +49,10 @@ TableExist.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      return oThis.checkTableExists();
+      r = await oThis.checkTableExists();
+      logger.debug("=======TableExist.checkTableExists.result=======");
+      logger.debug(r);
+      return r;
     } catch (err) {
       logger.error("services/dynamodb/table_exists.js:perform inside catch ", err);
       return responseHelper.error('s_dy_te_perform_1', 'Something went wrong. ' + err.message);
@@ -80,14 +84,18 @@ TableExist.prototype = {
    * @return {bool} true/false
    *
    */
-  checkTableExists: async function(params) {
+  checkTableExists: function() {
     const oThis = this
     ;
-    const listTablesResponse = await oThis.ddbObject.call('listTables', oThis.params);
-    if (listTablesResponse.isFailure()) {
-      return false;
-    }
-    return listTablesResponse.indexOf(params.TableName) > -1;
+    return new Promise(async function (onResolve, onReject) {
+      const listTablesResponse = await oThis.ddbObject.call('listTables', {});
+      if (listTablesResponse.isFailure()) {
+        return onResolve(responseHelper.successWithData({response: false}));
+      }
+      const allTables = listTablesResponse.data.data.TableNames || [];
+      const isTableExist = allTables.indexOf(oThis.params.TableName) > -1;
+      return onResolve(responseHelper.successWithData({response: isTableExist}));
+    });
   },
 
 };

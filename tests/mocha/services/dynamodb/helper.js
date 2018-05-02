@@ -27,37 +27,44 @@ helper.prototype = {
   createTable: async function(dynamodbApiObject, params) {
     const createTableResponse = await dynamodbApiObject.createTable(params);
     assert.equal(createTableResponse.isSuccess(), true);
-    assert.equal(createTableResponse.data.TableName, params.TableName);
+    assert.exists(createTableResponse.data.data.TableDescription, params.TableName);
+    return createTableResponse;
   },
 
   deleteTable: async function(dynamodbApiObject, params) {
     const deleteTableResponse = await dynamodbApiObject.deleteTable(params);
     assert.equal(deleteTableResponse.isSuccess(), true);
-    assert.equal(deleteTableResponse.data.TableName, params.TableName);
+    logger.debug("deleteTableResponse.data.data.TableDescription",deleteTableResponse.data.data.TableDescription);
+    assert.exists(deleteTableResponse.data.data.TableDescription, params.TableName);
+    return deleteTableResponse;
   },
 
   updateContinuousBackup: async function(dynamodbApiObject, params) {
     const enableContinousBackupResponse = await dynamodbApiObject.updateContinuousBackup(params);
     assert.equal(enableContinousBackupResponse.isSuccess(), true);
-    assert.equal(enableContinousBackupResponse.data.ContinuousBackupsStatus, 'ENABLED');
+    assert.equal(enableContinousBackupResponse.data.data.ContinuousBackupsStatus, 'ENABLED');
+    return enableContinousBackupResponse;
   },
 
   updateTable: async function(dynamodbApiObject, params) {
     const updateTableResponse = await dynamodbApiObject.deleteTable(params);
     assert.equal(updateTableResponse.isSuccess(), true);
-    assert.equal(updateTableResponse.data.TableName, params.TableName);
+    assert.equal(updateTableResponse.data.data.TableName, params.TableName);
+    return updateTableResponse;
   },
 
   describeTable: async function(dynamodbApiObject, params) {
     const describeTableResponse = await dynamodbApiObject.describeTable(params);
     assert.equal(describeTableResponse.isSuccess(), true);
-    assert.equal(describeTableResponse.data.TableName, params.TableName);
+    assert.equal(describeTableResponse.data.data.TableName, params.TableName);
+    return describeTableResponse;
   },
 
   listTables: async function(dynamodbApiObject, params) {
     const listTablesResponse = await dynamodbApiObject.listTables(params);
     assert.equal(listTablesResponse.isSuccess(), true);
     assert.include(listTablesResponse.data.data.TableNames, testConstants.transactionLogsTableName);
+    return listTablesResponse;
   },
 
 

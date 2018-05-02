@@ -116,7 +116,7 @@ DynamoDBService.prototype = {
    */
   deleteTable: function(params) {
     const oThis = this
-      , deleteTableObject = new DDBServiceBaseKlass('deleteTable', params, oThis.ddbObject)
+      , deleteTableObject = new DDBServiceBaseKlass(oThis.ddbObject, 'deleteTable', params)
     ;
     return deleteTableObject.perform();
   },
@@ -238,7 +238,7 @@ DynamoDBService.prototype = {
     const oThis = this
       , tableExistObject = new TableExistServiceApiKlass(oThis.ddbObject, params)
     ;
-    tableExistObject.perform();
+    return tableExistObject.perform();
   },
 
   /**
