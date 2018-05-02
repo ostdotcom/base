@@ -84,7 +84,7 @@ ShardServiceApi.prototype = {
   },
 
   /**
-   * To assign shard
+   * To assign shqard
    * @param params
    * @return {*|promise<result>}
    */

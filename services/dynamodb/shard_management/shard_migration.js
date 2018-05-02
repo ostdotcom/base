@@ -96,21 +96,21 @@ ShardMigration.prototype = {
     const availableShardsParams = {
         AttributeDefinitions: [
           {
-            AttributeName: "NA",
+            AttributeName: availableShardConst.NAME,
             AttributeType: "S"
           },
           {
-            AttributeName: "ET",
+            AttributeName: availableShardConst.ENTITY_TYPE,
             AttributeType: "S"
           },
           {
-            AttributeName: "AL",
+            AttributeName: availableShardConst.ALLOCATION_TYPE,
             AttributeType: "N"
           }
         ],
         KeySchema: [
           {
-            AttributeName: "NA",
+            AttributeName: availableShardConst.NAME,
             KeyType: "HASH"
           }
         ],
@@ -118,8 +118,12 @@ ShardMigration.prototype = {
           IndexName: 'AS-ET-index',
           KeySchema: [
             {
-              AttributeName: 'ET',
+              AttributeName: availableShardConst.ENTITY_TYPE,
               KeyType: 'HASH'
+            },
+            {
+              AttributeName: availableShardConst.ALLOCATION_TYPE,
+              KeyType: 'RANGE'
             }
           ],
           Projection: {
@@ -129,27 +133,7 @@ ShardMigration.prototype = {
             ReadCapacityUnits: 1,
             WriteCapacityUnits: 1
           }
-        },
-          {
-            IndexName: 'AS-AL-index',
-            KeySchema: [
-              {
-                AttributeName: 'AL',
-                KeyType: 'HASH'
-              },
-              {
-                AttributeName: 'NA',
-                KeyType: 'RANGE'
-              }
-            ],
-            Projection: {
-              ProjectionType: 'KEYS_ONLY'
-            },
-            ProvisionedThroughput: {
-              ReadCapacityUnits: 1,
-              WriteCapacityUnits: 1
-            }
-          }],
+        }],
         ProvisionedThroughput: {
           ReadCapacityUnits: 5,
           WriteCapacityUnits: 5

@@ -48,13 +48,14 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
   options = options || {
     invalidShardType: false,
   };
+  let entity_type = 'userBalances';
 
   it(optionsDesc, async function(){
     let shardType = availableShardConst.disabled;
     if (options.invalidShardType) {
       shardType = "test"
     }
-    const response = await shardManagementService.getShardsByType({shard_type: shardType});
+    const response = await shardManagementService.getShardsByType({entity_type: entity_type, shard_type: shardType});
 
     logger.log("LOG", response);
     if (toAssert) {
@@ -90,7 +91,8 @@ describe('services/shard_management/available_shard/get_shards', function () {
       TableName: 'shard_00001_userBalances'
     });
 
-    await shardManagementService.addShard({entity_type: entity_type, table_schema: schema});
+    let shardName = "shard_00001_userBalances";
+    await shardManagementService.addShard({shard_name: shardName, entity_type: entity_type, table_schema: schema});
   });
 
   createTestCasesForOptions("Get shards adding happy case", {}, true);

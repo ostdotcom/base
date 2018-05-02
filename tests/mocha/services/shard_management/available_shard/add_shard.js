@@ -52,6 +52,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
   };
 
   it(optionsDesc, async function () {
+    let shardName = "shard_00001_userBalances";
     let entity_type = 'userBalances';
     let schema = createTableParamsFor("test");
     if (options.wrongEntityType) {
@@ -60,7 +61,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
     if (options.invalidSchema) {
       schema = {};
     }
-    const response = await shardManagementService.addShard({entity_type: entity_type, table_schema: schema});
+    const response = await shardManagementService.addShard({shard_name: shardName ,entity_type: entity_type, table_schema: schema});
     logger.log("LOG", response);
     if (toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
@@ -93,7 +94,6 @@ describe('services/shard_management/available_shard/add_shard', function () {
       TableName: 'shard_00001_userBalances'
     });
   });
-
 
   createTestCasesForOptions("Shard adding happy case", {}, true);
 
