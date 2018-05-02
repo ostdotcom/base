@@ -6,6 +6,7 @@ const chai = require('chai')
 const rootPrefix = "../../../.."
   , api = require(rootPrefix + '/services/dynamodb/api')
   , testConstants = require(rootPrefix + '/tests/mocha/services/dynamodb/constants')
+  , helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper')
 ;
 
 var dynamoDBApi = null;
@@ -14,14 +15,7 @@ describe('Batch get', function () {
   before(async function() {
     this.timeout(100000);
 
-    // validate if the default dynamodb configuration exists
-    assert.exists(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS, 'testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS is neither `null` nor `undefined`');
-
-    // create dynamoDBApi object
-    dynamoDBApi = new api(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
-
-    // validate if the dynamoDBApi object is created
-    assert.exists(dynamoDBApi, 'dynamoDBApi is not created');
+    dynamoDBApi = helper.getDynamoDBApiObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
 
 /*
     // build create table params
@@ -41,6 +35,7 @@ describe('Batch get', function () {
       }
     };
 
+    // move this call to helper
     // call create table.
     const createTableResponse = await dynamoDBApi.createTable(createTableParams);
 
@@ -68,6 +63,8 @@ describe('Batch get', function () {
     tableNotExistsResponse = await  dynamoDBApi.checkTableNotExistsWithWaitFor(tableNotExistsParams);
     console.log('tableNotExistsResponse: ',JSON.stringify(tableNotExistsResponse));
 */
+
+    // load test data in the table
 
   });
 

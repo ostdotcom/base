@@ -68,6 +68,76 @@ helper.prototype = {
   },
 
 
+  /**
+   * Get dynamoDBApi object
+   *
+   * @params {object} dynamoDBConfig - DynamoDB connection params
+   *
+   * @return {object} dynamoDBApi - DynamoDBApi Object
+   *
+   */
+  getDynamoDBApiObject: async function(dynamoDBConfig){
+
+    // validate if the dynamodb configuration is available
+    assert.exists(dynamoDBConfig, 'dynamoDBConfig is neither `null` nor `undefined`');
+
+    // create dynamoDBApi object
+    const dynamoDBApi = new api(dynamoDBConfig);
+
+    // validate if the dynamoDBApi object is created
+    assert.exists(dynamoDBApi, 'dynamoDBApi is not created');
+
+    // return dynamoDBApi object
+    return dynamoDBApi;
+  },
+
+  /**
+   * Perform batch get
+   *
+   * @params {object} dynamoDBApiRef - DynamoDB Api object
+   * @params {object} params - batch get params
+   * @params {object} isResultSuccess - expected result
+   *
+   * @return {result}
+   *
+   */
+  performBatchGetTest: async function (dynamoDBApiRef, params, isResultSuccess) {
+    assert.exists(dynamoDBApiRef, 'dynamoDBApiRef is neither `null` nor `undefined`');
+    assert.exists(params, 'params is neither `null` nor `undefined`');
+
+    // call batch get
+    const batchGetResponse = await dynamoDBApiRef.batchGet(params);
+
+    // validate if the table is created
+    assert.equal(batchGetResponse.isSuccess(), isResultSuccess, 'batch get failed');
+
+    // return the response
+    return batchGetResponse;
+  },
+
+  /**
+   * Perform batch write
+   *
+   * @params {object} dynamoDBApiRef - DynamoDB Api object
+   * @params {object} params - batch write params
+   * @params {object} isResultSuccess - expected result
+   *
+   * @return {result}
+   *
+   */
+  performBatchWriteTest: async function (dynamoDBApiRef, params, isResultSuccess) {
+    assert.exists(dynamoDBApiRef, 'dynamoDBApiRef is neither `null` nor `undefined`');
+    assert.exists(params, 'params is neither `null` nor `undefined`');
+
+    // call batch get
+    const batchWriteResponse = await dynamoDBApiRef.batchWrite(params);
+
+    // validate if the table is created
+    assert.equal(batchWriteResponse.isSuccess(), isResultSuccess, 'batch write failed');
+
+    // return the response
+    return batchWriteResponse;
+  }
 };
 
 module.exports = new helper();
