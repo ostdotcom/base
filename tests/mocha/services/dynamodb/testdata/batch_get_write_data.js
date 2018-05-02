@@ -83,7 +83,7 @@ TestData.prototype = {
     TableName : tableName
   },
 
-  getBatchWritedata: function (numberOfItems) {
+  getBatchWriteData: function (numberOfItems) {
 
     const data = [];
     for(var i=0; i<numberOfItems; i++) {
@@ -98,7 +98,7 @@ TestData.prototype = {
         "S": tuid
       };
       item.cid = {
-        "N": cid
+        "N": `${cid}`
       };
       item.thash = {
         "S": thash
@@ -107,7 +107,38 @@ TestData.prototype = {
       data.push({'PutRequest': {"Item": item}});
     }
 
-    return data;
+    const requestItems = {};
+    requestItems[tableName] = data;
+    return {RequestItems:requestItems};
+  },
+
+  getBatchWriteLargeData: function (numberOfItems) {
+
+    const data = [];
+    for(var i=0; i<numberOfItems; i++) {
+
+      cid++;
+      tuid = `tuid_${cid}`;
+      thash = `thash${cid}`;
+
+
+      let item = {};
+      item.tuid = {
+        "S": tuid
+      };
+      item.cid = {
+        "N": `${cid}`
+      };
+      item.thash = {
+        "S": thash
+      };
+
+      data.push({'PutRequest': {"Item": item}});
+    }
+
+    const requestItems = {};
+    requestItems[tableName] = data;
+    return {RequestItems:requestItems};
   }
 };
 

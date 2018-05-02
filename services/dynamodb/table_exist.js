@@ -92,7 +92,7 @@ TableExist.prototype = {
       if (listTablesResponse.isFailure()) {
         return onResolve(responseHelper.successWithData({response: false}));
       }
-      const allTables = listTablesResponse.data.data.TableNames || [];
+      const allTables = listTablesResponse.data.TableNames || [];
       const isTableExist = allTables.indexOf(oThis.params.TableName) > -1;
       return onResolve(responseHelper.successWithData({response: isTableExist}));
     });

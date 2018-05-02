@@ -28,13 +28,9 @@ helper.prototype = {
   createTable: async function(dynamodbApiObject, params, isResultSuccess) {
     const createTableResponse = await dynamodbApiObject.createTable(params);
 
-    if(isResultSuccess === undefined){
-      //ignore the result, its optional
-    }
-    else if (isResultSuccess) {
-
+    if (isResultSuccess) {
       assert.equal(createTableResponse.isSuccess(), true);
-      assert.exists(createTableResponse.data.data.TableDescription, params.TableName);
+      assert.exists(createTableResponse.data.TableDescription, params.TableName);
     } else{
       assert.equal(createTableResponse.isFailure(), true, "createTable: successfull, should fail for this case");
     }
@@ -44,12 +40,10 @@ helper.prototype = {
   deleteTable: async function(dynamodbApiObject, params, isResultSuccess) {
     const deleteTableResponse = await dynamodbApiObject.deleteTable(params);
 
-    if(isResultSuccess === undefined){
-      //ignore the result, its optional
-    } else if(isResultSuccess == true){
+    if(isResultSuccess == true){
       assert.equal(deleteTableResponse.isSuccess(), true);
-      logger.debug("deleteTableResponse.data.data.TableDescription",deleteTableResponse.data.data.TableDescription);
-      assert.exists(deleteTableResponse.data.data.TableDescription, params.TableName);
+      logger.debug("deleteTableResponse.data.TableDescription",deleteTableResponse.data.TableDescription);
+      assert.exists(deleteTableResponse.data.TableDescription, params.TableName);
 
     } else{
       assert.equal(deleteTableResponse.isSuccess(), false);
@@ -62,28 +56,28 @@ helper.prototype = {
   updateContinuousBackup: async function(dynamodbApiObject, params) {
     const enableContinousBackupResponse = await dynamodbApiObject.updateContinuousBackup(params);
     assert.equal(enableContinousBackupResponse.isSuccess(), true);
-    assert.equal(enableContinousBackupResponse.data.data.ContinuousBackupsStatus, 'ENABLED');
+    assert.equal(enableContinousBackupResponse.data.ContinuousBackupsStatus, 'ENABLED');
     return enableContinousBackupResponse;
   },
 
   updateTable: async function(dynamodbApiObject, params) {
     const updateTableResponse = await dynamodbApiObject.deleteTable(params);
     assert.equal(updateTableResponse.isSuccess(), true);
-    assert.equal(updateTableResponse.data.data.TableName, params.TableName);
+    assert.equal(updateTableResponse.data.TableName, params.TableName);
     return updateTableResponse;
   },
 
   describeTable: async function(dynamodbApiObject, params) {
     const describeTableResponse = await dynamodbApiObject.describeTable(params);
     assert.equal(describeTableResponse.isSuccess(), true);
-    assert.exists(describeTableResponse.data.data.Table.TableName, params.TableName);
+    assert.exists(describeTableResponse.data.Table.TableName, params.TableName);
     return describeTableResponse;
   },
 
   listTables: async function(dynamodbApiObject, params) {
     const listTablesResponse = await dynamodbApiObject.listTables(params);
     assert.equal(listTablesResponse.isSuccess(), true);
-    assert.include(listTablesResponse.data.data.TableNames, testConstants.transactionLogsTableName);
+    assert.include(listTablesResponse.data.TableNames, testConstants.transactionLogsTableName);
     return listTablesResponse;
   },
 
