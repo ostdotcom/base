@@ -1,0 +1,7 @@
+{
+  "invalid_api_params": {
+    "http_code": "400",
+    "code": "invalid_request",
+    "message": "At least one parameter is invalid or missing. See err.error_data for more details."
+  }
+}

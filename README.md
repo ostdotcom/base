@@ -187,8 +187,8 @@ Log Level only controls what needs to be logged.
 ```bash
 
 const rootPrefix = '.'
-    , paramErrorConfig = require(rootPrefix + '/path_to/param_error_config')
-    , apiErrorConfig = require(rootPrefix + '/path_to/api_error_config')
+    , paramErrorConfig = require(rootPrefix + '/tests/mocha/lib/response_helper/param_error_config')
+    , apiErrorConfig = require(rootPrefix + '/tests/mocha/lib/response_helper/api_error_config')
 ;
 
 const OSTCore = require('@openstfoundation/openst-base')
