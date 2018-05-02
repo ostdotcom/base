@@ -21,15 +21,67 @@ describe('List Tables', function() {
 
   });
 
+  it('should create table successfully', async function () {
+    // build create table params
+    const createTableParams = {
+      TableName : testConstants.transactionLogsTableName,
+      KeySchema: [
+        {
+          AttributeName: "tuid",
+          KeyType: "HASH"
+        },  //Partition key
+        {
+          AttributeName: "cid",
+          KeyType: "RANGE"
+        }  //Sort key
+      ],
+      AttributeDefinitions: [
+        { AttributeName: "tuid", AttributeType: "S" },
+        { AttributeName: "cid", AttributeType: "N" },
+        { AttributeName: "thash", AttributeType: "S" }
+      ],
+      ProvisionedThroughput: {
+        ReadCapacityUnits: 5,
+        WriteCapacityUnits: 5
+      },
+      GlobalSecondaryIndexes: [
+        {
+          IndexName: 'thash_global_secondary_index',
+          KeySchema: [
+            {
+              AttributeName: 'thash',
+              KeyType: "HASH"
+            }
+          ],
+          Projection: {
+            ProjectionType: "KEYS_ONLY"
+          },
+          ProvisionedThroughput: {
+            ReadCapacityUnits: 1,
+            WriteCapacityUnits: 1
+          }
+        },
+      ],
+      SSESpecification: {
+        Enabled: false
+      },
+    };
+    await helper.createTable(dynamodbApiObject, createTableParams);
+  });
+
   it('should list table successfully', async function () {
     // build create table params
-    const listTablesParams = {
-    };
-
+    const listTablesParams = {};
     await helper.listTables(dynamodbApiObject, listTablesParams);
   });
 
-  after(function() {
+  after(async function() {
+    const deleteTableParams = {
+      TableName: testConstants.transactionLogsTableName
+    };
+
+    await helper.deleteTable(dynamodbApiObject, deleteTableParams);
+
     logger.debug("List Tables Mocha Tests Complete");
   });
 

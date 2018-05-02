@@ -20,7 +20,7 @@ describe('Create Table', function() {
     helper.validateDynamodbApiObject(dynamodbApiObject);
   });
 
-  it('should delete table successfully', async function () {
+  it('should delete table successfully if exists', async function () {
     const params = {
       TableName: testConstants.transactionLogsTableName
     };
@@ -89,7 +89,12 @@ describe('Create Table', function() {
   //   await helper.updateContinuousBackup(dynamodbApiObject, enableContinousBackupParams);
   // });
 
-  after(function() {
+  after(async function() {
+    const params = {
+      TableName: testConstants.transactionLogsTableName
+    };
+    await helper.deleteTable(dynamodbApiObject, params);
+
     logger.debug("Create Table Mocha Tests Complete");
   });
 

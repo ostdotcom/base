@@ -56,7 +56,7 @@ helper.prototype = {
   describeTable: async function(dynamodbApiObject, params) {
     const describeTableResponse = await dynamodbApiObject.describeTable(params);
     assert.equal(describeTableResponse.isSuccess(), true);
-    assert.equal(describeTableResponse.data.data.TableName, params.TableName);
+    assert.exists(describeTableResponse.data.data.Table.TableName, params.TableName);
     return describeTableResponse;
   },
 
