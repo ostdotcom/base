@@ -11,6 +11,7 @@ const rootPrefix  = "../.."
   , DdbBase = require(rootPrefix+'/lib/dynamodb/base')
   , DDBServiceBaseKlass = require(rootPrefix + "/services/dynamodb/base")
   , WaitForServiceKlass = require(rootPrefix + "/services/dynamodb/wait_for")
+  , TableExistServiceApiKlass = require(rootPrefix + '/services/dynamodb/table_exist')
   , ShardServiceApiKlass = require(rootPrefix + '/services/dynamodb/shard_management/shard_api')
 ;
 
@@ -235,15 +236,9 @@ DynamoDBService.prototype = {
    */
   checkTableExists: function(params) {
     const oThis = this
+      , tableExistObject = new TableExistServiceApiKlass(oThis.ddbObject, params)
     ;
-    return new Promise(async function (onResolve, onReject) {
-      const listTablesResponse = oThis.listTables(params);
-      if (listTablesResponse.isFailure()) {
-        return onResolve(false);
-      }
-
-      return onResolve(listTablesResponse.indexOf(params.TableName) > -1);
-    });
+    tableExistObject.perform();
   },
 
   /**
