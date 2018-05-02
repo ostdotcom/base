@@ -146,11 +146,7 @@ DynamoDBService.prototype = {
    */
   batchWrite: function(params) {
     const oThis = this
-<<<<<<< Updated upstream
-      , bathWriteObject = new DDBServiceBaseKlass(oThis.ddbObject, 'batchWrite', params)
-=======
-      , bathWriteObject = new DDBServiceBaseKlass('batchWriteItem', params, oThis.ddbObject)
->>>>>>> Stashed changes
+      , bathWriteObject = new DDBServiceBaseKlass(oThis.ddbObject, 'batchWriteItem', params)
     ;
     return bathWriteObject.perform();
   },
