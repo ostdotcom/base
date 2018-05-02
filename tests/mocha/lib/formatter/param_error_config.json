@@ -1,6 +1,6 @@
 {
   "test_1": {
-    "name": "Username",
+    "parameter": "Username",
     "message": "Invalid"
   }
 }

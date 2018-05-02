@@ -69,7 +69,7 @@ describe('lib/formatter/response_helper', function(){
     assert.equal(true, responseData.hasOwnProperty('err'));
     assert.equal(true, responseData.err.hasOwnProperty('code'));
     assert.equal(true, responseData.err.hasOwnProperty('msg'));
-    assert.equal(true, responseData.err.hasOwnProperty('param'));
+    assert.equal(true, responseData.err.hasOwnProperty('error_data'));
     assert.equal(true, responseData.err.hasOwnProperty('internal_id'));
 
   });
@@ -85,10 +85,10 @@ describe('lib/formatter/response_helper', function(){
 
   });
 
-  it('Should return an array for param in err object', function(){
+  it('Should return an array for error_data in err object', function(){
     let responseData = responseHelper.paramValidationError('test_1', api_error_key, [param_error_key], {}).toHash(errorConfig);
 
-    assert.equal(true, responseData.err.param instanceof Array);
+    assert.equal(true, responseData.err.error_data instanceof Array);
   });
 
   it('Should return code in err as per input error code', function(){
@@ -121,16 +121,15 @@ describe('lib/formatter/response_helper', function(){
       Object.keys(responseHelper.error('test_1', api_error_key, {}).toHash(errorConfig).err).length);
   });
 
-  it('Should return name in param object as per code in input', function(){
-
-    assert.equal(paramErrorConfig.test_1.name,
-      responseHelper.paramValidationError('test_1', api_error_key, [param_error_key], {}).toHash(errorConfig).err.param[0].name);
+  it('Should return name in error_data object as per code in input', function(){
+    assert.equal(paramErrorConfig.test_1.parameter,
+      responseHelper.paramValidationError('test_1', api_error_key, [param_error_key], {}).toHash(errorConfig).err.error_data[0].parameter);
   });
 
-  it('Should return message in param object as per code in input', function(){
+  it('Should return message in error_data object as per code in input', function(){
 
     assert.equal(paramErrorConfig.test_1.message,
-      responseHelper.paramValidationError('test_1', api_error_key, [param_error_key], {}).toHash(errorConfig).err.param[0].msg);
+      responseHelper.paramValidationError('test_1', api_error_key, [param_error_key], {}).toHash(errorConfig).err.error_data[0].msg);
   });
 
   it('Should return a Result object', function(){
