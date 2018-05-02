@@ -7,6 +7,7 @@ const rootPrefix = "../../../.."
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
   , testConstants = require(rootPrefix + '/tests/mocha/services/dynamodb/constants')
+  , api = require(rootPrefix + '/services/dynamodb/api')
 ;
 
 /**
@@ -24,19 +25,38 @@ helper.prototype = {
     assert.equal(dynamodbApiObject.constructor.name, "DynamoDBService");
   },
 
-  createTable: async function(dynamodbApiObject, params) {
+  createTable: async function(dynamodbApiObject, params, isResultSuccess) {
     const createTableResponse = await dynamodbApiObject.createTable(params);
-    assert.equal(createTableResponse.isSuccess(), true);
-    assert.exists(createTableResponse.data.data.TableDescription, params.TableName);
+
+    if(isResultSuccess === undefined){
+      //ignore the result, its optional
+    }
+    else if (isResultSuccess) {
+
+      assert.equal(createTableResponse.isSuccess(), true);
+      assert.exists(createTableResponse.data.data.TableDescription, params.TableName);
+    } else{
+      assert.equal(createTableResponse.isFailure(), true, "createTable: successfull, should fail for this case");
+    }
     return createTableResponse;
   },
 
-  deleteTable: async function(dynamodbApiObject, params) {
+  deleteTable: async function(dynamodbApiObject, params, isResultSuccess) {
     const deleteTableResponse = await dynamodbApiObject.deleteTable(params);
-    assert.equal(deleteTableResponse.isSuccess(), true);
-    logger.debug("deleteTableResponse.data.data.TableDescription",deleteTableResponse.data.data.TableDescription);
-    assert.exists(deleteTableResponse.data.data.TableDescription, params.TableName);
+
+    if(isResultSuccess === undefined){
+      //ignore the result, its optional
+    } else if(isResultSuccess == true){
+      assert.equal(deleteTableResponse.isSuccess(), true);
+      logger.debug("deleteTableResponse.data.data.TableDescription",deleteTableResponse.data.data.TableDescription);
+      assert.exists(deleteTableResponse.data.data.TableDescription, params.TableName);
+
+    } else{
+      assert.equal(deleteTableResponse.isSuccess(), false);
+    }
+
     return deleteTableResponse;
+
   },
 
   updateContinuousBackup: async function(dynamodbApiObject, params) {
@@ -76,7 +96,7 @@ helper.prototype = {
    * @return {object} dynamoDBApi - DynamoDBApi Object
    *
    */
-  getDynamoDBApiObject: async function(dynamoDBConfig){
+  getDynamoDBApiObject: function(dynamoDBConfig){
 
     // validate if the dynamodb configuration is available
     assert.exists(dynamoDBConfig, 'dynamoDBConfig is neither `null` nor `undefined`');
@@ -86,6 +106,7 @@ helper.prototype = {
 
     // validate if the dynamoDBApi object is created
     assert.exists(dynamoDBApi, 'dynamoDBApi is not created');
+    assert.equal(typeof dynamoDBApi, "object");
 
     // return dynamoDBApi object
     return dynamoDBApi;
@@ -94,19 +115,19 @@ helper.prototype = {
   /**
    * Perform batch get
    *
-   * @params {object} dynamoDBApiRef - DynamoDB Api object
+   * @params {object} dynamodbApiObject - DynamoDB Api object
    * @params {object} params - batch get params
    * @params {object} isResultSuccess - expected result
    *
    * @return {result}
    *
    */
-  performBatchGetTest: async function (dynamoDBApiRef, params, isResultSuccess) {
-    assert.exists(dynamoDBApiRef, 'dynamoDBApiRef is neither `null` nor `undefined`');
+  performBatchGetTest: async function (dynamodbApiObject, params, isResultSuccess) {
+    assert.exists(dynamodbApiObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
     assert.exists(params, 'params is neither `null` nor `undefined`');
 
     // call batch get
-    const batchGetResponse = await dynamoDBApiRef.batchGet(params);
+    const batchGetResponse = await dynamodbApiObject.batchGet(params);
 
     // validate if the table is created
     assert.equal(batchGetResponse.isSuccess(), isResultSuccess, 'batch get failed');
@@ -118,19 +139,19 @@ helper.prototype = {
   /**
    * Perform batch write
    *
-   * @params {object} dynamoDBApiRef - DynamoDB Api object
+   * @params {object} dynamodbApiObject - DynamoDB Api object
    * @params {object} params - batch write params
    * @params {object} isResultSuccess - expected result
    *
    * @return {result}
    *
    */
-  performBatchWriteTest: async function (dynamoDBApiRef, params, isResultSuccess) {
-    assert.exists(dynamoDBApiRef, 'dynamoDBApiRef is neither `null` nor `undefined`');
+  performBatchWriteTest: async function (dynamodbApiObject, params, isResultSuccess) {
+    assert.exists(dynamodbApiObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
     assert.exists(params, 'params is neither `null` nor `undefined`');
 
     // call batch get
-    const batchWriteResponse = await dynamoDBApiRef.batchWrite(params);
+    const batchWriteResponse = await dynamodbApiObject.batchWrite(params);
 
     // validate if the table is created
     assert.equal(batchWriteResponse.isSuccess(), isResultSuccess, 'batch write failed');

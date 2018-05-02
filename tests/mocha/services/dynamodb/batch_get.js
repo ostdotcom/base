@@ -4,7 +4,6 @@ const chai = require('chai')
   , assert = chai.assert;
 
 const rootPrefix = "../../../.."
-  , api = require(rootPrefix + '/services/dynamodb/api')
   , testConstants = require(rootPrefix + '/tests/mocha/services/dynamodb/constants')
   , helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper')
 ;
