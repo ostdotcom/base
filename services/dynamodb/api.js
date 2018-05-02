@@ -85,7 +85,7 @@ DynamoDBService.prototype = {
    */
   listTables: function(params) {
     const oThis = this
-      , listTablesObject = new DDBServiceBaseKlass(oThis.ddbObject, 'listTables', params)
+      , listTablesObject = new DDBServiceBaseKlass(oThis.ddbObject, 'listTable', params)
     ;
     return listTablesObject.perform();
   },
@@ -226,6 +226,27 @@ DynamoDBService.prototype = {
   },
 
   /**
+   * Check if Table exists using describe table
+   *
+   * @params {object} params
+   *
+   * @return {promise<result>}
+   *
+   */
+  checkTableExists: function(params) {
+    const oThis = this
+    ;
+    return new Promise(async function (onResolve, onReject) {
+      const listTablesResponse = oThis.listTables(params);
+      if (listTablesResponse.isFailure()) {
+        return onResolve(false);
+      }
+
+      return onResolve(listTablesResponse.indexOf(params.TableName) > -1);
+    });
+  },
+
+  /**
    * Table exists
    *
    * @params {object} params
@@ -233,7 +254,7 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  tableExists: function(params) {
+  checkTableExistsWithWaitFor: function(params) {
     const oThis = this
       , tableExistsObject = new WaitForServiceKlass(oThis.ddbObject, 'tableExists', params)
     ;
@@ -248,7 +269,7 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  tableNotExists: function(params) {
+  checkTableNotExistsWithWaitFor: function(params) {
     const oThis = this
       , tableExistsObject = new WaitForServiceKlass(oThis.ddbObject, 'tableNotExists', params)
     ;

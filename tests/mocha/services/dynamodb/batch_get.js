@@ -49,23 +49,23 @@ describe('Batch get', function () {
 */
 
     var tableExistsParams = { TableName: 'Movies1'};
-    var tableExistsResponse = await  dynamoDBApi.tableExists(tableExistsParams);
+    var tableExistsResponse = await  dynamoDBApi.checkTableExistsWithWaitFor(tableExistsParams);
     console.log('tableExistsResponse: ',JSON.stringify(tableExistsResponse));
 
 /*
     tableExistsParams = { TableName: 'Movies10'};
-    tableExistsResponse = await  dynamoDBApi.tableExists(tableExistsParams);
+    tableExistsResponse = await  dynamoDBApi.checkTableExistsWithWaitFor(tableExistsParams);
     console.log('tableExistsResponse: ',JSON.stringify(tableExistsResponse));
 */
 
 
     tableNotExistsParams = { TableName: 'Movies15'};
-    tableNotExistsResponse = await  dynamoDBApi.tableNotExists(tableNotExistsParams);
+    tableNotExistsResponse = await  dynamoDBApi.checkTableNotExistsWithWaitFor(tableNotExistsParams);
     console.log('tableNotExistsResponse: ',JSON.stringify(tableNotExistsResponse));
 
 /*
     tableNotExistsParams = { TableName: 'Movies1'};
-    tableNotExistsResponse = await  dynamoDBApi.tableNotExists(tableNotExistsParams);
+    tableNotExistsResponse = await  dynamoDBApi.checkTableNotExistsWithWaitFor(tableNotExistsParams);
     console.log('tableNotExistsResponse: ',JSON.stringify(tableNotExistsResponse));
 */
 

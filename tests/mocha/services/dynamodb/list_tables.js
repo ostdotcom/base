@@ -30,7 +30,7 @@ describe('List Tables', function() {
   });
 
   after(function() {
-    logger.debug("Delete Table Mocha Tests Complete");
+    logger.debug("List Tables Mocha Tests Complete");
   });
 
 

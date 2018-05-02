@@ -3,7 +3,10 @@
 const chai = require('chai')
   , assert = chai.assert;
 
-const rootPrefix  = "../.."
+const rootPrefix = "../../../.."
+  , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
+  , logger = new LoggerKlass()
+  , testConstants = require(rootPrefix + '/tests/mocha/services/dynamodb/constants')
 ;
 
 /**
@@ -49,6 +52,12 @@ helper.prototype = {
     const describeTableResponse = await dynamodbApiObject.describeTable(params);
     assert.equal(describeTableResponse.isSuccess(), true);
     assert.equal(describeTableResponse.data.TableName, params.TableName);
+  },
+
+  listTables: async function(dynamodbApiObject, params) {
+    const listTablesResponse = await dynamodbApiObject.listTables(params);
+    assert.equal(listTablesResponse.isSuccess(), true);
+    assert.include(listTablesResponse.data.data.TableNames, testConstants.transactionLogsTableName);
   },
 
 
