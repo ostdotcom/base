@@ -195,8 +195,10 @@ const OSTCore = require('@openstfoundation/openst-base')
     , ResponseHelper  = OSTCore.responseHelper
     , responseHelper = new ResponseHelper({
       moduleName: 'companyRestFulApi',
-      param_error_config: paramErrorConfig,
-      api_error_config: apiErrorConfig
+      error_config: {
+        param_error_config: paramErrorConfig,
+        api_error_config: apiErrorConfig   
+      }
     });
     
     //using error function
@@ -216,5 +218,6 @@ const OSTCore = require('@openstfoundation/openst-base')
     responseHelper.error("s_vt_1", "invalid_api_params", {sendErrorMail: true}).isFailure();
     
     responseHelper.error("s_vt_1", "invalid_api_params", {sendErrorMail: true}).toHash();
+   
     
 ```
