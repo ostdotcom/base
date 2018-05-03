@@ -14,6 +14,7 @@ const rootPrefix  = "../../.."
   , AssignShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/managed_shard/assign_shard')
   , GetShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/managed_shard/get_shard')
   , GetShardsByTypeKlass = require(rootPrefix + '/services/dynamodb/shard_management/available_shard/get_shards')
+  , HasShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/available_shard/has_shard')
 ;
 
 /**
@@ -84,7 +85,7 @@ ShardServiceApi.prototype = {
   },
 
   /**
-   * To assign shqard
+   * To assign shard
    * @param params
    * @return {*|promise<result>}
    */
@@ -94,6 +95,18 @@ ShardServiceApi.prototype = {
     ;
 
     return new AssignShardKlass(assignShardParams).perform();
+  },
+
+  /**
+   * has shard
+   * @param params
+   */
+  hasShard: function (params) {
+    const oThis = this
+      , hasShardParams = Object.assign(params, oThis.params)
+    ;
+
+    return new HasShardKlass(hasShardParams).perform();
   },
 
   /**

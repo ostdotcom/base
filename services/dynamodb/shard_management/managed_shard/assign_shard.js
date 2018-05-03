@@ -24,8 +24,10 @@ const rootPrefix = '../../../..'
  * @constructor
  *
  * @params {object} params -
+ * @param {object} params.ddb_object - dynamo db object
  * @param {string} params.identifier - identifier of the shard
  * @param {string} params.entity_type - schema of the table in shard
+ * @param {string} params.shard_name - shard name
  *
  * @return {Object}
  *
@@ -34,8 +36,11 @@ const AssignShard = function (params) {
   const oThis = this;
   logger.debug("=======AssignShard.params=======");
   logger.debug(params);
+  oThis.params = params;
+  oThis.ddbObject = params.ddb_object;
   oThis.identifier = params.identifier;
   oThis.entityType = params.entity_type;
+  oThis.shardName = params.shard_name;
 };
 
 AssignShard.prototype = {
@@ -58,7 +63,7 @@ AssignShard.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      r = await managedShard.assignShard({identifier: oThis.identifier, entity_type: oThis.entityType});
+      r = await managedShard.assignShard(oThis.params);
       logger.debug("=======AssignShard.addShard.result=======");
       logger.debug(r);
       return r;
@@ -81,13 +86,24 @@ AssignShard.prototype = {
     return new Promise(async function (onResolve) {
 
       if (!oThis.identifier) {
-        logger.debug('s_sm_as_as_validateParams_1', 'identifier is', oThis.identifier);
+        logger.debug('s_sm_ms_as_validateParams_1', 'identifier is', oThis.identifier);
         return onResolve(responseHelper.error('s_sm_as_as_validateParams_1', 'identifier is undefined'));
       }
 
       if (!(managedShardConst.getSupportedEntityTypes()[oThis.entityType])) {
-        logger.debug('s_sm_as_as_validateParams_2', 'entityType is', oThis.entityType);
+        logger.debug('s_sm_ms_as_validateParams_2', 'entityType is', oThis.entityType);
         return onResolve(responseHelper.error('s_sm_as_as_validateParams_2', 'entityType is not supported'));
+      }
+
+      if (!oThis.ddbObject) {
+        logger.debug('s_sm_ms_as_validateParams_3', 'ddbObject is', oThis.ddbObject);
+        return onResolve(responseHelper.error('s_sm_as_as_validateParams_1', 'ddbObject is undefined'));
+      }
+
+      const response = await oThis.ddbObject.shardManagement().hasShard({ddb_object: oThis.ddbObject, shard_name: oThis.shardName});
+      if (response.isFailure() || !response.data.has_shard) {
+        logger.debug('s_sm_ms_as_validateParams_4', 'shardName does not exists', oThis.shardName);
+        return onResolve(responseHelper.error('s_sm_ms_as_validateParams_1', 'shardName does not exists'));
       }
 
       return onResolve(responseHelper.successWithData({}));

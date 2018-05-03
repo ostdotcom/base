@@ -4,17 +4,18 @@
  *
  * This class would be used to configure existing available shard.<br><br>
  *
- * @module services/shard_management/available_shard/configure_shard
+ * @module services/dynamodb/shard_management/available_shard/has_shard
  *
  */
 
 const rootPrefix = '../../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
   , availableShard = require( rootPrefix + '/lib/models/dynamodb/available_shard')
-  , moduleName = 'services/shard_management/available_shard/configure_shard'
+  , moduleName = 'services/dynamodb/shard_management/available_shard/has_shard'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
   , logger            = new Logger()
+
 ;
 
 /**
@@ -30,19 +31,18 @@ const rootPrefix = '../../../..'
  * @return {Object}
  *
  */
-const ConfigureShard = function (params) {
+const HasShard = function (params) {
   const oThis = this;
   params = params || {};
-  logger.debug("=======addShard.params=======");
+  logger.debug("=======HasShard.params=======");
   logger.debug(params);
 
   oThis.params = params;
   oThis.ddbObject = params.ddb_object;
   oThis.shardName = params.shard_name;
-  oThis.enableAllocation = params.enable_allocation;
 };
 
-ConfigureShard.prototype = {
+HasShard.prototype = {
 
   /**
    * Perform method
@@ -58,12 +58,12 @@ ConfigureShard.prototype = {
       let r = null;
 
       r = await oThis.validateParams();
-      logger.debug("=======ConfigureShard.validateParams.result=======");
+      logger.debug("=======HasShard.validateParams.result=======");
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      r = await availableShard.configureShard(oThis.params);
-      logger.debug("=======ConfigureShard.configureShard.result=======");
+      r = await availableShard.hasShard(oThis.params);
+      logger.debug("=======HasShard.hasShard.result=======");
       logger.debug(r);
       return r;
     } catch(err) {
@@ -85,13 +85,8 @@ ConfigureShard.prototype = {
     return new Promise(async function (onResolve) {
 
       if (!oThis.shardName) {
-        logger.debug('s_sm_as_cs_validateParams_1', 'shardName is', oThis.shardName);
+        logger.debug('s_sm_as_hs_validateParams_1', 'shardName is', oThis.shardName);
         return onResolve(responseHelper.error('s_sm_as_cs_validateParams_1', 'shardName is invalid'));
-      }
-
-      if (typeof(oThis.enableAllocation) !== 'number') {
-        logger.debug('s_sm_as_cs__validateParams_2', 'enableAllocation is', oThis.enableAllocation);
-        return onResolve(responseHelper.error('s_sm_as_cs__validateParams_2', 'enableAllocation is invalid'));
       }
 
       return onResolve(responseHelper.successWithData({}));
@@ -99,4 +94,4 @@ ConfigureShard.prototype = {
   }
 };
 
-module.exports = ConfigureShard;
+module.exports = HasShard;

@@ -33,7 +33,7 @@ const GetShard = function (params) {
   const oThis = this;
   logger.debug("=======GetShards.params=======");
   logger.debug(params);
-
+  oThis.params = params;
   oThis.identifier = params.identifier;
   oThis.entityType = params.entity_type;
 };
@@ -58,7 +58,7 @@ GetShard.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      r = await managedShard.getShard({identifier: oThis.identifier, entity_type: oThis.entityType});
+      r = await managedShard.getShard(oThis.params);
       logger.debug("=======GetShards.addShard.result=======");
       logger.debug(r);
       return r;

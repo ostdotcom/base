@@ -96,7 +96,7 @@ ShardMigration.prototype = {
     const availableShardsParams = {
         AttributeDefinitions: [
           {
-            AttributeName: availableShardConst.NAME,
+            AttributeName: availableShardConst.SHARD_NAME,
             AttributeType: "S"
           },
           {
@@ -110,7 +110,7 @@ ShardMigration.prototype = {
         ],
         KeySchema: [
           {
-            AttributeName: availableShardConst.NAME,
+            AttributeName: availableShardConst.SHARD_NAME,
             KeyType: "HASH"
           }
         ],
@@ -166,21 +166,21 @@ ShardMigration.prototype = {
     const managedShardsParams = {
         AttributeDefinitions: [
           {
-            AttributeName: "ID",
+            AttributeName: managedShardConst.IDENTIFIER,
             AttributeType: "S"
           },
           {
-            AttributeName: "ET",
+            AttributeName: managedShardConst.ENTITY_TYPE,
             AttributeType: "S"
           }
         ],
         KeySchema: [
           {
-            AttributeName: "ID",
+            AttributeName: managedShardConst.IDENTIFIER,
             KeyType: "HASH"
           },
           {
-            AttributeName: "ET",
+            AttributeName: managedShardConst.ENTITY_TYPE,
             KeyType: "RANGE"
           }
         ],
