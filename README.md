@@ -182,18 +182,42 @@ Log Level only controls what needs to be logged.
 | trace | TRACE |
 
 
-# OpenST formatter usage
+# OpenST response formatter usage
 
 ```bash
+
+const rootPrefix = '.'
+    , paramErrorConfig = require(rootPrefix + '/tests/mocha/lib/response_helper/param_error_config')
+    , apiErrorConfig = require(rootPrefix + '/tests/mocha/lib/response_helper/api_error_config')
+;
+
 const OSTCore = require('@openstfoundation/openst-base')
-    , ResponseHelper  = OSTCore.responseHelper;
-    
-    responseHelper = new ResponseHelper();
-    
-    //using successWithData function
-    responseHelper.successWithData({field: value});
+    , ResponseHelper  = OSTCore.responseHelper
+    , responseHelper = new ResponseHelper({
+      moduleName: 'companyRestFulApi',
+      error_config: {
+        param_error_config: paramErrorConfig,
+        api_error_config: apiErrorConfig   
+      }
+    });
     
     //using error function
-    responseHelper.error("err_code", "Unhandled result", {}, {sendErrorEmail: false});
+    responseHelper.error("s_vt_1", "invalid_api_params", {sendErrorMail: true});
+    
+    //using paramValidationError function
+    responseHelper.paramValidationError(
+        "s_vt_2"
+        , "invalid_api_params"
+        , ["user_name_inappropriate"]
+        , {sendErrorMail: true});
+    
+    // Result object is returned from responseHelper method invocations above, we can chain several methods as shown below
+        
+    responseHelper.error("s_vt_1", "invalid_api_params", {sendErrorMail: true}).isSuccess();
+    
+    responseHelper.error("s_vt_1", "invalid_api_params", {sendErrorMail: true}).isFailure();
+    
+    responseHelper.error("s_vt_1", "invalid_api_params", {sendErrorMail: true}).toHash();
+   
     
 ```
