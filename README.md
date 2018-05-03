@@ -187,37 +187,70 @@ Log Level only controls what needs to be logged.
 ```bash
 
 const rootPrefix = '.'
-    , paramErrorConfig = require(rootPrefix + '/tests/mocha/lib/response_helper/param_error_config')
-    , apiErrorConfig = require(rootPrefix + '/tests/mocha/lib/response_helper/api_error_config')
+    , paramErrorConfig = require(rootPrefix + '/tests/mocha/lib/formatter/param_error_config')
+    , apiErrorConfig = require(rootPrefix + '/tests/mocha/lib/formatter/api_error_config')
 ;
 
 const OSTCore = require('@openstfoundation/openst-base')
     , ResponseHelper  = OSTCore.responseHelper
     , responseHelper = new ResponseHelper({
-      moduleName: 'companyRestFulApi',
-      error_config: {
-        param_error_config: paramErrorConfig,
-        api_error_config: apiErrorConfig   
-      }
+      moduleName: 'companyRestFulApi'
     });
     
     //using error function
-    responseHelper.error("s_vt_1", "invalid_api_params", {sendErrorMail: true});
+    responseHelper.error({
+        internal_error_identifier: 's_vt_1', 
+        api_error_identifier: 'test_1',
+        debug_options: {client_id: 1234},
+        error_config: {
+                param_error_config: paramErrorConfig,
+                api_error_config: apiErrorConfig   
+              }
+    });
     
     //using paramValidationError function
-    responseHelper.paramValidationError(
-        "s_vt_2"
-        , "invalid_api_params"
-        , ["user_name_inappropriate"]
-        , {sendErrorMail: true});
+    responseHelper.paramValidationError({
+        internal_error_identifier:"s_vt_2", 
+        api_error_identifier: "test_1", 
+        params_error_identifiers: ["user_name_inappropriate"], 
+        debug_options: {client_id: 1234},
+        error_config: {
+            param_error_config: paramErrorConfig,
+            api_error_config: apiErrorConfig   
+          }
+    });
     
     // Result object is returned from responseHelper method invocations above, we can chain several methods as shown below
         
-    responseHelper.error("s_vt_1", "invalid_api_params", {sendErrorMail: true}).isSuccess();
+    responseHelper.error({
+        internal_error_identifier: 's_vt_1', 
+        api_error_identifier: 'invalid_api_params',
+        debug_options: {client_id: 1234},
+        error_config: {
+            param_error_config: paramErrorConfig,
+            api_error_config: apiErrorConfig   
+          }
+    }).isSuccess();
     
-    responseHelper.error("s_vt_1", "invalid_api_params", {sendErrorMail: true}).isFailure();
+    responseHelper.error({
+        internal_error_identifier: 's_vt_1', 
+        api_error_identifier: 'invalid_api_params',
+        debug_options: {client_id: 1234},
+        error_config: {
+            param_error_config: paramErrorConfig,
+            api_error_config: apiErrorConfig   
+          }
+    }).isFailure();
     
-    responseHelper.error("s_vt_1", "invalid_api_params", {sendErrorMail: true}).toHash();
+    responseHelper.error({
+        internal_error_identifier: 's_vt_1', 
+        api_error_identifier: 'invalid_api_params',
+        debug_options: {client_id: 1234},
+        error_config: {
+            param_error_config: paramErrorConfig,
+            api_error_config: apiErrorConfig   
+          }
+    }).toHash();
    
     
 ```
