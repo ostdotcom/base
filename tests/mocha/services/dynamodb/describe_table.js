@@ -3,7 +3,7 @@ const chai = require('chai')
 
 const rootPrefix = "../../../.."
   , DdbApiKlass = require(rootPrefix + '/services/dynamodb/api')
-  , testConstants = require(rootPrefix + '/tests/mocha/services/dynamodb/constants')
+  , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
   , helper = require(rootPrefix + "/tests/mocha/services/dynamodb/helper")

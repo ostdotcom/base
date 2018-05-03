@@ -4,14 +4,14 @@ const chai = require('chai')
   , assert = chai.assert;
 
 const rootPrefix = "../../../.."
-  , testConstants = require(rootPrefix + '/tests/mocha/services/dynamodb/constants')
+  , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper')
   , testDataSource = require(rootPrefix + '/tests/mocha/services/dynamodb/testdata/batch_get_write_data')
 ;
 
 var dynamoDBApi = null;
 
-describe('Batch get', function () {
+describe('Batch write', function () {
   before(async function() {
     this.timeout(100000);
     // get dynamoDB API object

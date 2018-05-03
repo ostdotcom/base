@@ -8,7 +8,7 @@ const Chai = require('chai')
 // Load dependencies package
 const rootPrefix = "../../../.."
   , DynamoDbObject = require(rootPrefix + "/index").DynamoDb
-  , testConstants = require(rootPrefix + '/tests/mocha/services/dynamodb/constants')
+  , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
 ;
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS)

@@ -9,7 +9,7 @@
  */
 
 const rootPrefix = '../../../../..'
-  , testConstants = require(rootPrefix + '/tests/mocha/services/dynamodb/constants')
+  , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
 ;
 
 /**
