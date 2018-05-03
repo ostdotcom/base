@@ -237,6 +237,69 @@ helper.prototype = {
 
     // return the response
     return batchWriteResponse;
+  },
+
+  /**
+   * put Item
+   * @param dynamoDbApiObject
+   * @param params
+   * @param isResultSuccess
+   * @return {Promise<*|result|DynamoDB.PutItemOutput>}
+   */
+  putItem: async function(dynamoDbApiObject, params, isResultSuccess) {
+    assert.exists(dynamoDbApiObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
+    assert.exists(params, 'params is neither `null` nor `undefined`');
+
+    //call put Item
+    const putItemResponse = await dynamoDbApiObject.putItem(params);
+
+    // validate if the insertion is successful or not
+    assert.equal(putItemResponse.isSuccess(), isResultSuccess, 'put item failed');
+
+    return putItemResponse;
+
+  },
+
+  /**
+   * Delete Item
+   * @param dynamoDbApiObject
+   * @param params
+   * @param isResultSuccess
+   * @return {Promise<*|result|DynamoDB.PutItemOutput>}
+   */
+  deleteItem: async function(dynamoDbApiObject, params, isResultSuccess) {
+    assert.exists(dynamoDbApiObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
+    assert.exists(params, 'params is neither `null` nor `undefined`');
+
+    //call put Item
+    const deleteItemResponse = await dynamoDbApiObject.deleteItem(params);
+
+    // validate if the delete is successful or not
+    assert.equal(deleteItemResponse.isSuccess(), isResultSuccess, 'delete item failed');
+
+    return deleteItemResponse;
+
+  },
+
+  /**
+   * Update Item
+   * @param dynamoDbApiObject
+   * @param params
+   * @param isResultSuccess
+   * @return {Promise<*|DynamoDB.DeleteItemOutput|result>}
+   */
+  updateItem: async function(dynamoDbApiObject, params, isResultSuccess) {
+    assert.exists(dynamoDbApiObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
+    assert.exists(params, 'params is neither `null` nor `undefined`');
+
+    //call put Item
+    const updateItemResponse = await dynamoDbApiObject.updateItem(params);
+
+    // validate if the update is successful or not
+    assert.equal(updateItemResponse.isSuccess(), isResultSuccess, 'update item failed');
+
+    return updateItemResponse;
+
   }
 };
 

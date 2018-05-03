@@ -81,13 +81,13 @@ TableExist.prototype = {
    *
    * @params {object} params
    *
-   * @return {bool} true/false
+   * @return {Promise} true/false
    *
    */
   checkTableExists: function() {
     const oThis = this
     ;
-    return new Promise(async function (onResolve, onReject) {
+    return new Promise(async function (onResolve) {
       const listTablesResponse = await oThis.ddbObject.call('listTables', {});
       if (listTablesResponse.isFailure()) {
         return onResolve(responseHelper.successWithData({response: false}));
@@ -102,4 +102,3 @@ TableExist.prototype = {
 
 TableExist.prototype.constructor = TableExist;
 module.exports = TableExist;
-

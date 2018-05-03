@@ -234,42 +234,13 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  checkTableExists: function(params) {
+  checkTableExist: function(params) {
     const oThis = this
       , tableExistObject = new TableExistServiceApiKlass(oThis.ddbObject, params)
     ;
     return tableExistObject.perform();
   },
 
-  /**
-   * Table exists
-   *
-   * @params {object} params
-   *
-   * @return {promise<result>}
-   *
-   */
-  checkTableExistsWithWaitFor: function(params) {
-    const oThis = this
-      , tableExistsObject = new WaitForServiceKlass(oThis.ddbObject, 'tableExists', params)
-    ;
-    return tableExistsObject.perform();
-  },
-
-  /**
-   * Table not exists
-   *
-   * @params {object} params
-   *
-   * @return {promise<result>}
-   *
-   */
-  checkTableNotExistsWithWaitFor: function(params) {
-    const oThis = this
-      , tableExistsObject = new WaitForServiceKlass(oThis.ddbObject, 'tableNotExists', params)
-    ;
-    return tableExistsObject.perform();
-  },
 
   /**
    * To run shard service apis
