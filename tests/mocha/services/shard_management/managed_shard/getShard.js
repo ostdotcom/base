@@ -12,6 +12,7 @@ const rootPrefix = "../../../../.."
   , logger = new Logger()
   , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
   , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
+  , helper = require(rootPrefix + "/tests/mocha/services/shard_management/helper")
 ;
 
 
@@ -19,29 +20,7 @@ const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGU
   , shardManagementService = dynamoDbObject.shardManagement()
   , identifier = '0x1234'
   , shardName = "shard_00001_userBalances"
-  , createTableParamsFor = function (tableName) {
-  return {
-    TableName: tableName,
-    KeySchema: [
-      {
-        AttributeName: "tuid",
-        KeyType: "HASH"
-      },  //Partition key
-      {
-        AttributeName: "cid",
-        KeyType: "RANGE"
-      }  //Sort key
-    ],
-    AttributeDefinitions: [
-      {AttributeName: "tuid", AttributeType: "S"},
-      {AttributeName: "cid", AttributeType: "N"}
-    ],
-    ProvisionedThroughput: {
-      ReadCapacityUnits: 5,
-      WriteCapacityUnits: 5
-    }
-  }
-};
+;
 
 
 
@@ -100,9 +79,9 @@ describe('services/dynamodb/shard_management/managed_shard/get_shard', function 
   beforeEach(async function (){
 
     await dynamoDbObject.deleteTable({
-      TableName: 'shard_00001_userBalances'
+      TableName: shardName
     });
-    let schema = createTableParamsFor("test");
+    let schema = helper.createTableParamsFor("test");
     await shardManagementService.addShard({shard_name: shardName, entity_type: 'userBalances', table_schema: schema});
 
     await shardManagementService.assignShard({identifier: identifier, entity_type: "userBalances" ,shard_name: shardName});

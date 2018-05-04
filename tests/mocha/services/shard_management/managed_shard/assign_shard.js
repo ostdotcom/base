@@ -12,36 +12,14 @@ const rootPrefix = "../../../../.."
   , logger = new Logger()
   , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
   , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
+  , helper = require(rootPrefix + "/tests/mocha/services/shard_management/helper")
 ;
 
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS)
   , shardManagementService = dynamoDbObject.shardManagement()
   , userBalancesShardName = 'shard_00001_userBalances'
-  , createTableParamsFor = function (tableName) {
-  return {
-    TableName: tableName,
-    KeySchema: [
-      {
-        AttributeName: "tuid",
-        KeyType: "HASH"
-      },  //Partition key
-      {
-        AttributeName: "cid",
-        KeyType: "RANGE"
-      }  //Sort key
-    ],
-    AttributeDefinitions: [
-      {AttributeName: "tuid", AttributeType: "S"},
-      {AttributeName: "cid", AttributeType: "N"}
-    ],
-    ProvisionedThroughput: {
-      ReadCapacityUnits: 5,
-      WriteCapacityUnits: 5
-    }
-  }
-};
-
+;
 
 
 const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
@@ -101,7 +79,7 @@ describe('services/dynamodb/shard_management/managed_shard/assign_shard', functi
       TableName: 'shard_00001_userBalances'
     });
 
-    let schema = createTableParamsFor("test");
+    let schema = helper.createTableParamsFor("test");
     await shardManagementService.addShard({shard_name: userBalancesShardName, entity_type: 'userBalances', table_schema: schema});
   });
 

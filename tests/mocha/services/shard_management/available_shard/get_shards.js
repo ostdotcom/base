@@ -12,34 +12,13 @@ const rootPrefix = "../../../../.."
   , logger = new Logger()
   , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
   , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
+  , helper = require(rootPrefix + "/tests/mocha/services/shard_management/helper")
 ;
 
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS)
   , shardManagementService = dynamoDbObject.shardManagement()
-  , createTableParamsFor = function (tableName) {
-  return {
-    TableName: tableName,
-    KeySchema: [
-      {
-        AttributeName: "tuid",
-        KeyType: "HASH"
-      },  //Partition key
-      {
-        AttributeName: "cid",
-        KeyType: "RANGE"
-      }  //Sort key
-    ],
-    AttributeDefinitions: [
-      {AttributeName: "tuid", AttributeType: "S"},
-      {AttributeName: "cid", AttributeType: "N"}
-    ],
-    ProvisionedThroughput: {
-      ReadCapacityUnits: 5,
-      WriteCapacityUnits: 5
-    }
-  }
-};
+;
 
 
 
@@ -84,7 +63,7 @@ describe('services/shard_management/available_shard/get_shards', function () {
     await shardManagementService.runShardMigration();
 
     let entity_type = 'userBalances';
-    let schema = createTableParamsFor("test");
+    let schema = helper.createTableParamsFor("test");
 
     // delete table
     await dynamoDbObject.deleteTable({
