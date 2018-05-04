@@ -139,6 +139,35 @@ TestData.prototype = {
     const requestItems = {};
     requestItems[tableName] = data;
     return {RequestItems:requestItems};
+  },
+
+  getBatchWriteDataBasedOnParam: function (numberOfItems) {
+
+    const data = [];
+    for(var i=0; i<numberOfItems; i++) {
+
+      cid = i;
+      tuid = `tuid_${cid}`;
+      thash = `thash${cid}`;
+
+
+      let item = {};
+      item.tuid = {
+        "S": tuid
+      };
+      item.cid = {
+        "N": `${cid}`
+      };
+      item.thash = {
+        "S": thash
+      };
+
+      data.push({'PutRequest': {"Item": item}});
+    }
+
+    const requestItems = {};
+    requestItems[tableName] = data;
+    return {RequestItems:requestItems};
   }
 };
 

@@ -49,8 +49,8 @@ TableExist.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      r = await oThis.checkTableExists();
-      logger.debug("=======TableExist.checkTableExists.result=======");
+      r = await oThis.checkTableExist();
+      logger.debug("=======TableExist.checkTableExist.result=======");
       logger.debug(r);
       return r;
     } catch (err) {
@@ -84,7 +84,7 @@ TableExist.prototype = {
    * @return {Promise} true/false
    *
    */
-  checkTableExists: function() {
+  checkTableExist: function() {
     const oThis = this
     ;
     return new Promise(async function (onResolve) {

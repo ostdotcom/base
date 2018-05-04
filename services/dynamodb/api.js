@@ -131,7 +131,7 @@ DynamoDBService.prototype = {
    */
   batchGet: function(params) {
     const oThis = this
-      , bathGetObject = new DDBServiceBaseKlass(oThis.ddbObject, 'batchGet', params)
+      , bathGetObject = new DDBServiceBaseKlass(oThis.ddbObject, 'batchGetItem', params)
     ;
     return bathGetObject.perform();
   },

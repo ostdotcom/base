@@ -18,7 +18,7 @@ describe('Batch write', function () {
     dynamoDBApi = helper.getDynamoDBApiObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
 
     // check if table exists
-    const checkTableExistsResponse = await dynamoDBApi.checkTableExists(testDataSource.DELETE_TABLE_DATA);
+    const checkTableExistsResponse = await dynamoDBApi.checkTableExist(testDataSource.DELETE_TABLE_DATA);
     if (checkTableExistsResponse.data.response === true) {
       // delete if table exists
       await helper.deleteTable(dynamoDBApi,testDataSource.DELETE_TABLE_DATA, true);

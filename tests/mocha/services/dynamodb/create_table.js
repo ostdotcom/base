@@ -24,7 +24,7 @@ describe('Create Table', function() {
     const params = {
       TableName: testConstants.transactionLogsTableName
     };
-    const checkTableExistsResponse = await dynamodbApiObject.checkTableExists(params);
+    const checkTableExistsResponse = await dynamodbApiObject.checkTableExist(params);
     if (checkTableExistsResponse.data.response === true) {
       await helper.deleteTable(dynamodbApiObject, params, true);
     }

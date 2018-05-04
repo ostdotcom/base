@@ -197,11 +197,12 @@ helper.prototype = {
    * @params {object} dynamodbApiObject - DynamoDB Api object
    * @params {object} params - batch get params
    * @params {object} isResultSuccess - expected result
+   * @params {number} resultCount - Result Count
    *
    * @return {result}
    *
    */
-  performBatchGetTest: async function (dynamodbApiObject, params, isResultSuccess) {
+  performBatchGetTest: async function (dynamodbApiObject, params, isResultSuccess, resultCount) {
     assert.exists(dynamodbApiObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
     assert.exists(params, 'params is neither `null` nor `undefined`');
 
@@ -210,6 +211,17 @@ helper.prototype = {
 
     // validate if the table is created
     assert.equal(batchGetResponse.isSuccess(), isResultSuccess, 'batch get failed');
+
+    if (isResultSuccess) {
+      // validate batchGet output count
+      assert.equal(batchGetResponse.data.Responses[testConstants.transactionLogsTableName].length, resultCount, "Result count is not equal");
+
+      // validate return output is object or not
+      let returnObject = batchGetResponse.data.Responses[testConstants.transactionLogsTableName];
+      if (resultCount) {
+        assert.typeOf(returnObject[0], 'object');
+      }
+    }
 
     // return the response
     return batchGetResponse;
@@ -334,6 +346,14 @@ helper.prototype = {
   },
 
 
+  /**
+   * scan test helper method
+   * @param dynamoDbApiObject
+   * @param params
+   * @param isResultSuccess
+   * @param resultCount
+   * @return {Promise<*|DocumentClient.ScanOutput|result|DynamoDB.ScanOutput>}
+   */
   scan: async function(dynamoDbApiObject, params, isResultSuccess, resultCount) {
     assert.exists(dynamoDbApiObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
     assert.exists(params, 'params is neither `null` nor `undefined`');
@@ -355,7 +375,6 @@ helper.prototype = {
     }
 
     return scanResponse;
-
   }
 };
 
