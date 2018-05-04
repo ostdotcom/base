@@ -300,6 +300,62 @@ helper.prototype = {
 
     return updateItemResponse;
 
+  },
+
+  /**
+   * query test helper method
+   * @param dynamoDbApiObject
+   * @param params
+   * @param isResultSuccess
+   * @param resultCount
+   * @return {Promise<*>}
+   */
+  query: async function(dynamoDbApiObject, params, isResultSuccess, resultCount) {
+    assert.exists(dynamoDbApiObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
+    assert.exists(params, 'params is neither `null` nor `undefined`');
+
+    //call query
+    const queryResponse = await dynamoDbApiObject.query(params);
+
+    // validate if the query is successful or not
+    assert.equal(queryResponse.isSuccess(), isResultSuccess, 'query failed');
+
+    if (isResultSuccess) {
+      // validate query output count
+      assert.equal(queryResponse.data.Count, resultCount, "Result count is not equal");
+
+      // validate return output is object or not
+      if (resultCount) {
+        assert.typeOf(queryResponse.data.Items[0], 'object');
+      }
+    }
+
+    return queryResponse;
+  },
+
+
+  scan: async function(dynamoDbApiObject, params, isResultSuccess, resultCount) {
+    assert.exists(dynamoDbApiObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
+    assert.exists(params, 'params is neither `null` nor `undefined`');
+
+    //call scan
+    const scanResponse = await dynamoDbApiObject.scan(params);
+
+    // validate if the scan is successful or not
+    assert.equal(scanResponse.isSuccess(), isResultSuccess, 'scan failed');
+
+    if (isResultSuccess) {
+      // validate scan output count
+      assert.equal(scanResponse.data.Count, resultCount, "Result count is not equal");
+
+      // validate return output is object or not
+      if (resultCount) {
+        assert.typeOf(scanResponse.data.Items[0], 'object');
+      }
+    }
+
+    return scanResponse;
+
   }
 };
 
