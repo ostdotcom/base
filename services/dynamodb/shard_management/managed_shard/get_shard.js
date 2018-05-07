@@ -10,8 +10,8 @@
 
 const rootPrefix = '../../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
-  , managedShard = require(rootPrefix + '/lib/models/dynamodb/managed_shard')
   , managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard')
+  , GetShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_managed_shard')
   , moduleName = 'services/shard_management/managed_shard/get_shard'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
@@ -24,8 +24,8 @@ const rootPrefix = '../../../..'
  * @constructor
  *
  * @params {object} params -
- * @param {string} params.identifier - Identifier
- * @param {string} params.entity_type - entity type
+ * @param {string} params.ids - ids are object of keys
+ * @param {object} params.ddb_object - dynamo db object
  * @return {Object}
  *
  */
@@ -34,8 +34,8 @@ const GetShard = function (params) {
   logger.debug("=======GetShards.params=======");
   logger.debug(params);
   oThis.params = params;
-  oThis.identifier = params.identifier;
-  oThis.entityType = params.entity_type;
+  oThis.ddbObject = params.ddb_object;
+  oThis.ids = params.ids;
 };
 
 GetShard.prototype = {
@@ -58,10 +58,18 @@ GetShard.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      r = await managedShard.getShard(oThis.params);
-      logger.debug("=======GetShards.addShard.result=======");
+      const cacheParams = {
+        ddb_object: oThis.ddbObject,
+        ids: oThis.ids
+      };
+      r = await new GetShardMultiCacheKlass(cacheParams).fetch();
+      logger.debug("=======GetShards.getShard.result=======");
       logger.debug(r);
-      return r;
+      if (r.isSuccess()) {
+        return responseHelper.successWithData(r.data);
+      } else {
+        return responseHelper.error(r.err.error_data, r.err.code, r.err.msg);
+      }
     } catch(err) {
       return responseHelper.error('s_sm_as_gs_perform_1', 'Something went wrong. ' + err.message);
     }
@@ -80,14 +88,27 @@ GetShard.prototype = {
 
     return new Promise(async function (onResolve) {
 
-      if (!oThis.identifier) {
-        logger.debug('s_sm_as_gs_validateParams_1', 'identifier is', oThis.identifier);
-        return onResolve(responseHelper.error('s_sm_as_gs_validateParams_1', 'identifier is undefined'));
+      if (!oThis.ids || oThis.ids.constructor.name !== 'Array') {
+        logger.debug('s_sm_as_gs_validateParams_1', 'ids is', oThis.ids);
+        return onResolve(responseHelper.error('s_sm_as_gs_validateParams_1', 'ids is not an array'));
       }
 
-      if (!(managedShardConst.getSupportedEntityTypes()[oThis.entityType])) {
-        logger.debug('s_sm_as_gs_validateParams_2', 'entityType is', oThis.entityType);
-        return onResolve(responseHelper.error('s_sm_as_gs_validateParams_2', 'entityType is not supported'));
+      for (let ind = 0; ind < oThis.ids.length ; ind++) {
+        let object = oThis.ids[ind];
+        if (!object) {
+          logger.debug('s_sm_as_gs_validateParams_2', 'object is undefined');
+          return onResolve(responseHelper.error('s_sm_as_gs_validateParams_2', 'object is undefined'));
+        }
+
+        if (!object.identifier) {
+          logger.debug('s_sm_as_gs_validateParams_3', 'identifier is', object.identifier);
+          return onResolve(responseHelper.error('s_sm_as_gs_validateParams_3', 'identifier is undefined'));
+        }
+
+        if (!(managedShardConst.getSupportedEntityTypes()[object.entity_type])) {
+          logger.debug('s_sm_as_gs_validateParams_4', 'entityType is', object.entity_type);
+          return onResolve(responseHelper.error('s_sm_as_gs_validateParams_4', 'entityType is not supported'));
+        }
       }
 
       return onResolve(responseHelper.successWithData({}));

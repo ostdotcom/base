@@ -11,6 +11,7 @@
 const rootPrefix = '../../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
   , availableShard = require( rootPrefix + '/lib/models/dynamodb/available_shard')
+  , GetShardsMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_available_shards')
   , moduleName = 'services/shard_management/available_shard/configure_shard'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
@@ -65,6 +66,19 @@ ConfigureShard.prototype = {
       r = await availableShard.configureShard(oThis.params);
       logger.debug("=======ConfigureShard.configureShard.result=======");
       logger.debug(r);
+
+      /******************** Cache clearance *********************/
+
+
+      // const cacheParams = {
+      //   ddb_object: oThis.ddbObject,
+      //   ids: [{entity_type: oThis.entityType, shard_type: oThis.shardType}]
+      // };
+      // r = await new GetShardsMultiCacheKlass(cacheParams).clear();
+      //TODO ::  How to clear cache of getShards
+
+      /******************** Cache clearance *********************/
+
       return r;
     } catch(err) {
       return responseHelper.error('s_sm_as_cs_perform_1', 'Something went wrong. ' + err.message);

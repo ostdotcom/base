@@ -22,32 +22,29 @@ const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGU
 
 ;
 
-
-
 const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
   optionsDesc = optionsDesc || "";
   options = options || {
     hasShard: true,
   };
-  let entity_type = 'userBalances';
 
   it(optionsDesc, async function(){
-    let shardType = availableShardConst.disabled;
+
     if (!options.hasShard) {
       // delete table
       await dynamoDbObject.deleteTable({
         TableName: shardName
       });
     }
-    const response = await shardManagementService.hasShard({shard_name: shardName});
+    const response = await shardManagementService.hasShard({shard_names: [shardName]});
 
     logger.log("LOG", response);
     assert.isTrue(response.isSuccess(), "Success");
-    assert.exists(response.data.has_shard);
+    assert.exists(response.data[shardName].has_shard);
     if (toAssert) {
-      assert.isTrue(response.data.has_shard);
+      assert.isTrue(response.data[shardName].has_shard);
     } else {
-      assert.isFalse(response.data.has_shard);
+      assert.isFalse(response.data[shardName].has_shard);
     }
   });
 };

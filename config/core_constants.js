@@ -23,6 +23,8 @@ CoreConstants.prototype = {
    *
    */
   DYNAMODB_API_VERSION: '2012-08-10',
+
+  CACHING_ENGINE:"none"
 };
 
 module.exports = new CoreConstants();

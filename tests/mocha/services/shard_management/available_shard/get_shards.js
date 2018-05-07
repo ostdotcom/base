@@ -39,7 +39,8 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
     logger.log("LOG", response);
     if (toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
-      assert.equal(response.data.Count, 1);
+      assert.exists(response.data.data);
+      assert.equal(response.data.data.length,1);
     } else {
       assert.isTrue(response.isFailure(), "Failure");
     }

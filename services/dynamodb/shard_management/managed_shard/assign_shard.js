@@ -12,6 +12,8 @@ const rootPrefix = '../../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
   , managedShard = require(rootPrefix + '/lib/models/dynamodb/managed_shard')
   , managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard')
+  , GetShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_managed_shard')
+  , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')
   , moduleName = 'services/shard_management/managed_shard/assign_shard'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
@@ -66,6 +68,22 @@ AssignShard.prototype = {
       r = await managedShard.assignShard(oThis.params);
       logger.debug("=======AssignShard.addShard.result=======");
       logger.debug(r);
+
+      /******************** Cache clearance *********************/
+      const cacheParamsHasShard = {
+        ddb_object: oThis.ddbObject,
+        shard_names: [oThis.shardName]
+      };
+      new HasShardMultiCacheKlass(cacheParamsHasShard).clear();
+
+      const cacheParamsGetShard = {
+        ddb_object: oThis.ddbObject,
+        ids: [{identifier: oThis.identifier, entity_type: oThis.entityType}]
+      };
+      new GetShardMultiCacheKlass(cacheParamsGetShard).clear();
+
+      /******************** Cache clearance *********************/
+
       return r;
     } catch(err) {
       return responseHelper.error('s_sm_as_as_perform_1', 'Something went wrong. ' + err.message);
@@ -100,8 +118,8 @@ AssignShard.prototype = {
         return onResolve(responseHelper.error('s_sm_as_as_validateParams_1', 'ddbObject is undefined'));
       }
 
-      const response = await oThis.ddbObject.shardManagement().hasShard({ddb_object: oThis.ddbObject, shard_name: oThis.shardName});
-      if (response.isFailure() || !response.data.has_shard) {
+      const response = await oThis.ddbObject.shardManagement().hasShard({ddb_object: oThis.ddbObject, shard_names: [oThis.shardName]});
+      if (response.isFailure() || !response.data[oThis.shardName].has_shard) {
         logger.debug('s_sm_ms_as_validateParams_4', 'shardName does not exists', oThis.shardName);
         return onResolve(responseHelper.error('s_sm_ms_as_validateParams_1', 'shardName does not exists'));
       }

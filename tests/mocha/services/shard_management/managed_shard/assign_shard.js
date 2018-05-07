@@ -85,7 +85,7 @@ describe('services/dynamodb/shard_management/managed_shard/assign_shard', functi
 
   createTestCasesForOptions("Assign shard adding happy case", {}, true);
 
-  createTestCasesForOptions("Get shards having invalid shard name", {
+  createTestCasesForOptions("Assign shard having invalid shard name", {
     invalidShardName: true
   }, false);
 });

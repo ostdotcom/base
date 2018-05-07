@@ -43,14 +43,14 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, retu
       id = "0x2";
     }
 
-    const response = await shardManagementService.getShard({identifier: id, entity_type: entity_type});
+    const response = await shardManagementService.getShard({ids:[{identifier: id, entity_type: entity_type}]});
 
     logger.log("shardManagementService Response", JSON.stringify(response));
     if (toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
-      assert.equal(response.data.Count, returnCount);
+      assert.equal(Object.keys(response.data).length, returnCount);
       if (returnCount === 1){
-        assert.equal(response.data.Items[0][managedShardConst.SHARD_NAME]['S'], shardName);
+        assert.equal(response.data[String(id + entity_type)], shardName);
       }
     } else {
       assert.isTrue(response.isFailure(), "Failure");
@@ -74,10 +74,6 @@ describe('services/dynamodb/shard_management/managed_shard/get_shard', function 
 
     await shardManagementService.runShardMigration();
 
-  });
-
-  beforeEach(async function (){
-
     await dynamoDbObject.deleteTable({
       TableName: shardName
     });
@@ -85,6 +81,7 @@ describe('services/dynamodb/shard_management/managed_shard/get_shard', function 
     await shardManagementService.addShard({shard_name: shardName, entity_type: 'userBalances', table_schema: schema});
 
     await shardManagementService.assignShard({identifier: identifier, entity_type: "userBalances" ,shard_name: shardName});
+
   });
 
   createTestCasesForOptions("Get shard happy case", {}, true, 1);

@@ -10,7 +10,7 @@
 
 const rootPrefix = '../../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
-  , availableShard = require( rootPrefix + '/lib/models/dynamodb/available_shard')
+  , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')
   , moduleName = 'services/dynamodb/shard_management/available_shard/has_shard'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
@@ -25,7 +25,7 @@ const rootPrefix = '../../../..'
  *
  * @params {object} params -
  * @param {string} params.ddb_object - dynamoDbObject
- * @param {string} params.shard_name - Name of the shard
+ * @param {string} params.shard_names - Name of the shard
  * @param {boolean} params.enable_allocation - to enable or disable allocation
  *
  * @return {Object}
@@ -39,7 +39,7 @@ const HasShard = function (params) {
 
   oThis.params = params;
   oThis.ddbObject = params.ddb_object;
-  oThis.shardName = params.shard_name;
+  oThis.shardNames = params.shard_names;
 };
 
 HasShard.prototype = {
@@ -62,12 +62,20 @@ HasShard.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      r = await availableShard.hasShard(oThis.params);
+      const cacheParams = {
+        ddb_object: oThis.ddbObject,
+        shard_names: oThis.shardNames
+      };
+      r = await new HasShardMultiCacheKlass(cacheParams).fetch();
       logger.debug("=======HasShard.hasShard.result=======");
       logger.debug(r);
-      return r;
+      if (r.isSuccess()) {
+        return responseHelper.successWithData(r.data);
+      } else {
+        return responseHelper.error(r.err.error_data, r.err.code, r.err.msg);
+      }
     } catch(err) {
-      return responseHelper.error('s_sm_as_cs_perform_1', 'Something went wrong. ' + err.message);
+      return responseHelper.error('s_sm_as_hs_perform_1', 'Something went wrong. ' + err.message);
     }
 
   },
@@ -84,9 +92,17 @@ HasShard.prototype = {
 
     return new Promise(async function (onResolve) {
 
-      if (!oThis.shardName) {
+      if (!oThis.shardNames || oThis.shardNames.constructor.name !== 'Array') {
         logger.debug('s_sm_as_hs_validateParams_1', 'shardName is', oThis.shardName);
-        return onResolve(responseHelper.error('s_sm_as_cs_validateParams_1', 'shardName is invalid'));
+        return onResolve(responseHelper.error('s_sm_as_hs_validateParams_1', 'shardNames is not an array'));
+      }
+
+      for (let ind = 0; ind < oThis.shardNames.length ; ind++) {
+        let shardName = oThis.shardNames[ind];
+        if (!shardName) {
+          logger.debug('s_sm_as_hs_validateParams_2', 'shardName is', oThis.shardName);
+          return onResolve(responseHelper.error('s_sm_as_hs_validateParams_2', 'shardName is invalid'));
+        }
       }
 
       return onResolve(responseHelper.successWithData({}));
