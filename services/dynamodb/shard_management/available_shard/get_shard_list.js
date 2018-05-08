@@ -10,17 +10,17 @@
 
 const rootPrefix = '../../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
-  , moduleName = 'services/shard_management/available_shard/get_shards'
+  , moduleName = 'services/shard_management/available_shard/get_shard_list'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , availableShardGlobalConstant = require(rootPrefix + '/lib/global_constant/available_shard')
   , managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard')
-  , GetShardsMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_available_shards')
+  , GetShardListMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_list')
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
   , logger            = new Logger()
 ;
 
 /**
- * Constructor to create object of Get Shard
+ * Constructor to create object of Get Shard List
  *
  * @constructor
  *
@@ -33,9 +33,9 @@ const rootPrefix = '../../../..'
  * @return {Object}
  *
  */
-const GetShards = function (params) {
+const GetShardList = function (params) {
   const oThis = this;
-  logger.debug("=======GetShards.params=======");
+  logger.debug("=======GetShardList.params=======");
   logger.debug(params);
 
   oThis.params = params;
@@ -44,7 +44,7 @@ const GetShards = function (params) {
   oThis.shardType = params.shard_type = params.shard_type || 'all';
 };
 
-GetShards.prototype = {
+GetShardList.prototype = {
 
   /**
    * Perform method
@@ -60,7 +60,7 @@ GetShards.prototype = {
       let r = null;
 
       r = await oThis.validateParams();
-      logger.debug("=======GetShards.validateParams.result=======");
+      logger.debug("=======GetShardList.validateParams.result=======");
       logger.debug(r);
       if (r.isFailure()) return r;
 
@@ -68,8 +68,8 @@ GetShards.prototype = {
         ddb_object: oThis.ddbObject,
         ids: [{entity_type: oThis.entityType, shard_type: oThis.shardType}]
       };
-      r = await new GetShardsMultiCacheKlass(cacheParams).fetch();
-      logger.debug("=======GetShards.addShard.result=======");
+      r = await new GetShardListMultiCacheKlass(cacheParams).fetch();
+      logger.debug("=======GetShardList.addShard.result=======");
       logger.debug(r);
       if (r.isSuccess()) {
         return responseHelper.successWithData({data: r.data[String(oThis.entityType + oThis.shardType)]});
@@ -77,7 +77,7 @@ GetShards.prototype = {
         return responseHelper.error(r.err.error_data, r.err.code, r.err.msg);
       }
     } catch(err) {
-      return responseHelper.error('s_sm_as_gss_perform_1', 'Something went wrong. ' + err.message);
+      return responseHelper.error('s_sm_as_gsl_perform_1', 'Something went wrong. ' + err.message);
     }
 
   },
@@ -95,13 +95,13 @@ GetShards.prototype = {
     return new Promise(async function (onResolve) {
 
       if (!(managedShardConst.getSupportedEntityTypes()[oThis.entityType])) {
-        logger.debug('s_sm_as_gss_validateParams_1', 'entityType is', oThis.entityType);
-        return onResolve(responseHelper.error('s_sm_as_gss_validateParams_1', 'entityType is not supported'));
+        logger.debug('s_sm_as_gsl_validateParams_1', 'entityType is', oThis.entityType);
+        return onResolve(responseHelper.error('s_sm_as_gsl_validateParams_1', 'entityType is not supported'));
       }
 
       if (!oThis.shardType || (availableShardGlobalConstant.getShardTypes()[oThis.shardType] === undefined) ) {
-        logger.debug('s_sm_as_gss_validateParams_2', 'shardType is', oThis.shardType);
-        return onResolve(responseHelper.error('s_sm_as_gss_validateParams_2', 'shardType is invalid'));
+        logger.debug('s_sm_as_gsl_validateParams_2', 'shardType is', oThis.shardType);
+        return onResolve(responseHelper.error('s_sm_as_gsl_validateParams_2', 'shardType is invalid'));
       }
 
       return onResolve(responseHelper.successWithData({}));
@@ -109,4 +109,4 @@ GetShards.prototype = {
   }
 };
 
-module.exports = GetShards;
+module.exports = GetShardList;

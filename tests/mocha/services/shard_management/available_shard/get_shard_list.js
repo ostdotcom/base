@@ -75,9 +75,9 @@ describe('services/shard_management/available_shard/get_shards', function () {
     await shardManagementService.addShard({shard_name: shardName, entity_type: entity_type, table_schema: schema});
   });
 
-  createTestCasesForOptions("Get shards adding happy case", {}, true);
+  createTestCasesForOptions("Get shard list adding happy case", {}, true);
 
-  createTestCasesForOptions("Get shards having invalid shard type", {
+  createTestCasesForOptions("Get shard list having invalid shard type", {
     invalidShardType: true
   }, false);
 });

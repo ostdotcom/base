@@ -4,18 +4,18 @@ const rootPrefix = '../..'
   , baseCache = require(rootPrefix + '/services/cache_multi_management/base')
   , availableShard = require( rootPrefix + '/lib/models/dynamodb/available_shard')
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
-  , moduleName = 'services/cache_multi_management/get_available_shards'
+  , moduleName = 'services/cache_multi_management/get_shard_list'
   , responseHelper = new ResponseHelper({module_name: moduleName})
 ;
 
 /**
  * @constructor
- * @augments GetShardsCacheKlass
+ * @augments GetShardListCacheKlass
  *
  * @param {Object} params - cache key generation & expiry related params
  *
  */
-const GetShardsCacheKlass = module.exports = function (params) {
+const GetShardListCacheKlass = module.exports = function (params) {
 
   const oThis = this;
   oThis.params = params;
@@ -25,16 +25,16 @@ const GetShardsCacheKlass = module.exports = function (params) {
   baseCache.call(this, oThis.params);
 };
 
-GetShardsCacheKlass.prototype = Object.create(baseCache.prototype);
+GetShardListCacheKlass.prototype = Object.create(baseCache.prototype);
 
-GetShardsCacheKlass.prototype.constructor = GetShardsCacheKlass;
+GetShardListCacheKlass.prototype.constructor = GetShardListCacheKlass;
 
 /**
  * set cache key
  *
  * @return {Object}
  */
-GetShardsCacheKlass.prototype.setCacheKeys = function () {
+GetShardListCacheKlass.prototype.setCacheKeys = function () {
 
   const oThis = this;
 
@@ -54,7 +54,7 @@ GetShardsCacheKlass.prototype.setCacheKeys = function () {
  *
  * @return {Number}
  */
-GetShardsCacheKlass.prototype.setCacheExpiry = function () {
+GetShardListCacheKlass.prototype.setCacheExpiry = function () {
 
   const oThis = this;
 
@@ -69,13 +69,13 @@ GetShardsCacheKlass.prototype.setCacheExpiry = function () {
  *
  * @return {Result}
  */
-GetShardsCacheKlass.prototype.fetchDataFromSource = async function (cacheIds) {
+GetShardListCacheKlass.prototype.fetchDataFromSource = async function (cacheIds) {
 
   const oThis = this;
 
   if (!cacheIds) {
     return responseHelper.error(
-      's_cmm_gas_1', 'blank ids'
+      's_cmm_gsl_1', 'blank ids'
     );
   }
 

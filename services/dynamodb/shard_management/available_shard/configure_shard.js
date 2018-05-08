@@ -11,7 +11,7 @@
 const rootPrefix = '../../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
   , availableShard = require( rootPrefix + '/lib/models/dynamodb/available_shard')
-  , GetShardsMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_available_shards')
+  , GetShardListMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_list')
   , moduleName = 'services/shard_management/available_shard/configure_shard'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")

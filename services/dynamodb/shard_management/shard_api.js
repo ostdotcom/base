@@ -13,7 +13,7 @@ const rootPrefix  = "../../.."
   , ConfigureShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/available_shard/configure_shard')
   , AssignShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/managed_shard/assign_shard')
   , GetShardNameKlass = require(rootPrefix + '/services/dynamodb/shard_management/managed_shard/get_shard_name')
-  , GetShardsByTypeKlass = require(rootPrefix + '/services/dynamodb/shard_management/available_shard/get_shards')
+  , GetShardListKlass = require(rootPrefix + '/services/dynamodb/shard_management/available_shard/get_shard_list')
   , HasShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/available_shard/has_shard')
 ;
 
@@ -72,7 +72,7 @@ ShardServiceApi.prototype = {
   },
 
   /**
-   * get Shards by type
+   * get Shard list by type
    * @param params
    * @return {*|promise<result>}
    */
@@ -81,7 +81,7 @@ ShardServiceApi.prototype = {
       , configureShardParams = Object.assign(params, oThis.params)
     ;
 
-    return new GetShardsByTypeKlass(configureShardParams).perform();
+    return new GetShardListKlass(configureShardParams).perform();
   },
 
   /**
