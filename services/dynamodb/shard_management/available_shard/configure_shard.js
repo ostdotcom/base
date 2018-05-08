@@ -12,6 +12,7 @@ const rootPrefix = '../../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
   , availableShard = require( rootPrefix + '/lib/models/dynamodb/available_shard')
   , GetShardListMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_list')
+  , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
   , moduleName = 'services/shard_management/available_shard/configure_shard'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
@@ -67,15 +68,23 @@ ConfigureShard.prototype = {
       logger.debug("=======ConfigureShard.configureShard.result=======");
       logger.debug(r);
 
+
       /******************** Cache clearance *********************/
+      logger.debug("=======ConfigureShard.cacheClearance.result=======");
 
+      let response = await availableShard.getShardInfo(oThis.params);
+      logger.log("DEBUG", response);
+      if (response.isFailure()) return responseHelper.error('s_sm_as_cs_perform_1', 'Something went wrong. ' + response.msg);
 
-      // const cacheParams = {
-      //   ddb_object: oThis.ddbObject,
-      //   ids: [{entity_type: oThis.entityType, shard_type: oThis.shardType}]
-      // };
-      // r = await new GetShardsMultiCacheKlass(cacheParams).clear();
-      //TODO ::  How to clear cache of getShards
+      const entity_type = response.data[oThis.shardName][availableShardConst.ENTITY_TYPE];
+      let allocation_type = response.data[oThis.shardName][String(availableShardConst.ALLOCATION_TYPE)];
+      allocation_type = availableShardConst.disabled === availableShardConst.getShardTypes()[allocation_type] ? availableShardConst.enabled : availableShardConst.disabled;
+
+      const cacheParams = {
+        ddb_object: oThis.ddbObject,
+        ids: [{entity_type: entity_type, shard_type: allocation_type}]
+      };
+      new GetShardListMultiCacheKlass(cacheParams).clear();
 
       /******************** Cache clearance *********************/
 
