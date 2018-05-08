@@ -108,6 +108,12 @@ ConfigureShard.prototype = {
         return onResolve(responseHelper.error('s_sm_as_cs__validateParams_2', 'enableAllocation is invalid'));
       }
 
+      const response = await oThis.ddbObject.shardManagement().hasShard({ddb_object: oThis.ddbObject, shard_names: [oThis.shardName]});
+      if (response.isFailure() || !response.data[oThis.shardName].has_shard) {
+        logger.debug('s_sm_as_cs__validateParams_3', 'shardName does not exists', oThis.shardName);
+        return onResolve(responseHelper.error('s_sm_as_cs__validateParams_3', 'shardName does not exists'));
+      }
+
       return onResolve(responseHelper.successWithData({}));
     });
   }

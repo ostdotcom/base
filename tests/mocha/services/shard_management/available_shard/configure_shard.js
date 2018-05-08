@@ -13,6 +13,7 @@ const rootPrefix = "../../../../.."
   , logger = new Logger()
   , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
   , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
+  , helper = require(rootPrefix + "/tests/mocha/services/shard_management/helper")
 ;
 
 
@@ -30,7 +31,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
 
   it(optionsDesc, async function(){
     let shardName = "shard_00001_userBalances"
-      , allocation = availableShardConst.getShardTypes()[availableShardConst.disabled];
+      , allocation = availableShardConst.getShardTypes()[availableShardConst.all];
 
     if (options.emptyShardName) {
       shardName = "";
@@ -63,6 +64,17 @@ describe('services/shard_management/available_shard/configure_shard', function (
     });
 
     await shardManagementService.runShardMigration();
+
+    let entity_type = 'userBalances';
+    let schema = helper.createTableParamsFor("test");
+
+    // delete table
+    await dynamoDbObject.deleteTable({
+      TableName: 'shard_00001_userBalances'
+    });
+
+    let shardName = "shard_00001_userBalances";
+    await shardManagementService.addShard({shard_name: shardName, entity_type: entity_type, table_schema: schema});
   });
 
 

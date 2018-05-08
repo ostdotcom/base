@@ -40,7 +40,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
     if (toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
       assert.exists(response.data.data);
-      assert.equal(response.data.data.length,1);
+      assert.equal(response.data.data.length, 1);
     } else {
       assert.isTrue(response.isFailure(), "Failure");
     }
