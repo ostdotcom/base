@@ -59,7 +59,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, retu
 
 };
 
-describe('services/dynamodb/shard_management/managed_shard/get_shard', function () {
+describe('services/dynamodb/shard_management/managed_shard/get_shard_name', function () {
 
   before(async function () {
 
@@ -86,11 +86,11 @@ describe('services/dynamodb/shard_management/managed_shard/get_shard', function 
 
   createTestCasesForOptions("Get shard happy case", {}, true, 1);
 
-  createTestCasesForOptions("Get shard having invalid shard type", {
+  createTestCasesForOptions("Get shard name having invalid shard type", {
     inValidEntityType: true
   }, false, 1);
 
-  createTestCasesForOptions("Get shard having invalid Id", {
+  createTestCasesForOptions("Get shard name having invalid Id", {
     inValidId: true
   }, true, 0);
 });

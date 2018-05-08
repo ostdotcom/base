@@ -75,7 +75,7 @@ GetShardsCacheKlass.prototype.fetchDataFromSource = async function (cacheIds) {
 
   if (!cacheIds) {
     return responseHelper.error(
-      'dy_sm_gs_1', 'blank ids'
+      's_cmm_gas_1', 'blank ids'
     );
   }
 

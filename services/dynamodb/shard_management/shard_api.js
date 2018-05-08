@@ -12,7 +12,7 @@ const rootPrefix  = "../../.."
   , AddShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/available_shard/add_shard')
   , ConfigureShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/available_shard/configure_shard')
   , AssignShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/managed_shard/assign_shard')
-  , GetShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/managed_shard/get_shard')
+  , GetShardNameKlass = require(rootPrefix + '/services/dynamodb/shard_management/managed_shard/get_shard_name')
   , GetShardsByTypeKlass = require(rootPrefix + '/services/dynamodb/shard_management/available_shard/get_shards')
   , HasShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/available_shard/has_shard')
 ;
@@ -118,7 +118,7 @@ ShardServiceApi.prototype = {
       , getShardParams = Object.assign(params, oThis.params)
     ;
 
-    return new GetShardKlass(getShardParams).perform();
+    return new GetShardNameKlass(getShardParams).perform();
   }
 };
 

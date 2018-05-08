@@ -12,7 +12,7 @@ const rootPrefix = '../../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
   , managedShard = require(rootPrefix + '/lib/models/dynamodb/managed_shard')
   , managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard')
-  , GetShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_managed_shard')
+  , GetShardNameMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_name')
   , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')
   , moduleName = 'services/shard_management/managed_shard/assign_shard'
   , responseHelper = new ResponseHelper({module_name: moduleName})
@@ -80,7 +80,7 @@ AssignShard.prototype = {
         ddb_object: oThis.ddbObject,
         ids: [{identifier: oThis.identifier, entity_type: oThis.entityType}]
       };
-      new GetShardMultiCacheKlass(cacheParamsGetShard).clear();
+      new GetShardNameMultiCacheKlass(cacheParamsGetShard).clear();
 
       /******************** Cache clearance *********************/
 
