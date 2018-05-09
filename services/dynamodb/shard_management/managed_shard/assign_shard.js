@@ -118,7 +118,12 @@ AssignShard.prototype = {
         return onResolve(responseHelper.error('s_sm_as_as_validateParams_1', 'ddbObject is undefined'));
       }
 
-      const response = await oThis.ddbObject.shardManagement().hasShard({ddb_object: oThis.ddbObject, shard_names: [oThis.shardName]});
+      const paramsHasShard = {
+        ddb_object: oThis.ddbObject,
+        shard_names: [oThis.shardName]
+      };
+      const response = await (new HasShardMultiCacheKlass(paramsHasShard)).fetch();
+
       if (response.isFailure() || !response.data[oThis.shardName].has_shard) {
         logger.debug('s_sm_ms_as_validateParams_4', 'shardName does not exists', oThis.shardName);
         return onResolve(responseHelper.error('s_sm_ms_as_validateParams_1', 'shardName does not exists'));

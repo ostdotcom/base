@@ -16,7 +16,6 @@ const rootPrefix = '../../..'
   , logger = new Logger()
   , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
   , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
-  // , CreateTableKlass = require(rootPrefix + "/services/dynamodb/create_table")
 ;
 
 /**
@@ -140,9 +139,7 @@ ShardMigration.prototype = {
         },
         TableName: availableShardConst.getTableName()
       }
-      // , createAvailableShardObject = new CreateTableKlass(availableShardsParams, oThis.ddbObject)
-      // , createTableAvailableShardsResponse = await createAvailableShardObject.perform()
-      , createTableAvailableShardsResponse = await oThis.ddbObject.createTable(availableShardsParams)
+      , createTableAvailableShardsResponse = await oThis.ddbObject.call('createTable', availableShardsParams)
     ;
 
     logger.debug(createTableAvailableShardsResponse);
@@ -190,9 +187,7 @@ ShardMigration.prototype = {
         },
         TableName: managedShardConst.getTableName()
       }
-      // , createManagedShardObject = new CreateTableKlass(managedShardsParams, oThis.ddbObject)
-      // , createTableManagedShardsResponse = await createManagedShardObject.perform();
-      , createTableManagedShardsResponse = await oThis.ddbObject.createTable(managedShardsParams)
+      , createTableManagedShardsResponse = await oThis.ddbObject.call('createTable', managedShardsParams)
     ;
 
     logger.debug(createTableManagedShardsResponse);

@@ -13,6 +13,7 @@ const rootPrefix = '../../../..'
   , availableShard = require( rootPrefix + '/lib/models/dynamodb/available_shard')
   , GetShardListMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_list')
   , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
+  , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')
   , moduleName = 'services/shard_management/available_shard/configure_shard'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
@@ -35,7 +36,7 @@ const rootPrefix = '../../../..'
 const ConfigureShard = function (params) {
   const oThis = this;
   params = params || {};
-  logger.debug("=======addShard.params=======");
+  logger.debug("=======ConfigureShard.params=======");
   logger.debug(params);
 
   oThis.params = params;
@@ -117,7 +118,12 @@ ConfigureShard.prototype = {
         return onResolve(responseHelper.error('s_sm_as_cs__validateParams_2', 'enableAllocation is invalid'));
       }
 
-      const response = await oThis.ddbObject.shardManagement().hasShard({ddb_object: oThis.ddbObject, shard_names: [oThis.shardName]});
+      const paramsHasShard = {
+        ddb_object: oThis.ddbObject,
+        shard_names: [oThis.shardName]
+      };
+      const response = await (new HasShardMultiCacheKlass(paramsHasShard)).fetch();
+
       if (response.isFailure() || !response.data[oThis.shardName].has_shard) {
         logger.debug('s_sm_as_cs__validateParams_3', 'shardName does not exists', oThis.shardName);
         return onResolve(responseHelper.error('s_sm_as_cs__validateParams_3', 'shardName does not exists'));

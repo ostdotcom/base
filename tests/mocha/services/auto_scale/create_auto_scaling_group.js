@@ -13,7 +13,7 @@ const rootPrefix = "../../../.."
   , logger = new Logger()
 ;
 
-const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_2)
+const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS)
 ;
 
 const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
@@ -21,18 +21,7 @@ const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
 
   it(optionsDesc, async function () {
     var params = {
-      AutoScalingGroupName: "my-auto-scaling-group",
-      AvailabilityZones: [
-        "us-east-1"
-      ],
-      HealthCheckGracePeriod: 120,
-      HealthCheckType: "ELB",
-      LaunchConfigurationName: "my-launch-config",
-      LoadBalancerNames: [
-        "my-load-balancer"
-      ],
-      MaxSize: 3,
-      MinSize: 1
+      ServiceNamespace: "dynamodb"
     };
     const response = await dynamoDbObject.createAutoScalingGroup(params);
     logger.log(response);

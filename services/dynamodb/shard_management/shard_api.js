@@ -20,15 +20,15 @@ const rootPrefix  = "../../.."
 /**
  * Constructor for Shard Service api class
  *
- * @params {Object} params - DynamoDb object connection
+ * @params {Object} ddbObject - DynamoDb object connection
  *
  * @constructor
  */
-const ShardServiceApi = function(params) {
+const ShardServiceApi = function(ddbObject) {
   const oThis = this
   ;
 
-  oThis.params = params;
+  oThis.ddbObject = ddbObject;
 
 };
 
@@ -42,7 +42,7 @@ ShardServiceApi.prototype = {
     const oThis = this
     ;
 
-    return new ShardMigrationKlass(oThis.params).perform();
+    return new ShardMigrationKlass({ddb_object: oThis.ddbObject}).perform();
   },
 
   /**
@@ -52,7 +52,7 @@ ShardServiceApi.prototype = {
    */
   addShard: function(params) {
     const oThis = this
-      , addShardParams = Object.assign(params, oThis.params)
+      , addShardParams = Object.assign({ddb_object: oThis.ddbObject}, params)
     ;
 
     return new AddShardKlass(addShardParams).perform();
@@ -65,7 +65,7 @@ ShardServiceApi.prototype = {
    */
   configureShard: function(params) {
     const oThis = this
-      , configureShardParams = Object.assign(params, oThis.params)
+      , configureShardParams = Object.assign({ddb_object: oThis.ddbObject}, params)
     ;
 
     return new ConfigureShardKlass(configureShardParams).perform();
@@ -78,7 +78,7 @@ ShardServiceApi.prototype = {
    */
   getShardsByType: function (params) {
     const oThis = this
-      , configureShardParams = Object.assign(params, oThis.params)
+      , configureShardParams = Object.assign({ddb_object: oThis.ddbObject}, params)
     ;
 
     return new GetShardListKlass(configureShardParams).perform();
@@ -91,7 +91,7 @@ ShardServiceApi.prototype = {
    */
   assignShard: function (params) {
     const oThis = this
-      , assignShardParams = Object.assign(params, oThis.params)
+      , assignShardParams = Object.assign({ddb_object: oThis.ddbObject}, params)
     ;
 
     return new AssignShardKlass(assignShardParams).perform();
@@ -103,7 +103,7 @@ ShardServiceApi.prototype = {
    */
   hasShard: function (params) {
     const oThis = this
-      , hasShardParams = Object.assign(params, oThis.params)
+      , hasShardParams = Object.assign({ddb_object: oThis.ddbObject}, params)
     ;
 
     return new HasShardKlass(hasShardParams).perform();
@@ -115,7 +115,7 @@ ShardServiceApi.prototype = {
    */
   getShard: function (params) {
     const oThis = this
-      , getShardParams = Object.assign(params, oThis.params)
+      , getShardParams = Object.assign({ddb_object: oThis.ddbObject}, params)
     ;
 
     return new GetShardNameKlass(getShardParams).perform();
