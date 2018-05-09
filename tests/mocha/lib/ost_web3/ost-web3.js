@@ -28,13 +28,14 @@ const Chai            = require('chai')
 
 
 // Some Constants. All times are in milliseconds.
-const avg_block_time              = 5000    /* Avg time required to mine a block */
-    , no_of_conformation_blocks   = 4 + 6   /* We expect receipt of transactions to be received in these many blocks. */
+const avg_block_time              = 8000    /* Avg time required to mine a block */
+    , confirmation_event_number   = 6
+    , no_of_conformation_blocks   = 4 + confirmation_event_number   /* We expect receipt of transactions to be received in these many blocks. */
     , buffer_time_per_describe    = 5000
     , max_time_per_transaction    = (avg_block_time * no_of_conformation_blocks) + buffer_time_per_describe
     , max_time_for_geth_start     = 20000 /* Time Required for geth to start */
     , max_time_for_geth_stop      = 10000 /* Time Required for geth to stop  */
-    , amt_to_transfer_in_eth = "0.01"
+    , amt_to_transfer_in_eth      = "0.01"
 ; 
 
 // This is the main function. Let it execute once all methods are defined.
@@ -80,7 +81,7 @@ const expectedOutValues = {
   , transactionHashEvent      : true
   , receiptEvent              : true
   , confirmationEvent         : true
-  , confirmationEventNumber   : 6
+  , confirmationEventNumber   : confirmation_event_number
   , errorEvent                : false
   , didResolveTxPromise       : true
   , receiptStatus             : "0x1"
