@@ -13,6 +13,7 @@ const rootPrefix  = "../.."
   , WaitForServiceKlass = require(rootPrefix + "/services/dynamodb/wait_for")
   , TableExistServiceApiKlass = require(rootPrefix + '/services/dynamodb/table_exist')
   , ShardServiceApiKlass = require(rootPrefix + '/services/dynamodb/shard_management/shard_api')
+  , AutoScaleKlass = require(rootPrefix + '/services/auto_scale/api')
 ;
 
 /**
@@ -27,6 +28,7 @@ const DynamoDBService = function(params) {
   ;
 
   oThis.ddbObject = new DdbBase(params);
+  oThis.autoScaleObject = new AutoScaleKlass(params);
 };
 
 DynamoDBService.prototype = {
@@ -249,8 +251,16 @@ DynamoDBService.prototype = {
     const oThis = this
     ;
     return new ShardServiceApiKlass({ddb_object: oThis});
-  }
+  },
 
+  /**
+   * To create auto scaling group
+   */
+  createAutoScalingGroup: function(params) {
+    const oThis = this
+    ;
+    return oThis.autoScaleObject.createAutoScalingGroup(params);
+  }
 
 };
 
