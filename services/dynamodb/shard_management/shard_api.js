@@ -36,6 +36,7 @@ ShardServiceApi.prototype = {
 
   /**
    * To run Shard Migration
+   *
    * @return {*|promise<result>}
    */
   runShardMigration: function() {
@@ -47,7 +48,9 @@ ShardServiceApi.prototype = {
 
   /**
    *  To add Shard
+   *
    * @param params
+   *
    * @return {*|promise<result>}
    */
   addShard: function(params) {
@@ -60,7 +63,9 @@ ShardServiceApi.prototype = {
 
   /**
    * To configure shard
+   *
    * @param params
+   *
    * @return {*|promise<result>}
    */
   configureShard: function(params) {
@@ -73,7 +78,9 @@ ShardServiceApi.prototype = {
 
   /**
    * get Shard list by type
+   *
    * @param params
+   *
    * @return {*|promise<result>}
    */
   getShardsByType: function (params) {
@@ -86,7 +93,9 @@ ShardServiceApi.prototype = {
 
   /**
    * To assign shard
+   *
    * @param params
+   *
    * @return {*|promise<result>}
    */
   assignShard: function (params) {
@@ -99,6 +108,7 @@ ShardServiceApi.prototype = {
 
   /**
    * has shard
+   *
    * @param params
    */
   hasShard: function (params) {
@@ -111,6 +121,7 @@ ShardServiceApi.prototype = {
 
   /**
    * get shard
+   *
    * @param params
    */
   getShard: function (params) {

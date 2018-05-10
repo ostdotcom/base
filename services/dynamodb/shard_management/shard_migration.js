@@ -23,6 +23,8 @@ const rootPrefix = '../../..'
  *
  * @constructor
  *
+ * @params {object} params -
+ *
  * @return {Object}
  *
  */
@@ -47,8 +49,9 @@ ShardMigration.prototype = {
       let r = null;
       logger.info("=======ShardMigration.runShardMigration.started=======");
       r = await oThis.runShardMigration();
-      logger.info("=======ShardMigration.runShardMigration.finished=======");
+      logger.info("=======ShardMigration.runShardMigration.result=======");
       logger.debug(r);
+      logger.info("=======ShardMigration.runShardMigration.finished=======");
       return r;
     } catch (err) {
       return responseHelper.error('s_sm_sm_perform_1', 'Something went wrong. ' + err.message);
@@ -84,7 +87,10 @@ ShardMigration.prototype = {
 
   /**
    * Run CreateAvailableShardMigration
+   *
    * @return {Promise<void>}
+   *
+   * TODO - Integrate CreateTableMigration Here
    */
   runCreateAvailableShardMigration: async function () {
     const oThis = this
