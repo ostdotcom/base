@@ -76,7 +76,7 @@ ConfigureShard.prototype = {
       /******************** Cache clearance *********************/
       logger.debug("=======ConfigureShard.cacheClearance.result=======");
 
-      let response = await availableShard.getShardInfo(oThis.params);
+      let response = await availableShard.getShardByName(oThis.params);
       logger.log("DEBUG", response);
       if (response.isFailure()) return responseHelper.error('s_sm_as_cs_perform_1', 'Something went wrong. ' + response.msg);
 

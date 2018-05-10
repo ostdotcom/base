@@ -41,7 +41,7 @@ GetShardNameCacheKlass.prototype.setCacheKeys = function () {
   oThis.cacheKeys = {};
   for (let i = 0; i < oThis.ids.length; i++) {
     let key = String(oThis.ids[i].identifier + oThis.ids[i].entity_type);
-    oThis.cacheKeys[oThis._cacheKeyPrefix() + "dy_sm_gms_" + oThis.ids[i].identifier + '_et_' + oThis.ids[i].entity_type] = key;
+    oThis.cacheKeys[oThis._cacheKeyPrefix() + "dy_sm_gsn_" + oThis.ids[i].identifier + '_et_' + oThis.ids[i].entity_type] = key;
     oThis.idToValueMap[key] = oThis.ids[i];
   }
 

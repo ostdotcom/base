@@ -41,7 +41,7 @@ const GetShardList = function (params) {
   oThis.params = params;
   oThis.ddbObject = params.ddb_object;
   oThis.entityType = params.entity_type;
-  oThis.shardType = params.shard_type = params.shard_type || 'all';
+  oThis.shardType = params.shard_type || availableShardGlobalConstant.all;
 };
 
 GetShardList.prototype = {

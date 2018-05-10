@@ -41,7 +41,7 @@ GetShardListCacheKlass.prototype.setCacheKeys = function () {
   oThis.cacheKeys = {};
   for (let i = 0; i < oThis.ids.length; i++) {
     let key = String(oThis.ids[i].entity_type + oThis.ids[i].shard_type);
-    oThis.cacheKeys[oThis._cacheKeyPrefix() + "dy_sm_gas_" + "et_" + oThis.ids[i].entity_type +"st_" + oThis.ids[i].shard_type] = key;
+    oThis.cacheKeys[oThis._cacheKeyPrefix() + "dy_sm_gsl_" + "et_" + oThis.ids[i].entity_type +"st_" + oThis.ids[i].shard_type] = key;
     oThis.idToValueMap[key] = oThis.ids[i];
   }
 
@@ -79,7 +79,7 @@ GetShardListCacheKlass.prototype.fetchDataFromSource = async function (cacheIds)
     );
   }
 
-  return await availableShard.getShards(Object.assign({}, oThis.params, {
+  return await availableShard.getShardsByEntityAllocation(Object.assign({}, oThis.params, {
     ids: cacheIds,
     id_value_map: oThis.idToValueMap
   }));
