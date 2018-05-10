@@ -1,9 +1,13 @@
 "use strict";
 
 /**
- * DynamoDB service api
+ * DynamoDB create table migration having multiple services
+ *  1. Create table
+ *  2. Check active table status
+ *  2. Enable continuous back up
+ *  3. Enable auto scaling
  *
- * @module services/dynamodb/table_exists
+ * @module services/dynamodb/create_table_migration
  *
  */
 
@@ -20,18 +24,17 @@ const rootPrefix  = "../.."
  *
  * @params {object} ddbObject - DynamoDB Object
  * @params {object} params - TableExist configurations
- *    @params {string} TableName - name of table
+ * @params {string} TableName - name of table
  *
  * @constructor
  */
-const TableExist = function(ddbObject, params) {
+const CreateTableMigration = function(ddbObject, params) {
   const oThis = this
   ;
-
-  DDBServiceBaseKlass.call(oThis, ddbObject, 'describeTable', params);
+  oThis.params = params;
 };
 
-TableExist.prototype = {
+CreateTableMigration.prototype = {
 
   /**
    * Perform method
@@ -88,16 +91,18 @@ TableExist.prototype = {
     const oThis = this
     ;
     return new Promise(async function (onResolve) {
-      const describeTableResponse = await oThis.ddbObject.call('describeTable', oThis.params);
-      if (describeTableResponse.isFailure()) {
-        return onResolve(responseHelper.successWithData({response: false, status: "DELETED"}));
+      DDBServiceBaseKlass.call(oThis, oThis.ddbObject, 'createTable', oThis.params);
+      const listTableResponse = await oThis.ddbObject.call('createTable', {});
+      if (listTableResponse.isFailure()) {
+        return onResolve(responseHelper.successWithData({response: false}));
       }
-      const tableStatus = describeTableResponse.data.Table.TableStatus || "";
-      return onResolve(responseHelper.successWithData({response: tableStatus === "ACTIVE", status: tableStatus}));
+      const allTables = listTableResponse.data.TableNames || [];
+      const isTableExist = allTables.indexOf(oThis.params.TableName) > -1;
+      return onResolve(responseHelper.successWithData({response: isTableExist}));
     });
   },
 
 };
 
-TableExist.prototype.constructor = TableExist;
-module.exports = TableExist;
+CreateTableMigration.prototype.constructor = CreateTableMigration;
+module.exports = CreateTableMigration;

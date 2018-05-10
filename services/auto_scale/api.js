@@ -29,16 +29,74 @@ const AutoScaleService = function(params) {
 AutoScaleService.prototype = {
 
   /**
-   * Create table
+   * Register scalable Target
    *
-   * @params {object} params
+   * @param params
    *
-   * @return {promise<result>}
-   *
+   * @return {*}
    */
-  createAutoScalingGroup: function(params) {
+  registerScalableTarget: function(params) {
     const oThis = this
-      , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'createAutoScalingGroup', params)
+      , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'registerScalableTarget', params)
+    ;
+    return createAutoScalingGroup.perform();
+  },
+
+  /**
+   * Put Scaling Policy
+   *
+   * @param params
+   *
+   * @return {*}
+   */
+  putScalingPolicy:function(params) {
+    const oThis = this
+      , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'putScalingPolicy', params)
+    ;
+    return createAutoScalingGroup.perform();
+  },
+
+  /**
+   * Delete Scaling policy
+   * @param params
+   */
+  deleteScalingPolicy: function(params) {
+    const oThis = this
+      , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'deleteScalingPolicy', params)
+    ;
+    return createAutoScalingGroup.perform();
+  },
+
+  /**
+   * De Register Scalable Target
+   * @param params
+   */
+  deregisterScalableTarget: function(params) {
+    const oThis = this
+      , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'deregisterScalableTarget', params)
+    ;
+    return createAutoScalingGroup.perform();
+  },
+
+  /**
+   * Describe Scalable Targets
+   * @param params
+   */
+  describeScalableTargets: function(params) {
+    const oThis = this
+      , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'describeScalableTargets', params)
+    ;
+    return createAutoScalingGroup.perform();
+  },
+
+  /**
+   * Describe scaling policies
+   * @param params
+   * @return {*}
+   */
+  describeScalingPolicies: function(params) {
+    const oThis = this
+      , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'describeScalingPolicies', params)
     ;
     return createAutoScalingGroup.perform();
   }

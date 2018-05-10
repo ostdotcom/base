@@ -10,10 +10,11 @@
 const rootPrefix  = "../.."
   , DdbBase = require(rootPrefix+'/lib/dynamodb/base')
   , DDBServiceBaseKlass = require(rootPrefix + "/services/dynamodb/base")
-  , WaitForServiceKlass = require(rootPrefix + "/services/dynamodb/wait_for")
   , TableExistServiceApiKlass = require(rootPrefix + '/services/dynamodb/table_exist')
+  , WaitForServiceKlass = require(rootPrefix + "/services/dynamodb/wait_for")
   , ShardServiceApiKlass = require(rootPrefix + '/services/dynamodb/shard_management/shard_api')
-  , AutoScaleServiceKlass = require(rootPrefix + '/services/auto_scale/api')
+  , CreateTableMigrationServiceKlass = require(rootPrefix + '/services/dynamodb/create_table_migration')
+
 ;
 
 /**
@@ -28,7 +29,6 @@ const DynamoDBService = function(params) {
   ;
 
   oThis.ddbObject = new DdbBase(params);
-  oThis.autoScaleObject = new AutoScaleServiceKlass(params);
 };
 
 DynamoDBService.prototype = {
@@ -46,6 +46,24 @@ DynamoDBService.prototype = {
       , createTableObject = new DDBServiceBaseKlass(oThis.ddbObject, 'createTable', params)
     ;
     return createTableObject.perform();
+  },
+
+  /**
+   * Create table with added migration
+   *  1. active status check
+   *  2. enabling continuous back up
+   *  3. enabling auto scaling
+   *
+   * @params {object} params
+   *
+   * @return {promise<result>}
+   *
+   */
+  createTableMigration: function(params) {
+    const oThis = this
+      , createTableMigrationObject = new CreateTableMigrationServiceKlass(oThis.ddbObject, params)
+    ;
+    return createTableMigrationObject.perform();
   },
 
   /**
@@ -229,6 +247,36 @@ DynamoDBService.prototype = {
   },
 
   /**
+   * Table exists
+   *
+   * @params {object} params
+   *
+   * @return {promise<result>}
+   *
+   */
+  tableExists: function(params) {
+    const oThis = this
+      , tableExistsObject = new WaitForServiceKlass(oThis.ddbObject, 'tableExists', params)
+    ;
+    return tableExistsObject.perform();
+  },
+
+  /**
+   * Table not exists
+   *
+   * @params {object} params
+   *
+   * @return {promise<result>}
+   *
+   */
+  tableNotExists: function(params) {
+    const oThis = this
+      , tableExistsObject = new WaitForServiceKlass(oThis.ddbObject, 'tableNotExists', params)
+    ;
+    return tableExistsObject.perform();
+  },
+
+  /**
    * Check if Table exists using describe table
    *
    * @params {object} params
@@ -243,7 +291,6 @@ DynamoDBService.prototype = {
     return tableExistObject.perform();
   },
 
-
   /**
    * To run shard service apis
    */
@@ -251,19 +298,8 @@ DynamoDBService.prototype = {
     const oThis = this
     ;
     return new ShardServiceApiKlass(oThis.ddbObject);
-  },
-
-  /**
-   * To create auto scaling group
-   */
-  createAutoScalingGroup: function(params) {
-    const oThis = this
-    ;
-    return oThis.autoScaleObject.createAutoScalingGroup(params);
   }
-
 };
 
 DynamoDBService.prototype.constructor = DynamoDBService;
 module.exports = DynamoDBService;
-

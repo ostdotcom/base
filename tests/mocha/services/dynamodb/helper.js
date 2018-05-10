@@ -375,6 +375,37 @@ helper.prototype = {
     }
 
     return scanResponse;
+  },
+
+  /**
+   * To wait till response
+   * @param dynamoDbApiObject
+   * @param func
+   * @param params
+   * @param toAssert
+   * @param retries
+   * @return {Promise<void>}
+   */
+  waitTillTableStatusProvided: async function(dynamoDbApiObject, func, params, toAssert, retries) {
+    const oThis = this
+      , WAIT = retries ? retries: 30;
+    let count = WAIT;
+    let response = null;
+    while (count > 0) {
+      response = await oThis.waitTillResponse(dynamoDbApiObject, func, params);
+      count-=1;
+    }
+  },
+
+  waitTillResponse: async function(dynamodbApiObject, func, params) {
+    return new Promise(function (resolve){
+      setTimeout(async function() {
+
+        let response  = await func.call(dynamodbApiObject, params);
+        resolve(response);
+
+        }, 1000);
+    });
   }
 };
 
