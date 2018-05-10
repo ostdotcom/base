@@ -66,6 +66,8 @@ ConfigureShard.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
+      // TODO silently return if  DB ALLOCATION_TYPE is same as input allocation type
+      // TODO move getShardInfo method to configureShard
       r = await availableShard.configureShard(oThis.params);
       logger.debug("=======ConfigureShard.configureShard.result=======");
       logger.debug(r);
@@ -79,9 +81,10 @@ ConfigureShard.prototype = {
       if (response.isFailure()) return responseHelper.error('s_sm_as_cs_perform_1', 'Something went wrong. ' + response.msg);
 
       const entity_type = response.data[oThis.shardName][availableShardConst.ENTITY_TYPE];
-      let allocation_type = response.data[oThis.shardName][String(availableShardConst.ALLOCATION_TYPE)];
+      let allocation_type = response.data[oThis.shardName][availableShardConst.ALLOCATION_TYPE];
       allocation_type = availableShardConst.disabled === availableShardConst.getShardTypes()[allocation_type] ? availableShardConst.enabled : availableShardConst.disabled;
 
+      // TODO clear both enabled/disabled cache
       const cacheParams = {
         ddb_object: oThis.ddbObject,
         ids: [{entity_type: entity_type, shard_type: allocation_type}]

@@ -70,8 +70,9 @@ HasShard.prototype = {
       r = await new HasShardMultiCacheKlass(cacheParams).fetch();
       logger.debug("=======HasShard.hasShard.result=======");
       logger.debug(r);
+      // TODO check if test cases are failing
       if (r.isSuccess()) {
-        return responseHelper.successWithData(r.data);
+        return r;
       } else {
         return responseHelper.error(r.err.error_data, r.err.code, r.err.msg);
       }
