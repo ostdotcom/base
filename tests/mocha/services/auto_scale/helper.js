@@ -182,12 +182,10 @@ helper.prototype = {
     if (checkTableExistsResponse1.data.response === true) {
 
       logger.log(testConstants.transactionLogsTableName, "Table exists . Deleting it....");
-      const deleteTableResponse = await helper.deleteTable(dynamodbApiObject, params, true);
-      if (deleteTableResponse.isFailure()){
-        assert.fail('Not able to delete table');
-      }
+      await oThis.deleteTable(dynamodbApiObject, params, true);
 
-      const response = await dynamodbApiObject.call('waitFor','tableNotExists', params);
+      logger.info("Waiting for table to get deleted");
+      await oThis.waitForTableToGetDeleted(params);
       logger.info("Table got deleted");
 
       // logger.log(testConstants.transactionLogsTableName, "Table exists . Deregister it from scalability....");
@@ -215,7 +213,7 @@ helper.prototype = {
     }
 
     logger.info("Creating table");
-    const createTableResponse = await oThis.createTable(dynamodbApiObject, helper.getCreateTableParams(), true);
+    const createTableResponse = await oThis.createTable(dynamodbApiObject, oThis.getCreateTableParams(), true);
 
     const roleARN = createTableResponse.data.TableDescription.TableArn;
     logger.log("Table arn :", roleARN);

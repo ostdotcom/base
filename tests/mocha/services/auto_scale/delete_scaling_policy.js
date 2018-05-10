@@ -25,39 +25,62 @@ let resourceId = 'table/' + testConstants.transactionLogsTableName
 const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
   optionsDesc = optionsDesc || "";
 
-  options = options || {invalidResId : true};
+  options = options || {invalid_policy_name : false};
 
   it(optionsDesc, async function () {
     this.timeout(100000);
 
-    let resId = "table/" + testConstants.transactionLogsTableName;
-    if (options.invalidResId) {
-      resId = "invalidResId"
+    let policyName = testConstants.transactionLogsTableName + "-scaling-policy";
+    if (options.invalid_policy_name) {
+      policyName = "invalidPolicyId"
+    } else {
+
+      const scalableTargetParams = {
+        ResourceId: resourceId, /* required */
+        ScalableDimension: 'dynamodb:table:WriteCapacityUnits',
+        ServiceNamespace: 'dynamodb', /* required */
+        MaxCapacity: 15,
+        MinCapacity: 1,
+        RoleARN: roleARN
+
+      };
+      const registerScalableTargetResponse = await autoScaleObj.registerScalableTarget(scalableTargetParams);
+      assert.equal(registerScalableTargetResponse.isSuccess(), true, 'registerScalableTarget failed');
+
+      const scalingPolicy = {
+        ServiceNamespace: "dynamodb",
+        ResourceId: "table/" + testConstants.transactionLogsTableName,
+        ScalableDimension: "dynamodb:table:WriteCapacityUnits",
+        PolicyName: policyName,
+        PolicyType: "TargetTrackingScaling",
+        TargetTrackingScalingPolicyConfiguration: {
+          PredefinedMetricSpecification: {
+            PredefinedMetricType: "DynamoDBWriteCapacityUtilization"
+          },
+          ScaleOutCooldown: 60,
+          ScaleInCooldown: 60,
+          TargetValue: 70.0
+        }
+      };
+      const putScalingPolicyResponse = await autoScaleObj.putScalingPolicy(scalingPolicy);
+      assert.equal(putScalingPolicyResponse.isSuccess(), true, 'putScalingPolicy failed');
     }
 
-    const scalingPolicy = {
-      ServiceNamespace: "dynamodb",
-      ResourceId: resId,
-      ScalableDimension: "dynamodb:table:WriteCapacityUnits",
+    const params = {
       PolicyName: testConstants.transactionLogsTableName + "-scaling-policy",
-      PolicyType: "TargetTrackingScaling",
-      TargetTrackingScalingPolicyConfiguration: {
-        PredefinedMetricSpecification: {
-          PredefinedMetricType: "DynamoDBWriteCapacityUtilization"
-        },
-        ScaleOutCooldown: 60,
-        ScaleInCooldown: 60,
-        TargetValue: 70.0
-      }
+      ResourceId: "table/" + testConstants.transactionLogsTableName,
+      ScalableDimension: "dynamodb:table:WriteCapacityUnits",
+      ServiceNamespace: "dynamodb"
     };
-    const response = await autoScaleObj.putScalingPolicy(scalingPolicy);
+
+    const response = await autoScaleObj.deleteScalingPolicy(params);
 
     logger.log(response);
-    assert.equal(response.isSuccess(), toAssert, 'put Scaling policy failed');
+    assert.equal(response.isSuccess(), toAssert, 'describeScalingPolicies failed');
   });
 };
 
-describe('services/auto_scale/api#putScalingPolicy', function () {
+describe('services/auto_scale/api#deleteScalingPolicy', function () {
 
   before(async function() {
     this.timeout(1000000);
@@ -67,9 +90,9 @@ describe('services/auto_scale/api#putScalingPolicy', function () {
 
   });
 
-  createTestCasesForOptions("Put scaling policy happy case", {}, true);
+  createTestCasesForOptions("Delete scaling policy happy case", null, true);
 
-  createTestCasesForOptions("Put scaling policy invalid resource Id case", {invalidResId : true}, false);
+  createTestCasesForOptions("Delete scaling policy having policy name case", {invalid_policy_name : true}, false);
 
   after(async function() {
     this.timeout(1000000);
