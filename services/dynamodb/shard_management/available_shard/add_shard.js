@@ -27,11 +27,13 @@ const rootPrefix = '../../../..'
  * @param {string} params.ddb_object - dynamoDbObject
  * @param {string} params.shard_name - Shard Name
  * @param {string} params.entity_type - entity type of shard
- * @param {JSON} params.table_schema - schema of the table in shard
  *
  * @return {Object}
  *
  */
+// TODO No need to create table in add shard
+// TODO Remove table_schema and update test cases
+// TODO take out cache clear in a different method
 const AddShard = function (params) {
   const oThis = this;
   logger.debug("=======addShard.params=======");
@@ -41,7 +43,6 @@ const AddShard = function (params) {
   oThis.shardName = params.shard_name;
   oThis.ddbObject = params.ddb_object;
   oThis.entityType = params.entity_type;
-  oThis.tableSchema = params.table_schema;
 };
 
 AddShard.prototype = {
@@ -74,7 +75,6 @@ AddShard.prototype = {
         shard_names: [oThis.shardName]
       };
       new HasShardMultiCacheKlass(cacheParams).clear();
-
       /******************** Cache clearance *********************/
 
       return r;
@@ -106,11 +106,9 @@ AddShard.prototype = {
         logger.debug('s_sm_as_as_validateParams_2', 'entityType is', oThis.entityType);
         return onResolve(responseHelper.error('s_sm_as_as_validateParams_1', 'entityType is invalid'));
       }
+      // TODO - validate for table name
 
-      if (!oThis.tableSchema || Object.keys(oThis.tableSchema).length < MINIMUM_SCHEMA_KEYS) {
-        logger.debug('s_sm_as_as_validateParams_3', 'tableSchema is', oThis.tableSchema);
-        return onResolve(responseHelper.error('s_sm_as_as_validateParams_2', 'tableSchema is invalid'));
-      }
+      // TODO entity type whitelisting validations
 
       return onResolve(responseHelper.successWithData({}));
     });

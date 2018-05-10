@@ -31,6 +31,7 @@ const rootPrefix = '../../../..'
  * @return {Object}
  *
  */
+// TODO batch get size of 50 validation
 const HasShard = function (params) {
   const oThis = this;
   params = params || {};

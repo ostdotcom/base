@@ -120,7 +120,7 @@ ShardMigration.prototype = {
           }
         ],
         GlobalSecondaryIndexes: [{
-          IndexName: 'AS-ET-index',
+          IndexName: availableShardConst.getIndexNameByEntityAllocationType(),
           KeySchema: [
             {
               AttributeName: availableShardConst.ENTITY_TYPE,
