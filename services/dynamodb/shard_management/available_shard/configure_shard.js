@@ -28,7 +28,7 @@ const rootPrefix = '../../../..'
  * @params {object} params -
  * @param {string} params.ddb_object - dynamoDbObject
  * @param {string} params.shard_name - Name of the shard
- * @param {boolean} params.enable_allocation - to enable or disable allocation
+ * @param {string} params.allocation_type - enable or disable allocation. enabled/disabled
  *
  * @return {Object}
  *
@@ -42,7 +42,7 @@ const ConfigureShard = function (params) {
   oThis.params = params;
   oThis.ddbObject = params.ddb_object;
   oThis.shardName = params.shard_name;
-  oThis.enableAllocation = params.enable_allocation;
+  oThis.allocationType = params.allocation_type;
 };
 
 ConfigureShard.prototype = {
@@ -53,6 +53,7 @@ ConfigureShard.prototype = {
    * @return {promise<result>}
    *
    */
+  // TODO take out cache clear in a different method
   perform: async function () {
 
     const oThis = this
@@ -113,10 +114,11 @@ ConfigureShard.prototype = {
         return onResolve(responseHelper.error('s_sm_as_cs_validateParams_1', 'shardName is invalid'));
       }
 
-      if (typeof(oThis.enableAllocation) !== 'number') {
-        logger.debug('s_sm_as_cs__validateParams_2', 'enableAllocation is', oThis.enableAllocation);
-        return onResolve(responseHelper.error('s_sm_as_cs__validateParams_2', 'enableAllocation is invalid'));
+      if (typeof(oThis.allocationType) !== 'string') {
+        logger.debug('s_sm_as_cs__validateParams_2', 'allocationType is', oThis.allocationType);
+        return onResolve(responseHelper.error('s_sm_as_cs__validateParams_2', 'allocationType is invalid'));
       }
+      // TODO add allocationType validation from globalConstant
 
       const paramsHasShard = {
         ddb_object: oThis.ddbObject,

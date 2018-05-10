@@ -21,6 +21,8 @@ const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGU
   , shardManagementService = dynamoDbObject.shardManagement()
   ;
 
+// TODO remove test cases for all
+// TODO add test cases for enabled/disabled
 const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
   optionsDesc = optionsDesc || "";
   options = options || {
