@@ -14,7 +14,6 @@ const rootPrefix  = "../.."
   , responseHelper = new ResponseHelperKlass({module_name: "DDBBaseService"})
 ;
 
-
 /**
  * Constructor for base service class
  *
@@ -44,15 +43,22 @@ Base.prototype = {
   perform: async function () {
     const oThis = this
     ;
+    try {
+      var r = null;
+      r = oThis.validateParams();
+      logger.debug("=======Base.validateParams.result=======");
+      logger.debug(r);
+      if (r.isFailure()) return r;
 
-    var r = null;
-    r = oThis.validateParams();
-    logger.debug("=======Base.validateParams.result=======");
-    logger.debug(r);
-    if (r.isFailure()) return r;
+      r = oThis.executeDdbRequest();
+      logger.debug("=======Base.executeDdbRequest.result=======");
+      logger.debug(r);
+      return r;
 
-    return oThis.executeDdbRequest();
-
+    } catch(err) {
+      logger.error("services/dynamodb/base.js:perform inside catch ", err);
+      return responseHelper.error('s_dy_b_perform_1', 'Something went wrong. ' + err.message);
+    }
   },
 
   /**
@@ -88,19 +94,7 @@ Base.prototype = {
   executeDdbRequest: async function () {
     const oThis = this
     ;
-
-    try {
-
-      const r = await oThis.ddbObject.call(oThis.methodName, oThis.params);
-      logger.debug("=======Base.perform.result=======");
-      logger.debug(r);
-      return r;
-
-    } catch (err) {
-      logger.error("services/dynamodb/base.js:executeDdbRequest inside catch ", err);
-      return responseHelper.error('s_dy_b_executeDdbRequest_1', 'Something went wrong. ' + err.message);
-    }
-
+    return await oThis.ddbObject.call(oThis.methodName, oThis.params);
   },
 
 };

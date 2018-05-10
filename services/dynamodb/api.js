@@ -14,7 +14,6 @@ const rootPrefix  = "../.."
   , WaitForServiceKlass = require(rootPrefix + "/services/dynamodb/wait_for")
   , ShardServiceApiKlass = require(rootPrefix + '/services/dynamodb/shard_management/shard_api')
   , CreateTableMigrationServiceKlass = require(rootPrefix + '/services/dynamodb/create_table_migration')
-
 ;
 
 /**
@@ -254,7 +253,7 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  tableExists: function(params) {
+  tableExistsUsingWaitFor: function(params) {
     const oThis = this
       , tableExistsObject = new WaitForServiceKlass(oThis.ddbObject, 'tableExists', params)
     ;
@@ -269,7 +268,7 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  tableNotExists: function(params) {
+  tableNotExistsUsingWaitFor: function(params) {
     const oThis = this
       , tableExistsObject = new WaitForServiceKlass(oThis.ddbObject, 'tableNotExists', params)
     ;

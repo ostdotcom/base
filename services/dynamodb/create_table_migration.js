@@ -31,10 +31,12 @@ const rootPrefix  = "../.."
 const CreateTableMigration = function(ddbObject, params) {
   const oThis = this
   ;
-  oThis.params = params;
+  DDBServiceBaseKlass.call(oThis, ddbObject, 'createTable', params);
 };
 
-CreateTableMigration.prototype = {
+CreateTableMigration.prototype = Object.create(DDBServiceBaseKlass.prototype);
+
+const CreateTableMigrationPrototype = {
 
   /**
    * Perform method
@@ -104,5 +106,6 @@ CreateTableMigration.prototype = {
 
 };
 
+Object.assign(CreateTableMigration.prototype, CreateTableMigrationPrototype);
 CreateTableMigration.prototype.constructor = CreateTableMigration;
 module.exports = CreateTableMigration;

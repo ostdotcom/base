@@ -31,33 +31,9 @@ const TableExist = function(ddbObject, params) {
   DDBServiceBaseKlass.call(oThis, ddbObject, 'describeTable', params);
 };
 
-TableExist.prototype = {
+TableExist.prototype = Object.create(DDBServiceBaseKlass.prototype);
 
-  /**
-   * Perform method
-   *
-   * @return {promise<result>}
-   *
-   */
-  perform: async function () {
-    const oThis = this
-    ;
-    try {
-      var r = null;
-      r = oThis.validateParams();
-      logger.debug("=======TableExist.validateParams.result=======");
-      logger.debug(r);
-      if (r.isFailure()) return r;
-
-      r = await oThis.checkTableExist();
-      logger.debug("=======TableExist.checkTableExist.result=======");
-      logger.debug(r);
-      return r;
-    } catch (err) {
-      logger.error("services/dynamodb/table_exists.js:perform inside catch ", err);
-      return responseHelper.error('s_dy_te_perform_1', 'Something went wrong. ' + err.message);
-    }
-  },
+const TableExistPrototype = {
 
   /**
    * Validation of params
@@ -84,7 +60,7 @@ TableExist.prototype = {
    * @return {Promise} true/false
    *
    */
-  checkTableExist: function() {
+  executeDdbRequest: function() {
     const oThis = this
     ;
     return new Promise(async function (onResolve) {
@@ -99,5 +75,6 @@ TableExist.prototype = {
 
 };
 
+Object.assign(TableExist.prototype, TableExistPrototype);
 TableExist.prototype.constructor = TableExist;
 module.exports = TableExist;

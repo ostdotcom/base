@@ -79,5 +79,4 @@ const waitForPrototype = {
 
 Object.assign(WaitFor.prototype, waitForPrototype);
 WaitFor.prototype.constructor = waitForPrototype;
-
 module.exports = WaitFor;

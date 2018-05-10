@@ -121,7 +121,7 @@ helper.prototype = {
   waitForTableToGetDeleted : async function(dynamodbApiObject, params) {
     const oThis = this
     ;
-    const response = await dynamodbApiObject.tableNotExists(params);
+    const response = await dynamodbApiObject.tableNotExistsUsingWaitFor(params);
 
     assert.isTrue(response.isSuccess(), "tableNotExists failed");
   },
@@ -134,7 +134,7 @@ helper.prototype = {
   waitForTableToGetCreated : async function(dynamodbApiObject, params) {
     const oThis = this
     ;
-    const response = await dynamodbApiObject.tableExists(params);
+    const response = await dynamodbApiObject.tableExistsUsingWaitFor(params);
 
     assert.isTrue(response.isSuccess(), "tableExists failed");
   },
