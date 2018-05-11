@@ -16,7 +16,7 @@ describe('Batch get', function () {
     this.timeout(100000);
 
     // get dynamoDB API object
-    dynamoDBApi = helper.getDynamoDBApiObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
+    dynamoDBApi = helper.validateDynamodbApiObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
 
     // check if table exists
     const checkTableExistsResponse = await dynamoDBApi.checkTableExist(testDataSource.DELETE_TABLE_DATA);

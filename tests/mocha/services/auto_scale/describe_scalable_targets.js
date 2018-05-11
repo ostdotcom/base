@@ -7,8 +7,8 @@ const Chai = require('chai')
 
 // Load dependencies package
 const rootPrefix = "../../../.."
-  , ApplicationAutoScalingKlass = require(rootPrefix + "/services/auto_scale/api.js")
-  , DdbApiKlass = require(rootPrefix + '/services/dynamodb/api')
+  , ApplicationAutoScalingKlass = require(rootPrefix + "/index").AutoScaling
+  , DdbApiKlass = require(rootPrefix + "/index").Dynamodb
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , helper = require(rootPrefix + "/tests/mocha/services/auto_scale/helper")
   , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")

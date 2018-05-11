@@ -2,6 +2,7 @@ const chai = require('chai')
   , assert = chai.assert;
 
 const rootPrefix = "../../../.."
+  , DdbApiKlass = require(rootPrefix + "/index").Dynamodb
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
@@ -14,11 +15,13 @@ describe('Create Table', function() {
 
   before(async function() {
 
-    // get dynamodbApiObject
-    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
+    // create dynamodbApiObject
+    dynamodbApiObject = new DdbApiKlass(testConstants.DYNAMODB_CONFIGURATIONS_PROD);
+    helper.validateDynamodbApiObject(dynamodbApiObject);
   });
 
   it('should delete table successfully if exists', async function () {
+    this.timeout(100000);
     const params = {
       TableName: testConstants.transactionLogsTableName
     };
@@ -29,6 +32,7 @@ describe('Create Table', function() {
   });
 
   it('should create table successfully', async function () {
+    this.timeout(100000);
     // build create table params
     const createTableParams = {
       TableName : testConstants.transactionLogsTableName,
@@ -74,65 +78,31 @@ describe('Create Table', function() {
       },
     };
     await helper.createTable(dynamodbApiObject, createTableParams, true);
-  });
-
-  it('create table should fail when table name is not passed', async function () {
-    // build create table params
-    const createTableParams = {
-      KeySchema: [
-        {
-          AttributeName: "tuid",
-          KeyType: "HASH"
-        },  //Partition key
-        {
-          AttributeName: "cid",
-          KeyType: "RANGE"
-        }  //Sort key
-      ],
-      AttributeDefinitions: [
-        { AttributeName: "tuid", AttributeType: "S" },
-        { AttributeName: "cid", AttributeType: "N" },
-        { AttributeName: "thash", AttributeType: "S" }
-      ],
-      ProvisionedThroughput: {
-        ReadCapacityUnits: 5,
-        WriteCapacityUnits: 5
-      },
-      GlobalSecondaryIndexes: [
-        {
-          IndexName: 'thash_global_secondary_index',
-          KeySchema: [
-            {
-              AttributeName: 'thash',
-              KeyType: "HASH"
-            }
-          ],
-          Projection: {
-            ProjectionType: "KEYS_ONLY"
-          },
-          ProvisionedThroughput: {
-            ReadCapacityUnits: 1,
-            WriteCapacityUnits: 1
-          }
-        },
-      ],
-      SSESpecification: {
-        Enabled: false
-      },
+    const params = {
+      TableName: testConstants.transactionLogsTableName
     };
-    await helper.createTable(dynamodbApiObject, createTableParams, false);
   });
 
-  // it('should enable continous backup successfully', async function () {
-  //   // build create table params
-  //   const enableContinousBackupParams = {
-  //     TableName: testConstants.transactionLogsTableName,
-  //     PointInTimeRecoverySpecification: {
-  //       PointInTimeRecoveryEnabled: true
-  //     }
-  //   };
-  //   await helper.updateContinuousBackup(dynamodbApiObject, enableContinousBackupParams);
-  // });
+  it('should enable update continuous backup successfully', async function () {
+    // build update continuous params
+    const enableContinousBackupParams = {
+      TableName: testConstants.transactionLogsTableName,
+      PointInTimeRecoverySpecification: {
+        PointInTimeRecoveryEnabled: true
+      }
+    };
+    await helper.updateContinuousBackup(dynamodbApiObject, enableContinousBackupParams, true);
+  });
+
+  it('should fail enable update continuous backup if table name not present', async function () {
+    // build update continuous params
+    const enableContinousBackupParams = {
+      PointInTimeRecoverySpecification: {
+        PointInTimeRecoveryEnabled: true
+      }
+    };
+    await helper.updateContinuousBackup(dynamodbApiObject, enableContinousBackupParams, false);
+  });
 
   after(async function() {
     const params = {

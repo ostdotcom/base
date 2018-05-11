@@ -2,7 +2,6 @@ const chai = require('chai')
   , assert = chai.assert;
 
 const rootPrefix = "../../../.."
-  , DdbApiKlass = require(rootPrefix + '/services/dynamodb/api')
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
@@ -14,9 +13,8 @@ describe('Delete Table', function() {
   var dynamodbApiObject = null;
 
   before(async function() {
-    // create dynamodbApiObject
-    dynamodbApiObject = new DdbApiKlass(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
-    helper.validateDynamodbApiObject(dynamodbApiObject);
+    // get dynamodbApiObject
+    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
   });
 
   it('should create table successfully', async function () {

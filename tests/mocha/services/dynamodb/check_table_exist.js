@@ -3,7 +3,6 @@ const chai = require('chai')
 
 //Load external files
 const rootPrefix = "../../../.."
-  , DdbApiKlass = require(rootPrefix + '/services/dynamodb/api')
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
@@ -16,8 +15,7 @@ describe('Check table exists', function() {
 
   before(async function() {
     // create dynamoDbApiObject
-    dynamodbApiObject = new DdbApiKlass(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
-    helper.validateDynamodbApiObject(dynamodbApiObject);
+    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
 
     // put item
     const createTableParams = {

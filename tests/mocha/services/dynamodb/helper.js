@@ -7,7 +7,8 @@ const rootPrefix = "../../../.."
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
-  , api = require(rootPrefix + '/services/dynamodb/api')
+  , dynamodbApiKlass = require(rootPrefix + '/index').Dynamodb
+  , autoScaleHelper = require(rootPrefix + "/tests/mocha/services/auto_scale/helper")
 ;
 
 /**
@@ -27,10 +28,17 @@ helper.prototype = {
    * @return {result}
    *
    */
-  validateDynamodbApiObject: function(dynamodbApiObject) {
+  validateDynamodbApiObject: function(dynamoDBConfig) {
+    // validate if the dynamodb configuration is available
+    assert.exists(dynamoDBConfig, 'dynamoDBConfig is neither `null` nor `undefined`');
+
+    // create dynamoDBApi object
+    const dynamodbApiObject = new dynamodbApiKlass(dynamoDBConfig);
     assert.exists(dynamodbApiObject, 'dynamodbApiObject is not created');
     assert.equal(typeof dynamodbApiObject, "object");
     assert.equal(dynamodbApiObject.constructor.name, "DynamoDBService");
+
+    return dynamodbApiObject;
   },
 
   /**
@@ -49,6 +57,9 @@ helper.prototype = {
     if (isResultSuccess) {
       assert.equal(createTableResponse.isSuccess(), true);
       assert.exists(createTableResponse.data.TableDescription, params.TableName);
+      // logger.info("Waiting for table to get created.............");
+      // await autoScaleHelper.waitForTableToGetCreated(dynamodbApiObject, params);
+      // logger.info("Table is active");
     } else{
       assert.equal(createTableResponse.isSuccess(), false, "createTable: successfull, should fail for this case");
     }
@@ -72,6 +83,9 @@ helper.prototype = {
       assert.equal(deleteTableResponse.isSuccess(), true);
       logger.debug("deleteTableResponse.data.TableDescription",deleteTableResponse.data.TableDescription);
       assert.exists(deleteTableResponse.data.TableDescription, params.TableName);
+      // logger.info("Waiting for table to get deleted");
+      // await autoScaleHelper.waitForTableToGetDeleted(dynamodbApiObject, params);
+      // logger.info("Table got deleted")
 
     } else{
       assert.equal(deleteTableResponse.isSuccess(), false);
@@ -165,30 +179,6 @@ helper.prototype = {
     }
 
     return listTablesResponse;
-  },
-
-  /**
-   * Get dynamoDBApi object
-   *
-   * @params {object} dynamoDBConfig - DynamoDB connection params
-   *
-   * @return {object} dynamoDBApi - DynamoDBApi Object
-   *
-   */
-  getDynamoDBApiObject: function(dynamoDBConfig){
-
-    // validate if the dynamodb configuration is available
-    assert.exists(dynamoDBConfig, 'dynamoDBConfig is neither `null` nor `undefined`');
-
-    // create dynamoDBApi object
-    const dynamoDBApi = new api(dynamoDBConfig);
-
-    // validate if the dynamoDBApi object is created
-    assert.exists(dynamoDBApi, 'dynamoDBApi is not created');
-    assert.equal(typeof dynamoDBApi, "object");
-
-    // return dynamoDBApi object
-    return dynamoDBApi;
   },
 
   /**
