@@ -53,7 +53,6 @@ ConfigureShard.prototype = {
    * @return {promise<result>}
    *
    */
-  // TODO take out cache clear in a different method
   perform: async function () {
 
     const oThis = this
@@ -66,32 +65,15 @@ ConfigureShard.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      // TODO silently return if  DB ALLOCATION_TYPE is same as input allocation type
-      // TODO move getShardInfo method to configureShard
-      r = await availableShard.configureShard(oThis.params);
-      logger.debug("=======ConfigureShard.configureShard.result=======");
-      logger.debug(r);
+      if ((await oThis.isRedundantUpdate())) {
+        return responseHelper.successWithData({});
+      } else {
+        r = await availableShard.configureShard(oThis.params);
+        logger.debug("=======ConfigureShard.configureShard.result=======");
+        logger.debug(r);
 
-
-      /******************** Cache clearance *********************/
-      logger.debug("=======ConfigureShard.cacheClearance.result=======");
-
-      let response = await availableShard.getShardByName(oThis.params);
-      logger.log("DEBUG", response);
-      if (response.isFailure()) return responseHelper.error('s_sm_as_cs_perform_1', 'Something went wrong. ' + response.msg);
-
-      const entity_type = response.data[oThis.shardName][availableShardConst.ENTITY_TYPE];
-      let allocation_type = response.data[oThis.shardName][availableShardConst.ALLOCATION_TYPE];
-      allocation_type = availableShardConst.disabled === availableShardConst.getShardTypes()[allocation_type] ? availableShardConst.enabled : availableShardConst.disabled;
-
-      // TODO clear both enabled/disabled cache
-      const cacheParams = {
-        ddb_object: oThis.ddbObject,
-        ids: [{entity_type: entity_type, shard_type: allocation_type}]
-      };
-      new GetShardListMultiCacheKlass(cacheParams).clear();
-
-      /******************** Cache clearance *********************/
+        oThis.clearAnyAssociatedCache();
+      }
 
       return r;
     } catch(err) {
@@ -108,34 +90,80 @@ ConfigureShard.prototype = {
    */
   validateParams: function () {
     const oThis = this
+      , errorCodePrefix = 's_sm_as_cs_validateParams_'
     ;
 
     return new Promise(async function (onResolve) {
+      let errorCode = null
+        , errorMsg = null
+      ;
+
+      oThis.hasShard = async function() {
+        const paramsHasShard = {
+          ddb_object: oThis.ddbObject,
+          shard_names: [oThis.shardName]
+        };
+        const response  = await (new HasShardMultiCacheKlass(paramsHasShard)).fetch();
+        if (response.isFailure()){
+          return false;
+        }
+
+        return response.data[oThis.shardName].has_shard
+      };
 
       if (!oThis.shardName) {
-        logger.debug('s_sm_as_cs_validateParams_1', 'shardName is', oThis.shardName);
-        return onResolve(responseHelper.error('s_sm_as_cs_validateParams_1', 'shardName is invalid'));
+        errorCode = errorCodePrefix + '1';
+        errorMsg = 'shardName is undefined';
+      } else if (String(typeof(oThis.allocationType)) !== 'string') {
+        errorCode = errorCodePrefix + '2';
+        errorMsg = 'allocationType is ' + oThis.allocationType;
+      } else if (undefined === availableShardConst.ALLOCATION_TYPES[oThis.allocationType]) {
+        errorCode = errorCodePrefix + '3';
+        errorMsg = 'allocationType is not supported';
+      } else if (!(await oThis.hasShard())) {
+        errorCode = errorCodePrefix + '4';
+        errorMsg = 'shardName does not exists';
+      } else {
+        return onResolve(responseHelper.successWithData({}));
       }
 
-      if (typeof(oThis.allocationType) !== 'string') {
-        logger.debug('s_sm_as_cs__validateParams_2', 'allocationType is', oThis.allocationType);
-        return onResolve(responseHelper.error('s_sm_as_cs__validateParams_2', 'allocationType is invalid'));
-      }
-      // TODO add allocationType validation from globalConstant
-
-      const paramsHasShard = {
-        ddb_object: oThis.ddbObject,
-        shard_names: [oThis.shardName]
-      };
-      const response = await (new HasShardMultiCacheKlass(paramsHasShard)).fetch();
-
-      if (response.isFailure() || !response.data[oThis.shardName].has_shard) {
-        logger.debug('s_sm_as_cs__validateParams_3', 'shardName does not exists', oThis.shardName);
-        return onResolve(responseHelper.error('s_sm_as_cs__validateParams_3', 'shardName does not exists'));
-      }
-
-      return onResolve(responseHelper.successWithData({}));
+      logger.debug(errorCode, errorMsg);
+      return onResolve(responseHelper.error(errorCode, errorMsg));
     });
+  },
+
+  isRedundantUpdate : async function() {
+    const oThis = this
+      , responseShardInfo = await availableShard.getShardByName(oThis.params)
+      , shardInfo = responseShardInfo.data[oThis.shardName]
+    ;
+
+    if (responseShardInfo.isFailure() || !shardInfo) {
+      throw "configure_shard :: validateParams :: getShardByName function failed OR ShardInfo not present"
+    }
+
+    oThis.oldEntityType = shardInfo[availableShardConst.ENTITY_TYPE];
+    oThis.oldAllocationType = shardInfo[String(availableShardConst.ALLOCATION_TYPE)];
+
+    return oThis.oldAllocationType === oThis.allocationType;
+  },
+
+  clearAnyAssociatedCache: async function() {
+    const oThis = this
+    ;
+
+    logger.debug("=======ConfigureShard.cacheClearance.result=======");
+    const cacheParams = {
+      ddb_object: oThis.ddbObject,
+      ids: [{
+        entity_type: oThis.oldEntityType,
+        shard_type: oThis.allocationType}, {
+        entity_type: oThis.oldEntityType,
+        shard_type: oThis.oldAllocationType
+      }]
+    };
+
+    return new GetShardListMultiCacheKlass(cacheParams).clear();
   }
 };
 

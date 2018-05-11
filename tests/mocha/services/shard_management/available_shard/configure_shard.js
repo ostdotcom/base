@@ -21,19 +21,18 @@ const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGU
   , shardManagementService = dynamoDbObject.shardManagement()
   ;
 
-// TODO remove test cases for all
-// TODO add test cases for enabled/disabled
 const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
   optionsDesc = optionsDesc || "";
   options = options || {
     emptyShardName: false,
     invalidAllocationType: false,
+    redundantAllocationType: false
   };
 
 
   it(optionsDesc, async function(){
     let shardName = "shard_00001_userBalances"
-      , allocation = availableShardConst.getShardTypes()[availableShardConst.all];
+      , allocation = availableShardConst.enabled;
 
     if (options.emptyShardName) {
       shardName = "";
@@ -41,7 +40,10 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
     if (options.invalidAllocationType) {
       allocation = "invalid";
     }
-    const response = await shardManagementService.configureShard({shard_name: shardName, enable_allocation: allocation});
+    if (options.redundantAllocationType) {
+      allocation = availableShardConst.disabled;
+    }
+    const response = await shardManagementService.configureShard({shard_name: shardName, allocation_type: allocation});
 
     logger.log("LOG", response);
     if (toAssert) {
@@ -80,7 +82,7 @@ describe('services/shard_management/available_shard/configure_shard', function (
   });
 
 
-  createTestCasesForOptions("Configuring shard happy case", {},true);
+  createTestCasesForOptions("Configuring shard happy case", null,true);
 
   createTestCasesForOptions("Configuring shard adding empty shard name", {
     emptyShardName: true
@@ -89,4 +91,8 @@ describe('services/shard_management/available_shard/configure_shard', function (
   createTestCasesForOptions("Configuring shard having invalid allocation type", {
     invalidAllocationType: true
   }, false);
+
+  createTestCasesForOptions("Configuring shard having redundantAllocationType", {
+    redundantAllocationType: true
+  }, true);
 });

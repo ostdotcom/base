@@ -12,6 +12,7 @@ const rootPrefix = '../../../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
   , availableShard = require( rootPrefix + '/lib/models/dynamodb/available_shard')
   , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')
+  , managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard')
   , moduleName = 'services/shard_management/available_shard/add_shard'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
@@ -31,9 +32,6 @@ const rootPrefix = '../../../..'
  * @return {Object}
  *
  */
-// TODO No need to create table in add shard
-// TODO Remove table_schema and update test cases
-// TODO take out cache clear in a different method
 const AddShard = function (params) {
   const oThis = this;
   logger.debug("=======addShard.params=======");
@@ -69,13 +67,7 @@ AddShard.prototype = {
       logger.debug("=======AddShard.addShard.result=======");
       logger.debug(r);
 
-      /******************** Cache clearance *********************/
-      const cacheParams = {
-        ddb_object: oThis.ddbObject,
-        shard_names: [oThis.shardName]
-      };
-      new HasShardMultiCacheKlass(cacheParams).clear();
-      /******************** Cache clearance *********************/
+      oThis.clearAnyAssociatedCache();
 
       return r;
     } catch(err) {
@@ -92,26 +84,44 @@ AddShard.prototype = {
    */
   validateParams: function () {
     const oThis = this
-      , MINIMUM_SCHEMA_KEYS = 3
+      , errorCodePrefix = 's_sm_as_as_validateParams_'
     ;
 
     return new Promise(async function (onResolve) {
+      let errorCode = null
+        , errorMsg = null
+      ;
 
       if (!oThis.shardName) {
-        logger.debug('s_sm_as_as_validateParams_1', 'shardName is', oThis.shardName);
-        return onResolve(responseHelper.error('s_sm_as_as_validateParams_1', 'shardName is invalid'));
+        errorCode = errorCodePrefix + '1';
+        errorMsg  =  'shardName is not defined';
+      } else if (!oThis.entityType) {
+        errorCode = errorCodePrefix + '2';
+        errorMsg  =  'entityType is not defined';
+      } else if (!managedShardConst.getSupportedEntityTypes()[oThis.entityType]) {
+        errorCode = errorCodePrefix + '3';
+        errorMsg  =  'entityType is not supported';
+      } else if (!oThis.params['table_schema']['TableName']) {
+        errorCode = errorCodePrefix + '4';
+        errorMsg  =  'TableName is not defined';
+      } else {
+        return onResolve(responseHelper.successWithData({}));
       }
 
-      if (!oThis.entityType) {
-        logger.debug('s_sm_as_as_validateParams_2', 'entityType is', oThis.entityType);
-        return onResolve(responseHelper.error('s_sm_as_as_validateParams_1', 'entityType is invalid'));
-      }
-      // TODO - validate for table name
+      logger.debug(errorCode, errorMsg);
+      return onResolve(responseHelper.error(errorCode, errorMsg));
 
-      // TODO entity type whitelisting validations
-
-      return onResolve(responseHelper.successWithData({}));
     });
+  },
+
+  clearAnyAssociatedCache: function () {
+    const oThis = this
+    ;
+    const cacheParams = {
+      ddb_object: oThis.ddbObject,
+      shard_names: [oThis.shardName]
+    };
+    return new HasShardMultiCacheKlass(cacheParams).clear();
   }
 
 };
