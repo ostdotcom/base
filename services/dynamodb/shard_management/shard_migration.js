@@ -158,8 +158,10 @@ ShardMigration.prototype = {
 
   /**
    * Run CreateManagedShardMigration
+   *
    * @return {Promise<void>}
    */
+  // TODO - Integrate CreateTableMigration Here
   runCreateManagedShardMigration: async function () {
     const oThis = this
     ;
@@ -167,6 +169,7 @@ ShardMigration.prototype = {
     logger.debug("========ShardMigration.runShardMigration.createManagedShards=======");
 
     const managedShardsParams = {
+        TableName: managedShardConst.getTableName(),
         AttributeDefinitions: [
           {
             AttributeName: managedShardConst.IDENTIFIER,
@@ -190,8 +193,7 @@ ShardMigration.prototype = {
         ProvisionedThroughput: {
           ReadCapacityUnits: 5,
           WriteCapacityUnits: 5
-        },
-        TableName: managedShardConst.getTableName()
+        }
       }
       , createTableManagedShardsResponse = await oThis.ddbObject.call('createTable', managedShardsParams)
     ;

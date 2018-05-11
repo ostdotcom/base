@@ -53,6 +53,7 @@ AssignShard.prototype = {
    * @return {promise<result>}
    *
    */
+  // TODO move cache clear code to new method
   perform: async function () {
 
     const oThis = this
@@ -70,6 +71,7 @@ AssignShard.prototype = {
       logger.debug(r);
 
       /******************** Cache clearance *********************/
+        // TODO why clear has shard cache here. Not needed
       const cacheParamsHasShard = {
         ddb_object: oThis.ddbObject,
         shard_names: [oThis.shardName]
@@ -97,6 +99,7 @@ AssignShard.prototype = {
    * @return {Promise<any>}
    *
    */
+  // TODO validate that given shard name is enabled for allocation
   validateParams: function () {
     const oThis = this
     ;
