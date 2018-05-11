@@ -212,7 +212,11 @@ const OSTBase = require('@openstfoundation/openst-base')
     DynamodbApiObject.DynamodbApiObject(createTableParams);
     
     // Create Table Migration
-    // TODO Sachin
+    // 1. Creates table
+    // 2. Enables ContinuousBackup 
+    // 3. Enables read/write auto scaling
+    // 4. Returns describe table response 
+    DynamodbApiObject.createTableMigration(createTableMigrationParams);
     
     // Update Dynamodb Table
     DynamodbApiObject.updateTable(updateTableParams)
