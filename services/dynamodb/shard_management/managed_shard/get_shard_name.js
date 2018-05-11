@@ -25,10 +25,12 @@ const rootPrefix = '../../../..'
  *
  * @params {object} params -
  * @param {string} params.ids - ids are object of keys
- * @param {object} params.ddb_object - dynamo db object
+ * @param {object} params.ddb_object - dynamodb object
+ *
  * @return {Object}
  *
  */
+  // TODO change ids structure to {entityType1: [identifiers], entityType2: [identifiers]}
 const GetShardName = function (params) {
   const oThis = this;
   logger.debug("=======GetShardName.params=======");

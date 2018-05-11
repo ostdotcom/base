@@ -85,6 +85,7 @@ Base.prototype = {
    * @return {promise<result>}
    *
    */
+  // TODO try catch should be at perform level
   executeAutoScaleRequest: async function () {
     const oThis = this
     ;
