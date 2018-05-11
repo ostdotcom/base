@@ -52,6 +52,7 @@ GetShardList.prototype = {
    * @return {promise<result>}
    *
    */
+  // TODO move caching logic to a method
   perform: async function () {
 
     const oThis = this

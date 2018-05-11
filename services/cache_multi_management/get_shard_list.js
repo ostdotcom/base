@@ -10,6 +10,7 @@ const rootPrefix = '../..'
 
 /**
  * @constructor
+ *
  * @augments GetShardListCacheKlass
  *
  * @param {Object} params - cache key generation & expiry related params
