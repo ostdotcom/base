@@ -34,9 +34,10 @@ const rootPrefix  = "../.."
  *
  * @constructor
  */
-const CreateTableMigration = function(ddbObject, params) {
+const CreateTableMigration = function(ddbObject, autoScaleObject ,params) {
   const oThis = this
   ;
+  oThis.autoScalingObject = autoScaleObject;
   oThis.createTableConfig = params.createTableConfig;
   oThis.updateContinuousBackupConfig = params.updateContinuousBackupConfig;
   oThis.autoScalingConfig = params.autoScalingConfig;
@@ -111,10 +112,13 @@ const CreateTableMigrationPrototype = {
       }
 
       const roleARN = createTableResponse.data.TableDescription.TableArn
-        , tableName = createTableResponse.data.tableName
-        , waitForTableExistsParams = {tableName: tableName}
+        , tableName = createTableResponse.data.TableName
+        , waitForTableExistsParams = {TableName: tableName}
       ;
       logger.debug("Table arn :", roleARN);
+
+      oThis.autoScalingConfig.registerScalableTargetWrite.RoleARN = roleARN;
+      oThis.autoScalingConfig.registerScalableTargetRead.RoleARN = roleARN;
 
       logger.info("Waiting for table creation..");
       const waitFortableExistsResponse = await oThis.ddbObject.call('waitFor','tableExists', waitForTableExistsParams);
@@ -132,8 +136,8 @@ const CreateTableMigrationPrototype = {
       let registerAutoScalePromiseArray = []
         , putAutoScalePolicyArray = []
       ;
-      registerAutoScalePromiseArray.push(oThis.autoScalingConfig.registerScalableTargetWrite);
-      registerAutoScalePromiseArray.push(oThis.autoScalingConfig.registerScalableTargetRead);
+      registerAutoScalePromiseArray.push(oThis.autoScaleObject.registerScalableTarget(oThis.autoScalingConfig.registerScalableTargetWrite));
+      registerAutoScalePromiseArray.push(oThis.autoScaleObject.registerScalableTarget(oThis.autoScalingConfig.registerScalableTargetRead));
 
       const registerAutoScalePromiseResponse = await Promise.all(registerAutoScalePromiseArray);
       if (registerAutoScalePromiseResponse[0].isFailure()) {
@@ -144,8 +148,8 @@ const CreateTableMigrationPrototype = {
       }
 
       logger.info("Putting auto scale policy..");
-      putAutoScalePolicyArray.push(oThis.autoScalingConfig.putScalingPolicyWrite);
-      putAutoScalePolicyArray.push(oThis.autoScalingConfig.putScalingPolicyRead);
+      putAutoScalePolicyArray.push(oThis.autoScaleObject.putScalingPolicy(oThis.autoScalingConfig.putScalingPolicyWrite));
+      putAutoScalePolicyArray.push(oThis.autoScaleObject.putScalingPolicy(oThis.autoScalingConfig.putScalingPolicyRead));
 
       const putAutoScalePolicyPromiseResponse = await Promise.all(putAutoScalePolicyArray);
       if (putAutoScalePolicyPromiseResponse[0].isFailure()) {
@@ -155,7 +159,7 @@ const CreateTableMigrationPrototype = {
         return onResolve(putAutoScalePolicyPromiseResponse[1]);
       }
 
-      const describeTableParams = {tableName: tableName}
+      const describeTableParams = {TableName: tableName}
         , describeTableResponse = await oThis.ddbObject.call('describeTable', describeTableParams)
        ;
 

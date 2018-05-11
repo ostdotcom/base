@@ -58,9 +58,9 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  createTableMigration: function(params) {
+  createTableMigration: function(autoScaleObject, params) {
     const oThis = this
-      , createTableMigrationObject = new CreateTableMigrationServiceKlass(oThis.ddbObject, params)
+      , createTableMigrationObject = new CreateTableMigrationServiceKlass(oThis.ddbObject, autoScaleObject  ,params)
     ;
     return createTableMigrationObject.perform();
   },

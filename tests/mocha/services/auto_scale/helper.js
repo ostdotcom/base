@@ -28,9 +28,9 @@ helper.prototype = {
    * @param retries
    * @return {Promise<void>}
    */
-  waitTillTableStatusProvided: async function(dynamoDbApiObject, func, params, toAssert, retries) {
+  waitTillTableStatusProvided: async function (dynamoDbApiObject, func, params, toAssert, retries) {
     const oThis = this
-      , WAIT = retries ? retries: 30;
+      , WAIT = retries ? retries : 30;
     let count = WAIT;
     let response = null;
     while (count > 0) {
@@ -41,7 +41,7 @@ helper.prototype = {
       if (response.data.status === toAssert) {
         return response;
       }
-      count-=1;
+      count -= 1;
     }
     return response
   },
@@ -53,11 +53,11 @@ helper.prototype = {
    * @param params
    * @return {Promise<any>}
    */
-  waitTillResponse: async function(dynamodbApiObject, func, params) {
-    return new Promise(function (resolve){
-      setTimeout(async function() {
+  waitTillResponse: async function (dynamodbApiObject, func, params) {
+    return new Promise(function (resolve) {
+      setTimeout(async function () {
 
-        let response  = await func.call(dynamodbApiObject, params);
+        let response = await func.call(dynamodbApiObject, params);
         resolve(response);
 
       }, 5000);
@@ -74,15 +74,15 @@ helper.prototype = {
    * @return {result}
    *
    */
-  deleteTable: async function(dynamodbApiObject, params, isResultSuccess) {
+  deleteTable: async function (dynamodbApiObject, params, isResultSuccess) {
     const deleteTableResponse = await dynamodbApiObject.deleteTable(params);
 
-    if(isResultSuccess === true){
+    if (isResultSuccess === true) {
       assert.equal(deleteTableResponse.isSuccess(), true);
-      logger.debug("deleteTableResponse.data.TableDescription",deleteTableResponse.data.TableDescription);
+      logger.debug("deleteTableResponse.data.TableDescription", deleteTableResponse.data.TableDescription);
       assert.exists(deleteTableResponse.data.TableDescription, params.TableName);
 
-    } else{
+    } else {
       assert.equal(deleteTableResponse.isSuccess(), false);
     }
 
@@ -100,13 +100,13 @@ helper.prototype = {
    * @return {result}
    *
    */
-  createTable: async function(dynamodbApiObject, params, isResultSuccess) {
+  createTable: async function (dynamodbApiObject, params, isResultSuccess) {
     const createTableResponse = await dynamodbApiObject.createTable(params);
 
     if (isResultSuccess) {
       assert.equal(createTableResponse.isSuccess(), true);
       assert.exists(createTableResponse.data.TableDescription, params.TableName);
-    } else{
+    } else {
       assert.equal(createTableResponse.isSuccess(), false, "createTable: successfull, should fail for this case");
     }
     return createTableResponse;
@@ -118,7 +118,7 @@ helper.prototype = {
    * @param dynamodbApiObject
    * @param params
    */
-  waitForTableToGetDeleted : async function(dynamodbApiObject, params) {
+  waitForTableToGetDeleted: async function (dynamodbApiObject, params) {
     const oThis = this
     ;
     const response = await dynamodbApiObject.tableNotExistsUsingWaitFor(params);
@@ -131,7 +131,7 @@ helper.prototype = {
    * @param dynamodbApiObject
    * @param params
    */
-  waitForTableToGetCreated : async function(dynamodbApiObject, params) {
+  waitForTableToGetCreated: async function (dynamodbApiObject, params) {
     const oThis = this
     ;
     const response = await dynamodbApiObject.tableExistsUsingWaitFor(params);
@@ -145,7 +145,7 @@ helper.prototype = {
    * @param params
    * @return {Promise<void>}
    */
-  deleteScalingPolicy: async function(autoScaleObject, params) {
+  deleteScalingPolicy: async function (autoScaleObject, params) {
     const oThis = this
     ;
     const response = await autoScaleObject.deleteScalingPolicy(params);
@@ -159,7 +159,7 @@ helper.prototype = {
    * @param params
    * @return {Promise<void>}
    */
-  deregisterScalableTarget: async function(autoScaleObject, params) {
+  deregisterScalableTarget: async function (autoScaleObject, params) {
     const oThis = this
     ;
     const response = await autoScaleObject.deregisterScalableTarget(params);
@@ -243,6 +243,90 @@ helper.prototype = {
     logger.log("Table got deleted");
   },
 
+  /**
+   * Create table migration
+   * @param dynamodbApiObject
+   * @param autoScaleObj
+   * @return {Promise<*|Promise<*>|promise<result>>}
+   */
+  createTableMigration : async function(dynamodbApiObject, autoScaleObj) {
+    const oThis = this
+      , params = {}
+      , autoScale = {}
+      , resourceId = 'table/' + testConstants.transactionLogsTableName
+      , ARN = "ARN"
+      ;
+
+    params.createTableConfig = oThis.getCreateTableParams(testConstants.transactionLogsTableName);
+
+    params.updateContinuousBackupConfig  = {
+      PointInTimeRecoverySpecification: { /* required */
+        PointInTimeRecoveryEnabled: true || false /* required */
+      },
+      TableName: testConstants.transactionLogsTableName /* required */
+    };
+
+  // * @params {object} params.autoScalingConfig.registerScalableTargetWrite - register Scalable Target write configurations
+  //   * @params {object} params.autoScalingConfig.registerScalableTargetRead - register Scalable Target read configurations
+  //   * @params {object} params.autoScalingConfig.putScalingPolicyWrite- Put scaling policy write configurations
+  //   * @params {object} params.autoScalingConfig.putScalingPolicyRead - Put scaling policy read configurations
+
+    autoScale.registerScalableTargetWrite = {
+      ResourceId: resourceId, /* required */
+      ScalableDimension: 'dynamodb:table:WriteCapacityUnits',
+      ServiceNamespace: 'dynamodb' , /* required */
+      MaxCapacity: 15,
+      MinCapacity: 1,
+      RoleARN: ARN
+
+    };
+
+    autoScale.registerScalableTargetRead = {
+      ResourceId: resourceId, /* required */
+      ScalableDimension: 'dynamodb:table:ReadCapacityUnits',
+      ServiceNamespace: 'dynamodb' , /* required */
+      MaxCapacity: 15,
+      MinCapacity: 1,
+      RoleARN: ARN
+
+    };
+
+    autoScale.putScalingPolicyWrite  = {
+      ServiceNamespace: "dynamodb",
+      ResourceId: resourceId,
+      ScalableDimension: "dynamodb:table:WriteCapacityUnits",
+      PolicyName: testConstants.transactionLogsTableName + "-scaling-policy",
+      PolicyType: "TargetTrackingScaling",
+      TargetTrackingScalingPolicyConfiguration: {
+        PredefinedMetricSpecification: {
+          PredefinedMetricType: "DynamoDBWriteCapacityUtilization"
+        },
+        ScaleOutCooldown: 60,
+        ScaleInCooldown: 60,
+        TargetValue: 70.0
+      }
+    };
+
+    autoScale.putScalingPolicyRead  = {
+      ServiceNamespace: "dynamodb",
+      ResourceId: resourceId,
+      ScalableDimension: "dynamodb:table:ReadCapacityUnits",
+      PolicyName: testConstants.transactionLogsTableName + "-scaling-policy",
+      PolicyType: "TargetTrackingScaling",
+      TargetTrackingScalingPolicyConfiguration: {
+        PredefinedMetricSpecification: {
+          PredefinedMetricType: "DynamoDBReadCapacityUtilization"
+        },
+        ScaleOutCooldown: 60,
+        ScaleInCooldown: 60,
+        TargetValue: 70.0
+      }
+    };
+
+    params.autoScalingConfig = autoScale;
+    return dynamodbApiObject.createTableMigration(autoScaleObj, params);
+
+  },
   /**
    * Get crate table params
    * @param tableName
