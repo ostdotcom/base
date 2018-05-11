@@ -20,7 +20,7 @@ const GetShardListCacheKlass = module.exports = function (params) {
 
   const oThis = this;
   oThis.params = params;
-  oThis.ids = params.ids;
+  oThis.identifiers = params.ids;
   oThis.idToValueMap = {};
 
   baseCache.call(this, oThis.params);
@@ -40,10 +40,10 @@ GetShardListCacheKlass.prototype.setCacheKeys = function () {
   const oThis = this;
 
   oThis.cacheKeys = {};
-  for (let i = 0; i < oThis.ids.length; i++) {
-    let key = String(oThis.ids[i].entity_type + oThis.ids[i].shard_type);
-    oThis.cacheKeys[oThis._cacheKeyPrefix() + "dy_sm_gsl_" + "et_" + oThis.ids[i].entity_type +"st_" + oThis.ids[i].shard_type] = key;
-    oThis.idToValueMap[key] = oThis.ids[i];
+  for (let i = 0; i < oThis.identifiers.length; i++) {
+    let key = String(oThis.identifiers[i].entity_type + oThis.identifiers[i].shard_type);
+    oThis.cacheKeys[oThis._cacheKeyPrefix() + "dy_sm_gsl_" + "et_" + oThis.identifiers[i].entity_type +"st_" + oThis.identifiers[i].shard_type] = key;
+    oThis.idToValueMap[key] = oThis.identifiers[i];
   }
 
   return oThis.cacheKeys;

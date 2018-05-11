@@ -6,7 +6,7 @@ const Chai    = require('chai')
 ;
 
 const rootPrefix = "../../../../.."
-  , DynamoDbObject = require(rootPrefix + "/index").DynamoDb
+  , DynamoDbObject = require(rootPrefix + "/index").Dynamodb
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new Logger()
@@ -43,14 +43,14 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, retu
       id = "0x2";
     }
 
-    const response = await shardManagementService.getManagedShard({ids:[{identifier: id, entity_type: entity_type}]});
+    const response = await shardManagementService.getManagedShard({entity_type: entity_type, identifiers: [id]});
 
     logger.log("shardManagementService Response", JSON.stringify(response));
     if (toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
       assert.equal(Object.keys(response.data).length, returnCount);
       if (returnCount === 1){
-        assert.equal(response.data[String(id + entity_type)], shardName);
+        assert.equal(response.data[id].shardName, shardName);
       }
     } else {
       assert.isTrue(response.isFailure(), "Failure");
@@ -59,7 +59,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, retu
 
 };
 
-describe('services/dynamodb/shard_management/managed_shard/get_shard_name', function () {
+describe('services/dynamodb/shard_management/managed_shard/get_shard_details', function () {
 
   before(async function () {
 
@@ -86,11 +86,11 @@ describe('services/dynamodb/shard_management/managed_shard/get_shard_name', func
 
   createTestCasesForOptions("Get shard happy case", {}, true, 1);
 
-  createTestCasesForOptions("Get shard name having invalid shard type", {
+  createTestCasesForOptions("Get shard details having invalid shard type", {
     inValidEntityType: true
   }, false, 1);
 
-  createTestCasesForOptions("Get shard name having invalid Id", {
+  createTestCasesForOptions("Get shard details having invalid Id", {
     inValidId: true
   }, true, 0);
 });

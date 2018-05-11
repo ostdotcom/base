@@ -6,7 +6,7 @@ const Chai    = require('chai')
 ;
 
 const rootPrefix = "../../../../.."
-  , DynamoDbObject = require(rootPrefix + "/index").DynamoDb
+  , DynamoDbObject = require(rootPrefix + "/index").Dynamodb
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new Logger()

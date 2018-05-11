@@ -185,7 +185,7 @@ helper.prototype = {
       await oThis.deleteTable(dynamodbApiObject, params, true);
 
       logger.info("Waiting for table to get deleted");
-      await oThis.waitForTableToGetDeleted(params);
+      await oThis.waitForTableToGetDeleted(dynamodbApiObject, params);
       logger.info("Table got deleted");
 
       // logger.log(testConstants.transactionLogsTableName, "Table exists . Deregister it from scalability....");
