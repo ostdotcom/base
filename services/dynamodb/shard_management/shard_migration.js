@@ -150,8 +150,8 @@ ShardMigration.prototype = {
 
     logger.debug(createTableAvailableShardsResponse);
     if (createTableAvailableShardsResponse.isFailure()) {
-      logger.debug("Is Failure having err ", createTableAvailableShardsResponse.err);
-      throw 'Error migrating createAvailableShards.' + createTableAvailableShardsResponse.err;
+      logger.debug("Is Failure having err ", createTableAvailableShardsResponse.err.msg);
+      throw 'Error migrating createAvailableShards.' + createTableAvailableShardsResponse.err.msg;
     }
     logger.debug("createAvailableShards is Success having Data ", createTableAvailableShardsResponse.data);
   },

@@ -9,12 +9,14 @@ const Chai = require('chai')
 const rootPrefix = "../../../.."
   , DynamoDbObject = require(rootPrefix + "/index").Dynamodb
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
+  , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
+  , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
 ;
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS)
   , shardManagementService = dynamoDbObject.shardManagement()
-  , MANAGED_SHARD_TABLE = 'ManagedShard'
-  , AVAILABLE_SHARD_TABLE = 'AvailableShard'
+  , MANAGED_SHARD_TABLE = managedShardConst.getTableName()
+  , AVAILABLE_SHARD_TABLE = availableShardConst.getTableName()
   , createTableParamsFor = function (tableName) {
   return {
     TableName: tableName,
