@@ -23,7 +23,8 @@ const rootPrefix  = "../.."
  * Constructor for TableExist service class
  *
  * @params {object} ddbObject - DynamoDB Object
- * @params {object} params - TableExist configurations
+ * @params {object} params - CreateTableMigration params
+ * @params {object} params.auto_scale_object - auto scale object
  * @params {string} TableName - name of table
  *
  * @constructor
@@ -31,7 +32,8 @@ const rootPrefix  = "../.."
 const CreateTableMigration = function(ddbObject, params) {
   const oThis = this
   ;
-  DDBServiceBaseKlass.call(oThis, ddbObject, 'createTable', params);
+  oThis.autoScaleObject = params.auto_scale_object;
+  DDBServiceBaseKlass.call(oThis, ddbObject, 'createTableMigration', params);
 };
 
 CreateTableMigration.prototype = Object.create(DDBServiceBaseKlass.prototype);
@@ -82,25 +84,60 @@ const CreateTableMigrationPrototype = {
   },
 
   /**
-   * Check if Table exists using describe table
+   * run create table migration
    *
    * @params {object} params
    *
    * @return {Promise} true/false
    *
    */
-  checkTableExist: function() {
+  executeDdbRequest: function() {
     const oThis = this
+      , registerAutoScalePromiseArray = []
+      , putAutoScalePolicyArray = []
     ;
     return new Promise(async function (onResolve) {
-      DDBServiceBaseKlass.call(oThis, oThis.ddbObject, 'createTable', oThis.params);
-      const listTableResponse = await oThis.ddbObject.call('createTable', {});
-      if (listTableResponse.isFailure()) {
-        return onResolve(responseHelper.successWithData({response: false}));
+
+      logger.info("Creating table..");
+      const createTableResponse = await oThis.ddbObject.call('createTable', oThis.params);
+      if(createTableResponse.isFailure()){
+        throw "Failure in table creation"
       }
-      const allTables = listTableResponse.data.TableNames || [];
-      const isTableExist = allTables.indexOf(oThis.params.TableName) > -1;
-      return onResolve(responseHelper.successWithData({response: isTableExist}));
+
+      const roleARN = createTableResponse.data.TableDescription.TableArn;
+      logger.debug("Table arn :", roleARN);
+
+      logger.info("Waiting for table creation..");
+      const responseOfWaitFor = await oThis.ddbObject.call('waitFor','tableExists', params);
+      if(responseOfWaitFor.isFailure()){
+        throw "Failure in wait for"
+      }
+
+      logger.info("Enable continuous backup..");
+      const continuousBackupResponse = await oThis.ddbObject.call('updateContinuousBackups', params);
+      if(continuousBackupResponse.isFailure()){
+        throw "Failure in continuousBackupResponse"
+      }
+
+      logger.info("Register auto scaling target..");
+      registerAutoScalePromiseResponse.push(oThis.autoScaleObject.registerScalableTarget(param1));
+      registerAutoScalePromiseResponse.push(oThis.autoScaleObject.registerScalableTarget(param2));
+
+      const registerAutoScalePromiseResponse = await Promise.all(registerAutoScalePromiseArray);
+      if (registerAutoScalePromiseResponse[0].isFailure() || registerAutoScalePromiseResponse[1].isFailure()) {
+        throw "Failure in register auto scale promise array"
+      }
+
+      logger.info("Putting auto scale policy..");
+      putAutoScalePolicyArray.push(oThis.autoScaleObject.putScalingPolicy(param1));
+      putAutoScalePolicyArray.push(oThis.autoScaleObject.putScalingPolicy(param2));
+
+      const putAutoScalePolicyPromiseResponse = await Promise.all(putAutoScalePolicyArray);
+      if (putAutoScalePolicyPromiseResponse[0].isFailure() || putAutoScalePolicyPromiseResponse[1].isFailure()) {
+        throw "Failure in put auto scale policy promise array"
+      }
+
+      onResolve(data)
     });
   },
 
