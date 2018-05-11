@@ -14,7 +14,7 @@ const rootPrefix      = '.'
     , Web3PoolFactory = require( rootPrefix + '/lib/web3_pool/ost_web3_pool_factory' )
     , Web3Pool        = require( rootPrefix + '/lib/web3_pool/ost_web3_pool' )
     , responseHelper  = require(rootPrefix + '/lib/formatter/response')
-    , DynamoDbApi  = require(rootPrefix + '/services/dynamodb/api')
+    , DynamodbApi  = require(rootPrefix + '/services/dynamodb/api')
     , AutoScalingApi  = require(rootPrefix + '/services/auto_scale/api')
 ;
 
@@ -35,7 +35,7 @@ module.exports = {
     Factory : Web3PoolFactory
     , Pool  : Web3Pool
   }
-  , DynamoDb : DynamoDbApi
+  , Dynamodb : DynamodbApi
   , AutoScaling : AutoScalingApi
 };
 

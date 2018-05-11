@@ -31,6 +31,7 @@ const rootPrefix = '../../../..'
  *
  */
   // TODO change ids structure to {entityType1: [identifiers], entityType2: [identifiers]}
+  // TODO ids length limit validation
 const GetShardName = function (params) {
   const oThis = this;
   logger.debug("=======GetShardName.params=======");

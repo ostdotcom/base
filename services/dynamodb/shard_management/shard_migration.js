@@ -99,6 +99,7 @@ ShardMigration.prototype = {
     logger.debug("========ShardMigration.runShardMigration.createAvailableShards=======");
 
     const availableShardsParams = {
+        TableName: availableShardConst.getTableName(),
         AttributeDefinitions: [
           {
             AttributeName: availableShardConst.SHARD_NAME,
@@ -142,8 +143,7 @@ ShardMigration.prototype = {
         ProvisionedThroughput: {
           ReadCapacityUnits: 5,
           WriteCapacityUnits: 5
-        },
-        TableName: availableShardConst.getTableName()
+        }
       }
       , createTableAvailableShardsResponse = await oThis.ddbObject.call('createTable', availableShardsParams)
     ;

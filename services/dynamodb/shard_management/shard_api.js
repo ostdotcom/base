@@ -85,10 +85,10 @@ ShardServiceApi.prototype = {
    */
   getShardsByType: function (params) {
     const oThis = this
-      , configureShardParams = Object.assign({ddb_object: oThis.ddbObject}, params)
+      , shardsByTypeParams = Object.assign({ddb_object: oThis.ddbObject}, params)
     ;
 
-    return new GetShardListKlass(configureShardParams).perform();
+    return new GetShardListKlass(shardsByTypeParams).perform();
   },
 
   /**
@@ -120,11 +120,11 @@ ShardServiceApi.prototype = {
   },
 
   /**
-   * get shard
+   * get Managed shard
    *
    * @param params
    */
-  getShard: function (params) {
+  getManagedShard: function (params) {
     const oThis = this
       , getShardParams = Object.assign({ddb_object: oThis.ddbObject}, params)
     ;
