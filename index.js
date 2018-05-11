@@ -15,6 +15,7 @@ const rootPrefix      = '.'
     , Web3Pool        = require( rootPrefix + '/lib/web3_pool/ost_web3_pool' )
     , responseHelper  = require(rootPrefix + '/lib/formatter/response')
     , DynamoDbApi  = require(rootPrefix + '/services/dynamodb/api')
+    , AutoScalingApi  = require(rootPrefix + '/services/auto_scale/api')
 ;
 
 // Expose all libs here. 
@@ -35,7 +36,7 @@ module.exports = {
     , Pool  : Web3Pool
   }
   , DynamoDb : DynamoDbApi
-
+  , AutoScaling : AutoScalingApi
 };
 
 
