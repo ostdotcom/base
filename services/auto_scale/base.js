@@ -44,15 +44,18 @@ Base.prototype = {
   perform: async function () {
     const oThis = this
     ;
+    try {
+      let r = null;
+      r = oThis.validateParams();
+      logger.debug("=======Base.validateParams.result=======");
+      logger.debug(r);
+      if (r.isFailure()) return r;
 
-    var r = null;
-    r = oThis.validateParams();
-    logger.debug("=======Base.validateParams.result=======");
-    logger.debug(r);
-    if (r.isFailure()) return r;
-
-    return oThis.executeAutoScaleRequest();
-
+      return oThis.executeAutoScaleRequest();
+    } catch (err) {
+      logger.error("services/auto_scale/base.js:perform inside catch ", err);
+      return responseHelper.error('s_as_b_perform_1', 'Something went wrong. ' + err.message);
+    }
   },
 
   /**
@@ -85,23 +88,15 @@ Base.prototype = {
    * @return {promise<result>}
    *
    */
-  // TODO try catch should be at perform level
   executeAutoScaleRequest: async function () {
     const oThis = this
+      , r = await oThis.autoScaleObject.call(oThis.methodName, oThis.params)
     ;
-    try {
 
-      const r = await oThis.autoScaleObject.call(oThis.methodName, oThis.params);
-      logger.debug("=======Base.perform.result=======");
-      logger.debug(r);
-      return r;
-
-    } catch (err) {
-      logger.error("services/auto_scale/base.js:executeAutoScaleRequest inside catch ", err);
-      return responseHelper.error('s_as_b_executeAutoScaleRequest_1', 'Something went wrong. ' + err.message);
-    }
-
-  },
+    logger.debug("=======Base.perform.result=======");
+    logger.debug(r);
+    return r;
+  }
 
 };
 

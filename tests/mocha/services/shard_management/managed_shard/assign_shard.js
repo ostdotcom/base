@@ -26,10 +26,12 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
   optionsDesc = optionsDesc || "";
   options = options || {
     invalidShardName: false,
+    undefined_force_assignment: true
   };
   let shardName = userBalancesShardName
     , identifier = "0x1234"
     , entityType = "userBalances"
+    , forceAssignment = true
   ;
 
   it(optionsDesc, async function(){
@@ -47,7 +49,11 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
       await shardManagementService.runShardMigration();
     }
 
-    const response = await shardManagementService.assignShard({identifier: identifier, entity_type: entityType, shard_name: shardName});
+    if (options.undefined_force_assignment) {
+      forceAssignment = false;
+    }
+
+    const response = await shardManagementService.assignShard({identifier: identifier, entity_type: entityType, shard_name: shardName, force_assignment: true});
 
     logger.log("LOG", response);
     if (toAssert) {
@@ -88,4 +94,8 @@ describe('services/dynamodb/shard_management/managed_shard/assign_shard', functi
   createTestCasesForOptions("Assign shard having invalid shard name", {
     invalidShardName: true
   }, false);
+
+  createTestCasesForOptions("Assign shard having undefined force assignment", {
+    undefined_force_assignment: true
+  }, true);
 });
