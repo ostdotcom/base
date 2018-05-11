@@ -22,6 +22,9 @@ const autoScaleObj = new ApplicationAutoScalingKlass(testConstants.AUTO_SCALE_CO
 let resourceId = 'table/' + testConstants.transactionLogsTableName
   , roleARN = null;
 
+// TODO it's not using roleARN here
+// TODO define scalable target policy
+// TODO put scaling policy for StepScaling needed
 const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
   optionsDesc = optionsDesc || "";
 
