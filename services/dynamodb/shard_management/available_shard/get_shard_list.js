@@ -52,7 +52,6 @@ GetShardList.prototype = {
    * @return {promise<result>}
    *
    */
-  // TODO move caching logic to a method
   perform: async function () {
 
     const oThis = this
@@ -65,18 +64,9 @@ GetShardList.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      const cacheParams = {
-        ddb_object: oThis.ddbObject,
-        ids: [{entity_type: oThis.entityType, shard_type: oThis.shardType}]
-      };
-      r = await new GetShardListMultiCacheKlass(cacheParams).fetch();
-      logger.debug("=======GetShardList.addShard.result=======");
-      logger.debug(r);
-      if (r.isSuccess()) {
-        return responseHelper.successWithData({data: r.data[String(oThis.entityType + oThis.shardType)]});
-      } else {
-        return responseHelper.error(r.err.error_data, r.err.code, r.err.msg);
-      }
+      r = await oThis.getShardListFromCache();
+
+      return r;
     } catch(err) {
       return responseHelper.error('s_sm_as_gsl_perform_1', 'Something went wrong. ' + err.message);
     }
@@ -107,6 +97,26 @@ GetShardList.prototype = {
 
       return onResolve(responseHelper.successWithData({}));
     });
+  },
+
+  /**
+   * To get shard List from cache
+   * @return {Promise<*|Object<Result>>}
+   */
+  getShardListFromCache : async function () {
+    const oThis = this
+      , cacheParams = {
+      ddb_object: oThis.ddbObject,
+      ids: [{entity_type: oThis.entityType, shard_type: oThis.shardType}]
+    };
+    let r = await new GetShardListMultiCacheKlass(cacheParams).fetch();
+    logger.debug("=======GetShardList.addShard.result=======");
+    logger.debug(r);
+    if (r.isSuccess()) {
+      return responseHelper.successWithData({data: r.data[String(oThis.entityType + oThis.shardType)]});
+    } else {
+      return responseHelper.error(r.err.error_data, r.err.code, r.err.msg);
+    }
   }
 };
 

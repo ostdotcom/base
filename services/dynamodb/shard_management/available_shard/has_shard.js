@@ -15,11 +15,10 @@ const rootPrefix = '../../../..'
   , responseHelper = new ResponseHelper({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
   , logger            = new Logger()
-
 ;
 
 /**
- * Constructor to create object of Configure Shard
+ * Constructor to create object of Has Shard class
  *
  * @constructor
  *
@@ -31,7 +30,6 @@ const rootPrefix = '../../../..'
  * @return {Object}
  *
  */
-// TODO batch get size of 50 validation
 const HasShard = function (params) {
   const oThis = this;
   params = params || {};
@@ -63,19 +61,8 @@ HasShard.prototype = {
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      const cacheParams = {
-        ddb_object: oThis.ddbObject,
-        shard_names: oThis.shardNames
-      };
-      r = await new HasShardMultiCacheKlass(cacheParams).fetch();
-      logger.debug("=======HasShard.hasShard.result=======");
-      logger.debug(r);
-      // TODO check if test cases are failing
-      if (r.isSuccess()) {
-        return r;
-      } else {
-        return responseHelper.error(r.err.error_data, r.err.code, r.err.msg);
-      }
+      r = await oThis.hasShardFromCache();
+      return r;
     } catch(err) {
       return responseHelper.error('s_sm_as_hs_perform_1', 'Something went wrong. ' + err.message);
     }
@@ -90,25 +77,62 @@ HasShard.prototype = {
    */
   validateParams: function () {
     const oThis = this
+      , BATCH_SIZE_LIMIT = 50
+      , errorCodePrefix = 's_sm_as_hs_validateParams_'
     ;
 
     return new Promise(async function (onResolve) {
+      let errorCode = null
+        , errorMsg = null
+      ;
+
+      oThis.hasAnyInvalidShard = function(){
+        for (let ind = 0; ind < oThis.shardNames.length ; ind++) {
+          let shardName = oThis.shardNames[ind];
+          if (!shardName) {
+            return true;
+          }
+        }
+        return false;
+      };
 
       if (!oThis.shardNames || oThis.shardNames.constructor.name !== 'Array') {
-        logger.debug('s_sm_as_hs_validateParams_1', 'shardName is', oThis.shardName);
-        return onResolve(responseHelper.error('s_sm_as_hs_validateParams_1', 'shardNames is not an array'));
+        errorCode = errorCodePrefix + '1';
+        errorMsg = 'shardNames is undefined or not an array';
+      } else if (oThis.shardNames.length > BATCH_SIZE_LIMIT) {
+        errorCode = errorCodePrefix + '2';
+        errorMsg = 'shardNames length exceeds 50 batch size';
+      } else if (oThis.hasAnyInvalidShard()) {
+        errorCode = errorCodePrefix + '3';
+        errorMsg = 'One of the shardName is invalid' + oThis.shardNames;
+      } else {
+        return onResolve(responseHelper.successWithData({}));
       }
 
-      for (let ind = 0; ind < oThis.shardNames.length ; ind++) {
-        let shardName = oThis.shardNames[ind];
-        if (!shardName) {
-          logger.debug('s_sm_as_hs_validateParams_2', 'shardName is', oThis.shardName);
-          return onResolve(responseHelper.error('s_sm_as_hs_validateParams_2', 'shardName is invalid'));
-        }
-      }
-
-      return onResolve(responseHelper.successWithData({}));
+      logger.debug(errorCode, errorMsg);
+      return onResolve(responseHelper.error(errorCode, errorMsg));
     });
+  },
+
+  /**
+   * Has Shard call from Cache
+   * @return {Promise<*>}
+   */
+  hasShardFromCache: async function() {
+    const oThis = this
+      , cacheParams = {
+      ddb_object: oThis.ddbObject,
+      shard_names: oThis.shardNames
+    };
+    let r = await new HasShardMultiCacheKlass(cacheParams).fetch();
+    logger.debug("=======HasShard.hasShard.result=======");
+    logger.debug(r);
+
+    if (r.isSuccess()) {
+      return r;
+    } else {
+      return responseHelper.error(r.err.error_data, r.err.code, r.err.msg);
+    }
   }
 };
 
