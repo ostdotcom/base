@@ -3,7 +3,7 @@ const chai = require('chai')
 
 const rootPrefix = "../../../.."
   , DdbApiKlass = require(rootPrefix + "/index").Dynamodb
-  , AutoScaleKlass =require(rootPrefix + "/index").AutoScaling
+  , AutoScaleApiKlass =require(rootPrefix + "/index").AutoScaling
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
@@ -16,19 +16,19 @@ describe('Create Table', function() {
   var autoScaleObj = null;
 
   before(async function() {
-
+     this.timeout(1000000);
     // create dynamodbApiObject
     dynamodbApiObject = new DdbApiKlass(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE);
-    autoScaleObj = new AutoScaleKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE);
+    autoScaleObj = new AutoScaleApiKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE);
 
     const oThis = this
       , params = {
       TableName: testConstants.transactionLogsTableName
     };
 
-    const checkTableExistsResponse1 = await dynamodbApiObject.checkTableExist(params);
+    const checkTableExistsResponse = await dynamodbApiObject.checkTableExist(params);
 
-    if (checkTableExistsResponse1.data.response === true) {
+    if (checkTableExistsResponse.data.response === true) {
 
       logger.log(testConstants.transactionLogsTableName, "Table exists . Deleting it....");
       await helper.deleteTable(dynamodbApiObject, params, true);
@@ -42,14 +42,15 @@ describe('Create Table', function() {
   });
 
   it('should create table successfully', async function () {
+    this.timeout(1000000);
     // build create table params
-
     const response = await helper.createTableMigration(dynamodbApiObject, autoScaleObj);
     assert.isTrue(response.isSuccess(), "createTableMigration failed");
 
   });
 
   after(async function() {
+    this.timeout(100000);
     const params = {
       TableName: testConstants.transactionLogsTableName
     };

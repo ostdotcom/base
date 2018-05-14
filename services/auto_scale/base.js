@@ -6,7 +6,6 @@
  * @module services/auto_scale/base
  *
  */
-
 const rootPrefix  = "../.."
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
@@ -27,7 +26,8 @@ const rootPrefix  = "../.."
 const Base = function(autoScaleObject, methodName, params) {
   const oThis = this
   ;
-
+  logger.debug("=======AutoScale.Base.params=======");
+  logger.debug("\nmethodName: "+methodName, "\nparams: "+params);
   oThis.params = params;
   oThis.autoScaleObject = autoScaleObject;
   oThis.methodName = methodName;
@@ -47,11 +47,14 @@ Base.prototype = {
     try {
       let r = null;
       r = oThis.validateParams();
-      logger.debug("=======Base.validateParams.result=======");
+      logger.debug("=======AutoScale.Base.validateParams.result=======");
       logger.debug(r);
       if (r.isFailure()) return r;
 
-      return oThis.executeAutoScaleRequest();
+      r = oThis.executeAutoScaleRequest();
+      logger.debug("=======AutoScale.Base.executeAutoScaleRequest.result=======");
+      logger.debug(r);
+      return r;
     } catch (err) {
       logger.error("services/auto_scale/base.js:perform inside catch ", err);
       return responseHelper.error('s_as_b_perform_1', 'Something went wrong. ' + err.message);

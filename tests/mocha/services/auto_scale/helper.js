@@ -115,6 +115,7 @@ helper.prototype = {
 
   /**
    * Wait for table to get deleted
+   *
    * @param dynamodbApiObject
    * @param params
    */
@@ -128,6 +129,7 @@ helper.prototype = {
 
   /**
    * Wait for table to get created
+   *
    * @param dynamodbApiObject
    * @param params
    */
@@ -141,6 +143,7 @@ helper.prototype = {
 
   /**
    * Delete Scaling Policy
+   *
    * @param autoScaleObject
    * @param params
    * @return {Promise<void>}
@@ -155,6 +158,7 @@ helper.prototype = {
 
   /**
    * De Register Scalable Target
+   *
    * @param autoScaleObject
    * @param params
    * @return {Promise<void>}
@@ -169,6 +173,7 @@ helper.prototype = {
 
   /**
    * Create test case env
+   *
    * @return {Promise<void>}
    */
   createTestCaseEnvironment: async function(dynamodbApiObject, autoScaleObj) {
@@ -257,7 +262,7 @@ helper.prototype = {
       , ARN = "ARN"
       ;
 
-    params.createTableConfig = oThis.getCreateTableParams(testConstants.transactionLogsTableName);
+    params.createTableConfig = oThis.getCreateTableParamsWithoutSecondaryIndex(testConstants.transactionLogsTableName);
 
     params.updateContinuousBackupConfig  = {
       PointInTimeRecoverySpecification: { /* required */
@@ -327,8 +332,10 @@ helper.prototype = {
     return dynamodbApiObject.createTableMigration(autoScaleObj, params);
 
   },
+
   /**
    * Get crate table params
+   *
    * @param tableName
    * @return {{TableName: *|string, KeySchema: *[], AttributeDefinitions: *[], ProvisionedThroughput: {ReadCapacityUnits: number, WriteCapacityUnits: number}, GlobalSecondaryIndexes: *[], SSESpecification: {Enabled: boolean}}}
    */
@@ -377,7 +384,42 @@ helper.prototype = {
         Enabled: false
       },
     };
+  },
+
+  /**
+   * Get crate table params
+   *
+   * @param tableName
+   * @return {{TableName: *|string, KeySchema: *[], AttributeDefinitions: *[], ProvisionedThroughput: {ReadCapacityUnits: number, WriteCapacityUnits: number}, GlobalSecondaryIndexes: *[], SSESpecification: {Enabled: boolean}}}
+   */
+  getCreateTableParamsWithoutSecondaryIndex: function(tableName) {
+    tableName = tableName || testConstants.transactionLogsTableName;
+    return {
+      TableName : tableName,
+      KeySchema: [
+        {
+          AttributeName: "tuid",
+          KeyType: "HASH"
+        },  //Partition key
+        {
+          AttributeName: "cid",
+          KeyType: "RANGE"
+        }  //Sort key
+      ],
+      AttributeDefinitions: [
+        { AttributeName: "tuid", AttributeType: "S" },
+        { AttributeName: "cid", AttributeType: "N" },
+      ],
+      ProvisionedThroughput: {
+        ReadCapacityUnits: 1,
+        WriteCapacityUnits: 1
+      },
+      SSESpecification: {
+        Enabled: false
+      },
+    };
   }
+
 };
 
 module.exports = new helper();
