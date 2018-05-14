@@ -352,8 +352,8 @@ helper.prototype = {
         { AttributeName: "thash", AttributeType: "S" }
       ],
       ProvisionedThroughput: {
-        ReadCapacityUnits: 5,
-        WriteCapacityUnits: 5
+        ReadCapacityUnits: 1,
+        WriteCapacityUnits: 1
       },
       GlobalSecondaryIndexes: [
         {

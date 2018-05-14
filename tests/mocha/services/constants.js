@@ -34,12 +34,28 @@ MochaTestConstants.prototype = {
   },
 
   /**
-   * DynamoDB configuration 1
+   * DynamoDB AWS Account configuration
    *
    * @constant {object}
    *
    */
-  DYNAMODB_CONFIGURATIONS_1 : {
+  DYNAMODB_CONFIGURATIONS_REMOTE : {
+    'apiVersion': '2012-08-10',
+    'accessKeyId': 'x',
+    'secretAccessKey': 'x',
+    'region': 'localhost',
+    'logger': console,
+    'sslEnabled': false,
+    'endpoint': "http://localhost:8000"
+  },
+
+  /**
+   * auto scale configuration
+   *
+   * @constant {object}
+   *
+   */
+  AUTO_SCALE_CONFIGURATIONS_REMOTE : {
     'apiVersion': '2012-08-10',
     'accessKeyId': 'x',
     'secretAccessKey': 'x',

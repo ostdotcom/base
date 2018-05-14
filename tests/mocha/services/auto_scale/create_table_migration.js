@@ -18,8 +18,8 @@ describe('Create Table', function() {
   before(async function() {
 
     // create dynamodbApiObject
-    dynamodbApiObject = new DdbApiKlass(testConstants.DYNAMODB_CONFIGURATIONS_PROD);
-    autoScaleObj = new AutoScaleKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_PROD);
+    dynamodbApiObject = new DdbApiKlass(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE);
+    autoScaleObj = new AutoScaleKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE);
 
     const oThis = this
       , params = {
@@ -41,7 +41,6 @@ describe('Create Table', function() {
     }
   });
 
-
   it('should create table successfully', async function () {
     // build create table params
 
@@ -49,8 +48,6 @@ describe('Create Table', function() {
     assert.isTrue(response.isSuccess(), "createTableMigration failed");
 
   });
-
-
 
   after(async function() {
     const params = {

@@ -15,8 +15,8 @@ const rootPrefix = "../../../.."
   , logger = new Logger()
 ;
 
-const autoScaleObj = new ApplicationAutoScalingKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_PROD)
-  , dynamodbApiObject = new DdbApiKlass(testConstants.DYNAMODB_CONFIGURATIONS_PROD)
+const autoScaleObj = new ApplicationAutoScalingKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE)
+  , dynamodbApiObject = new DdbApiKlass(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
 ;
 
 let resourceId = 'table/' + testConstants.transactionLogsTableName
