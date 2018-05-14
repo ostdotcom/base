@@ -7,6 +7,7 @@ const rootPrefix = "../../../.."
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
   , helper = require(rootPrefix + "/tests/mocha/services/dynamodb/helper")
+  , autoScaleHelper = require(rootPrefix + "/tests/mocha/services/auto_scale/helper")
 ;
 
 describe('Create Table', function() {
@@ -27,60 +28,13 @@ describe('Create Table', function() {
     };
     const checkTableExistsResponse = await dynamodbApiObject.checkTableExist(params);
     if (checkTableExistsResponse.data.response === true) {
-      await helper.deleteTable(dynamodbApiObject, params, true);
+      await autoScaleHelper.cleanTestCaseEnvironment(dynamodbApiObject, null);
     }
   });
 
   it('should create table successfully', async function () {
     this.timeout(100000);
-    // build create table params
-    const createTableParams = {
-      TableName : testConstants.transactionLogsTableName,
-      KeySchema: [
-        {
-          AttributeName: "tuid",
-          KeyType: "HASH"
-        },  //Partition key
-        {
-          AttributeName: "cid",
-          KeyType: "RANGE"
-        }  //Sort key
-      ],
-      AttributeDefinitions: [
-        { AttributeName: "tuid", AttributeType: "S" },
-        { AttributeName: "cid", AttributeType: "N" },
-        { AttributeName: "thash", AttributeType: "S" }
-      ],
-      ProvisionedThroughput: {
-        ReadCapacityUnits: 5,
-        WriteCapacityUnits: 5
-      },
-      GlobalSecondaryIndexes: [
-        {
-          IndexName: 'thash_global_secondary_index',
-          KeySchema: [
-            {
-              AttributeName: 'thash',
-              KeyType: "HASH"
-            }
-          ],
-          Projection: {
-            ProjectionType: "KEYS_ONLY"
-          },
-          ProvisionedThroughput: {
-            ReadCapacityUnits: 1,
-            WriteCapacityUnits: 1
-          }
-        },
-      ],
-      SSESpecification: {
-        Enabled: false
-      },
-    };
-    await helper.createTable(dynamodbApiObject, createTableParams, true);
-    const params = {
-      TableName: testConstants.transactionLogsTableName
-    };
+    const returnObject = await autoScaleHelper.createTestCaseEnvironment(dynamodbApiObject, null);
   });
 
   it('should enable update continuous backup successfully', async function () {
@@ -105,11 +59,8 @@ describe('Create Table', function() {
   });
 
   after(async function() {
-    const params = {
-      TableName: testConstants.transactionLogsTableName
-    };
-    await helper.deleteTable(dynamodbApiObject, params, true);
-
+    this.timeout(1000000);
+    await autoScaleHelper.cleanTestCaseEnvironment(dynamodbApiObject, null);
     logger.debug("Create Table Mocha Tests Complete");
   });
 
