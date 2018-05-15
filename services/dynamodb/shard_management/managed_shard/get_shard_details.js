@@ -11,7 +11,7 @@
 const rootPrefix = '../../../..'
   , managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard')
   , GetShardDetailsMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_details')
-  , responseHelper = require(rootPrefix + '/lib/response')
+  , responseHelper = require(rootPrefix + '/lib/formatter/response')
   , coreConstants = require(rootPrefix + "/config/core_constants")
   , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new Logger()

@@ -9,7 +9,7 @@
  */
 
 const rootPrefix = '../../../..'
-  , responseHelper = require(rootPrefix + '/lib/response')
+  , responseHelper = require(rootPrefix + '/lib/formatter/response')
   , coreConstants = require(rootPrefix + "/config/core_constants")
   , availableShard = require( rootPrefix + '/lib/models/dynamodb/available_shard')
   , GetShardListMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_list')

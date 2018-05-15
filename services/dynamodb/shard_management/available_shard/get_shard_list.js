@@ -9,7 +9,7 @@
  */
 
 const rootPrefix = '../../../..'
-  , responseHelper = require(rootPrefix + '/lib/response')
+  , responseHelper = require(rootPrefix + '/lib/formatter/response')
   , coreConstants = require(rootPrefix + "/config/core_constants")
   , availableShardGlobalConstant = require(rootPrefix + '/lib/global_constant/available_shard')
   , managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard')

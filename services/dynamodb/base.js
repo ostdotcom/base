@@ -10,7 +10,7 @@
 const rootPrefix  = "../.."
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
-  , responseHelper = require(rootPrefix + '/lib/response')
+  , responseHelper = require(rootPrefix + '/lib/formatter/response')
   , coreConstants = require(rootPrefix + "/config/core_constants")
 ;
 

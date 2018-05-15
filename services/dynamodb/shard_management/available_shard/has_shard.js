@@ -9,7 +9,7 @@
  */
 
 const rootPrefix = '../../../..'
-  , responseHelper = require(rootPrefix + '/lib/response')
+  , responseHelper = require(rootPrefix + '/lib/formatter/response')
   , coreConstants = require(rootPrefix + "/config/core_constants")
   , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")

@@ -9,7 +9,7 @@
 
 const rootPrefix  = "../.."
   , DDBServiceBaseKlass = require(rootPrefix + "/services/dynamodb/base")
-  , responseHelper = require(rootPrefix + '/lib/response')
+  , responseHelper = require(rootPrefix + '/lib/formatter/response')
   , coreConstants = require(rootPrefix + "/config/core_constants")
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
