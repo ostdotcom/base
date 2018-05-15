@@ -13,7 +13,7 @@
 
 const rootPrefix  = "../.."
   , DDBServiceBaseKlass = require(rootPrefix + "/services/dynamodb/base")
-  , ResponseHelperKlass = require(rootPrefix + '/lib/formatter/response')
+  , ResponseHelperKlass = require(rootPrefix + '/lib/formatter/response_helper')
   , responseHelper = new ResponseHelperKlass({module_name: "TableExist"})
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()

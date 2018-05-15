@@ -9,9 +9,9 @@
  */
 
 const rootPrefix = '../../..'
-  , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
+  , ResponseHelperKlass = require(rootPrefix + '/lib/formatter/response_helper')
   , moduleName = 'services/shard_management/shard_migration'
-  , responseHelper = new ResponseHelper({module_name: moduleName})
+  , responseHelper = new ResponseHelperKlass({module_name: moduleName})
   , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new Logger()
   , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")

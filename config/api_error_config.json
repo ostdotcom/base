@@ -1,0 +1,27 @@
+{
+  "invalid_api_params": {
+    "http_code": "400",
+    "code": "bad_request",
+    "message": "At least one parameter is invalid or missing. See err.error_data array for more details."
+  },
+  "ddb_exception": {
+    "http_code": "500",
+    "code": "internal_server_error",
+    "message": "Exception while calling DynamoDB method"
+  },
+  "ddb_method_call_error":{
+    "http_code": "422",
+    "code": "unprocessable_entity",
+    "message": "DynamoDB method was called successfully but returned error"
+  },
+  "auto_scale_method_call_error":{
+    "http_code": "422",
+    "code": "unprocessable_entity",
+    "message": "Auto Scale method was called successfully but returned error"
+  },
+  "auto_scale_exception": {
+    "http_code": "500",
+    "code": "internal_server_error",
+    "message": "Exception while calling AutoScale method"
+  }
+}

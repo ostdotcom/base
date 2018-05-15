@@ -41,12 +41,12 @@ MochaTestConstants.prototype = {
    */
   DYNAMODB_CONFIGURATIONS_REMOTE : {
     'apiVersion': '2012-08-10',
-    'accessKeyId': 'x',
-    'secretAccessKey': 'x',
-    'region': 'localhost',
+    'accessKeyId': 'AKIAJ6YMLEN7A7DQWGPQ',
+    'secretAccessKey': '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',
+    'region': 'us-east-1',
     'logger': console,
     'sslEnabled': false,
-    'endpoint': "http://localhost:8000"
+    'endpoint': "http://dynamodb.us-east-1.amazonaws.com"
   },
 
   /**
@@ -56,13 +56,13 @@ MochaTestConstants.prototype = {
    *
    */
   AUTO_SCALE_CONFIGURATIONS_REMOTE : {
-    'apiVersion': '2012-08-10',
-    'accessKeyId': 'x',
-    'secretAccessKey': 'x',
-    'region': 'localhost',
+    'apiVersion': '2016-02-06',
+    'accessKeyId': 'AKIAJ6YMLEN7A7DQWGPQ',
+    'secretAccessKey': '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',
+    'region': 'us-east-1',
     'logger': console,
     'sslEnabled': false,
-    'endpoint': "http://localhost:8000"
+    'endpoint': "http://autoscaling.us-east-1.amazonaws.com"
   },
 
   transactionLogsTableName: 'shard_00001_transaction_logs'

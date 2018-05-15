@@ -1,0 +1,18 @@
+{
+  "ddb_object_missing": {
+    "parameter": "DB Instance",
+    "message": "DynamoDB object is missing"
+  },
+  "ddb_method_missing": {
+    "parameter": "Method name",
+    "message": "Method name is missing for dynamoDB method call"
+  },
+  "auto_scale_object_missing": {
+    "parameter": "Auto Scale Instance",
+    "message": "Auto Scale object is missing"
+  },
+  "auto_scale_method_missing": {
+    "parameter": "Auto Scale Method Name",
+    "message": "Method name is missing for autoscale method call"
+  }
+}

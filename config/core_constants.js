@@ -7,6 +7,11 @@
  *
  */
 
+const rootPrefix = '..'
+  , paramErrorConfig = require(rootPrefix + '/config/param_error_config')
+  , apiErrorConfig = require(rootPrefix + '/config/api_error_config')
+;
+
 /**
  * Constructor for core constants
  *
@@ -24,7 +29,13 @@ CoreConstants.prototype = {
    */
   DYNAMODB_API_VERSION: '2012-08-10',
 
-  CACHING_ENGINE:"none"
+  CACHING_ENGINE:"none",
+
+  ERROR_CONFIG: {
+    param_error_config: paramErrorConfig,
+    api_error_config: apiErrorConfig
+  }
+
 };
 
 module.exports = new CoreConstants();

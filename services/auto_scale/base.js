@@ -9,7 +9,7 @@
 const rootPrefix  = "../.."
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
-  , ResponseHelperKlass = require(rootPrefix + '/lib/formatter/response')
+  , ResponseHelperKlass = require(rootPrefix + '/lib/formatter/response_helper')
   , responseHelper = new ResponseHelperKlass({module_name: "AutoScaleService"})
 ;
 

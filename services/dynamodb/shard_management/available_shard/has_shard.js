@@ -9,10 +9,10 @@
  */
 
 const rootPrefix = '../../../..'
-  , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
+  , ResponseHelperKlass = require(rootPrefix + '/lib/formatter/response_helper')
   , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')
   , moduleName = 'services/dynamodb/shard_management/available_shard/has_shard'
-  , responseHelper = new ResponseHelper({module_name: moduleName})
+  , responseHelper = new ResponseHelperKlass({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
   , logger            = new Logger()
 ;

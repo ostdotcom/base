@@ -9,7 +9,7 @@
  */
 
 const rootPrefix = '../../../..'
-  , ResponseHelper = require(rootPrefix + '/lib/formatter/response')
+  , ResponseHelper = require(rootPrefix + '/lib/formatter/response_helper')
   , managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard')
   , GetShardDetailsMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_details')
   , moduleName = 'services/shard_management/managed_shard/get_shard'
