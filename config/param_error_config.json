@@ -79,6 +79,14 @@
     "parameter": "shard type",
     "message": "Shard type is invalid."
   },
+  "invalid_shard_identifier": {
+    "parameter": "shard Identifier",
+    "message": "Shard type is invalid."
+  },
+  "invalid_force_allocation": {
+    "parameter": "force allocation",
+    "message": "Force allocation is invalid."
+  },
   "invalid_input_array": {
     "parameter": "input array",
     "message": "input array is invalid."
@@ -86,5 +94,9 @@
   "wrong_limit": {
     "parameter": "array length",
     "message": "input array length is more than limit."
-  }
+  },
+  "invalid_identifier": {
+    "parameter": "Identifier",
+    "message": "Identifier is invalid."
+  },
 }

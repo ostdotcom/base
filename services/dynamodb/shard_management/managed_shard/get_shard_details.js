@@ -13,9 +13,10 @@ const rootPrefix = '../../../..'
   , managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard')
   , GetShardDetailsMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_details')
   , moduleName = 'services/shard_management/managed_shard/get_shard'
-  , responseHelper = new ResponseHelper({module_name: moduleName})
-  , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
-  , logger            = new Logger()
+  , responseHelper = require(rootPrefix + '/lib/response')
+  , coreConstants = require(rootPrefix + "/config/core_constants")
+  , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
+  , logger = new Logger()
 ;
 
 /**
@@ -64,8 +65,8 @@ GetShardDetails.prototype = {
 
       const cacheParams = {
         ddb_object: oThis.ddbObject,
-        entity_type : oThis.entityType,
-        identifiers : oThis.identifiers
+        entity_type: oThis.entityType,
+        identifiers: oThis.identifiers
       };
       r = await new GetShardDetailsMultiCacheKlass(cacheParams).fetch();
       logger.debug("=======GetShardDetails.GetShardDetailsMultiCache.result=======");
@@ -73,10 +74,15 @@ GetShardDetails.prototype = {
       if (r.isSuccess()) {
         return responseHelper.successWithData(r.data);
       } else {
-        return responseHelper.error(r.err.error_data, r.err.code, r.err.msg);
+        return r;
       }
-    } catch(err) {
-      return responseHelper.error('s_sm_as_gsd_perform_1', 'Something went wrong. ' + err.message);
+    } catch (err) {
+      return responseHelper.error({
+        internal_error_identifier: "s_sm_as_gsd_perform_1",
+        api_error_identifier: "exception",
+        debug_options: {error: err},
+        error_config: coreConstants.ERROR_CONFIG
+      });
     }
 
   },
@@ -93,32 +99,38 @@ GetShardDetails.prototype = {
     ;
 
     return new Promise(async function (onResolve) {
-      let errorCode = null
-        , errorMsg = null
+      let errorCode = null,
+        params_error_identifier = null;
       ;
 
       if (!managedShardConst.getSupportedEntityTypes()[oThis.entityType]) {
         errorCode = errorCodePrefix + '1';
-        errorMsg = 'entity type is not supported :' + oThis.entityType;
-        logger.debug(errorCode, errorMsg);
-        return onResolve(responseHelper.error(errorCode, errorMsg));
+        params_error_identifier = "invalid_entity_type";
       }
 
       if (!oThis.identifiers || oThis.identifiers.constructor.name !== 'Array') {
         errorCode = errorCodePrefix + '2';
-        errorMsg = 'identifiers is not an array';
-        logger.debug(errorCode, errorMsg, oThis.identifiers);
-        return onResolve(responseHelper.error(errorCode, errorMsg));
+        params_error_identifier = "invalid_input_array";
       }
 
-      for (let ind = 0; ind < oThis.identifiers.length ; ind++) {
+      for (let ind = 0; ind < oThis.identifiers.length; ind++) {
         let id = oThis.identifiers[ind];
         if (!id) {
           errorCode = errorCodePrefix + '3';
-          errorMsg = 'identifier element is empty :' + oThis.id;
-          logger.debug(errorCode, errorMsg);
-          return onResolve(responseHelper.error(errorCode, errorMsg));
+          params_error_identifier = "invalid_identifier";
+          break;
         }
+      }
+
+      if (params_error_identifier != null) {
+        logger.debug(errorCode, params_error_identifier);
+        return onResolve(responseHelper.paramValidationError({
+          internal_error_identifier: errorCode,
+          api_error_identifier: "invalid_api_params",
+          params_error_identifiers: [params_error_identifier],
+          debug_options: {},
+          error_config: coreConstants.ERROR_CONFIG
+        }));
       }
 
       return onResolve(responseHelper.successWithData({}));

@@ -14,12 +14,13 @@ const rootPrefix = '../../../..'
   , managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard')
   , GetShardNameMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_details')
   , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')
-  , availableShard = require( rootPrefix + '/lib/models/dynamodb/available_shard')
+  , availableShard = require(rootPrefix + '/lib/models/dynamodb/available_shard')
   , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
   , moduleName = 'services/shard_management/managed_shard/assign_shard'
-  , responseHelper = new ResponseHelperKlass({module_name: moduleName})
-  , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
-  , logger            = new Logger()
+  , responseHelper = require(rootPrefix + '/lib/response')
+  , coreConstants = require(rootPrefix + "/config/core_constants")
+  , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
+  , logger = new Logger()
 ;
 
 /**
@@ -76,8 +77,13 @@ AssignShard.prototype = {
       oThis.clearAnyAssociatedCache();
 
       return r;
-    } catch(err) {
-      return responseHelper.error('s_sm_as_as_perform_1', 'Something went wrong. ' + err.message);
+    } catch (err) {
+      return responseHelper.error({
+        internal_error_identifier: "s_sm_as_as_perform_1",
+        api_error_identifier: "exception",
+        debug_options: {message: err.message},
+        error_config: coreConstants.ERROR_CONFIG
+      });
     }
 
   },
@@ -98,21 +104,21 @@ AssignShard.prototype = {
         , errorMsg = null
       ;
 
-      oThis.hasShard = async function() {
+      oThis.hasShard = async function () {
         const oThis = this
           , paramsHasShard = {
           ddb_object: oThis.ddbObject,
           shard_names: [oThis.shardName]
         };
-        const response  = await (new HasShardMultiCacheKlass(paramsHasShard)).fetch();
-        if (response.isFailure()){
+        const response = await (new HasShardMultiCacheKlass(paramsHasShard)).fetch();
+        if (response.isFailure()) {
           return false;
         }
 
         return response.data[oThis.shardName].has_shard
       };
 
-      oThis.isAllocatedShard = async function() {
+      oThis.isAllocatedShard = async function () {
         const oThis = this
           , responseShardInfo = await availableShard.getShardByName(oThis.params)
           , shardInfo = responseShardInfo.data[oThis.shardName]
@@ -125,28 +131,34 @@ AssignShard.prototype = {
         let allocationType = shardInfo[String(availableShardConst.ALLOCATION_TYPE)];
         return allocationType === availableShardConst.enabled;
       };
-
+      let params_error_identifier = null;
       if (!oThis.identifier) {
         errorCode = errorCodePrefix + '1';
-        errorMsg = 'identifier is undefined';
+        params_error_identifier = "invalid_shard_identifier";
       } else if (!(managedShardConst.getSupportedEntityTypes()[oThis.entityType])) {
         errorCode = errorCodePrefix + '2';
-        errorMsg = 'entityType is not supported';
+        params_error_identifier = "invalid_entity_type";
       } else if (!oThis.ddbObject) {
         errorCode = errorCodePrefix + '3';
-        errorMsg = 'ddbObject is undefined';
+        params_error_identifier = "ddb_object_missing";
       } else if (!(await oThis.hasShard())) {
         errorCode = errorCodePrefix + '4';
-        errorMsg = 'shardName does not exists';
+        params_error_identifier = "invalid_shard_name";
       } else if (!oThis.forceAssignment && (await oThis.isAllocatedShard())) {
-          errorCode = errorCodePrefix + '5';
-          errorMsg = 'Shard is not available for assignment other force assignment';
+        errorCode = errorCodePrefix + '5';
+        params_error_identifier = "invalid_force_allocation";
       } else {
         return onResolve(responseHelper.successWithData({}));
       }
 
-      logger.debug(errorCode, errorMsg);
-      return onResolve(responseHelper.error(errorCode, errorMsg));
+      logger.debug(errorCode, params_error_identifier);
+      return onResolve(responseHelper.paramValidationError({
+        internal_error_identifier: errorCode,
+        api_error_identifier: "invalid_api_params",
+        params_error_identifiers: [params_error_identifier],
+        debug_options: {},
+        error_config: coreConstants.ERROR_CONFIG
+      }));
     });
   },
 
@@ -154,7 +166,7 @@ AssignShard.prototype = {
    * Clear affected cache
    * @return {Promise<*>}
    */
-  clearAnyAssociatedCache: async function() {
+  clearAnyAssociatedCache: async function () {
     const oThis = this
       , cacheParamsGetShard = {
       ddb_object: oThis.ddbObject,
