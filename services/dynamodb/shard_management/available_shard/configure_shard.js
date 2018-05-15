@@ -9,13 +9,12 @@
  */
 
 const rootPrefix = '../../../..'
-  , ResponseHelperKlass = require(rootPrefix + '/lib/formatter/response_helper')
+  , responseHelper = require(rootPrefix + '/lib/response')
+  , coreConstants = require(rootPrefix + "/config/core_constants")
   , availableShard = require( rootPrefix + '/lib/models/dynamodb/available_shard')
   , GetShardListMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_list')
   , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
   , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')
-  , moduleName = 'services/shard_management/available_shard/configure_shard'
-  , responseHelper = new ResponseHelperKlass({module_name: moduleName})
   , Logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
   , logger            = new Logger()
 ;
@@ -77,7 +76,12 @@ ConfigureShard.prototype = {
 
       return r;
     } catch(err) {
-      return responseHelper.error('s_sm_as_cs_perform_1', 'Something went wrong. ' + err.message);
+      return responseHelper.error({
+        internal_error_identifier:"s_sm_as_cs_perform_1",
+        api_error_identifier: "exception",
+        debug_options: {error: err},
+        error_config: coreConstants.ERROR_CONFIG
+      });
     }
 
   },

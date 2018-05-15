@@ -9,9 +9,8 @@
  */
 
 const rootPrefix = '../../..'
-  , ResponseHelperKlass = require(rootPrefix + '/lib/formatter/response_helper')
-  , moduleName = 'services/shard_management/shard_migration'
-  , responseHelper = new ResponseHelperKlass({module_name: moduleName})
+  , responseHelper = require(rootPrefix + '/lib/response')
+  , coreConstants = require(rootPrefix + "/config/core_constants")
   , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new Logger()
   , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
@@ -57,7 +56,12 @@ ShardMigration.prototype = {
       logger.info("=======ShardMigration.runShardMigration.finished=======");
       return r;
     } catch (err) {
-      return responseHelper.error('s_sm_sm_perform_1', 'Something went wrong. ' + err.message);
+      return responseHelper.error({
+        internal_error_identifier:"s_sm_sm_perform_1",
+        api_error_identifier: "exception",
+        debug_options: {error: err},
+        error_config: coreConstants.ERROR_CONFIG
+      });
     }
 
   },
@@ -83,7 +87,12 @@ ShardMigration.prototype = {
         return r;
 
       } catch (err) {
-        return onResolve(responseHelper.error('s_am_r_runRegister_1', 'Error running migration. ' + err));
+        return responseHelper.error({
+          internal_error_identifier:"s_am_r_runRegister_1",
+          api_error_identifier: "exception",
+          debug_options: {error: err},
+          error_config: coreConstants.ERROR_CONFIG
+        });
       }
     });
 

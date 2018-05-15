@@ -79,7 +79,7 @@ const waitForPrototype = {
       logger.error("services/dynamodb/base.js:executeDdbRequest inside catch ", err);
       return responseHelper.error({
         internal_error_identifier:"s_dy_b_executeDdbRequest_1",
-        api_error_identifier: "ddb_exception",
+        api_error_identifier: "exception",
         debug_options: {error: err.message},
         error_config: coreConstants.ERROR_CONFIG
       });

@@ -59,7 +59,7 @@ Base.prototype = {
       logger.error("services/dynamodb/base.js:perform inside catch ", err);
       return responseHelper.error({
         internal_error_identifier:"s_dy_b_perform_1",
-        api_error_identifier: "ddb_exception",
+        api_error_identifier: "exception",
         debug_options: {error: err.stack},
         error_config: coreConstants.ERROR_CONFIG
       });

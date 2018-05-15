@@ -4,10 +4,10 @@
     "code": "BAD_REQUEST",
     "message": "At least one parameter is invalid or missing. See err.error_data array for more details."
   },
-  "ddb_exception": {
+  "exception": {
     "http_code": "500",
     "code": "INTERNAL_SERVER_ERROR",
-    "message": "Exception while calling DynamoDB method"
+    "message": "Something went wrong exception."
   },
   "ddb_method_call_error":{
     "http_code": "422",
@@ -18,10 +18,5 @@
     "http_code": "422",
     "code": "UNPROCESSABLE_ENTITY",
     "message": "Auto Scale method was called successfully but returned error"
-  },
-  "auto_scale_exception": {
-    "http_code": "500",
-    "code": "INTERNAL_SERVER_ERROR",
-    "message": "Exception while calling AutoScale method"
   }
 }
