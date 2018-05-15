@@ -93,27 +93,33 @@ AddShard.prototype = {
 
     return new Promise(async function (onResolve) {
       let errorCode = null
-        , errorMsg = null
+        , params_error_identifier = null
       ;
 
       if (!oThis.shardName) {
         errorCode = errorCodePrefix + '1';
-        errorMsg  =  'shardName is not defined';
+        params_error_identifier =  "shard_name_mandatory"
       } else if (!oThis.entityType) {
         errorCode = errorCodePrefix + '2';
-        errorMsg  =  'entityType is not defined';
+        params_error_identifier =  "invalid_entity_type"
       } else if (!managedShardConst.getSupportedEntityTypes()[oThis.entityType]) {
         errorCode = errorCodePrefix + '3';
-        errorMsg  =  'entityType is not supported';
+        params_error_identifier =  "invalid_entity_type"
       } else if (!oThis.params['table_schema']['TableName']) {
         errorCode = errorCodePrefix + '4';
-        errorMsg  =  'TableName is not defined';
+        params_error_identifier =  "table_name_mandatory"
       } else {
         return onResolve(responseHelper.successWithData({}));
       }
 
-      logger.debug(errorCode, errorMsg);
-      return onResolve(responseHelper.error(errorCode, errorMsg));
+      logger.debug(errorCode, params_error_identifier);
+      return onResolve(responseHelper.paramValidationError({
+        internal_error_identifier: errorCode,
+        api_error_identifier: "invalid_api_params",
+        params_error_identifiers: [params_error_identifier],
+        debug_options: {},
+        error_config: coreConstants.ERROR_CONFIG
+      }));
 
     });
   },

@@ -6,7 +6,7 @@ const rootPrefix = '../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response_helper')
   , moduleName = 'services/cache_multi_management/has_shard'
   , responseHelper = new ResponseHelper({module_name: moduleName})
-  ,coreConstants = require(rootPrefix + "/config/core_constants")
+  , coreConstants = require(rootPrefix + "/config/core_constants")
 ;
 
 /**

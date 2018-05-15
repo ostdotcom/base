@@ -4,7 +4,7 @@ const rootPrefix = '../..'
   , baseCache = require(rootPrefix + '/services/cache_multi_management/base')
   , managedShard = require(rootPrefix + '/lib/models/dynamodb/managed_shard')
   , responseHelper = require(rootPrefix + '/lib/response')
-  ,coreConstants = require(rootPrefix + "/config/core_constants")
+  , coreConstants = require(rootPrefix + "/config/core_constants")
   , moduleName = 'services/cache_multi_management/get_shard_details'
 ;
 

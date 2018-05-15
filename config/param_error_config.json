@@ -58,5 +58,33 @@
   "blank_ids": {
     "parameter": "Blank ids",
     "message": "Blank Ids"
+  },
+  "shard_name_mandatory": {
+    "parameter": "shard name",
+    "message": "Shard name is mandatory"
+  },
+  "invalid_entity_type": {
+    "parameter": "entity type",
+    "message": "entity type is mandatory"
+  },
+  "invalid_allocation_type": {
+    "parameter": "allocation type",
+    "message": "allocation type is mandatory"
+  },
+  "invalid_shard_name": {
+    "parameter": "shard name",
+    "message": "Shard name is invalid."
+  },
+  "invalid_shard_type": {
+    "parameter": "shard type",
+    "message": "Shard type is invalid."
+  },
+  "invalid_input_array": {
+    "parameter": "input array",
+    "message": "input array is invalid."
+  },
+  "wrong_limit": {
+    "parameter": "array length",
+    "message": "input array length is more than limit."
   }
 }
