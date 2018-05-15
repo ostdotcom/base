@@ -40,11 +40,11 @@ const CreateTableMigration = function(ddbObject, autoScalingObject ,params) {
   ;
   oThis.autoScalingObject = autoScalingObject;
   oThis.createTableConfig = params.createTableConfig;
-  oThis.updateContinuousBackupConfig = params.updateContinuousBackupConfig;
+  //oThis.updateContinuousBackupConfig = params.updateContinuousBackupConfig;
   oThis.autoScalingConfig = params.autoScalingConfig;
-  logger.debug("\nparams", params);
-  logger.debug("\nautoScalingMethods");
-  console.log(Object.getOwnPropertyNames(autoScalingObject));
+  logger.debug("\nparams.createTableConfig", params.createTableConfig, "\nparams.autoScalingConfig", params.autoScalingConfig);
+  //logger.debug("\nautoScalingMethods");
+  //console.log(Object.getOwnPropertyNames(autoScalingObject));
 
   DDBServiceBaseKlass.call(oThis, ddbObject, 'createTableMigration', params);
 };
@@ -73,9 +73,9 @@ const CreateTableMigrationPrototype = {
       return responseHelper.error('l_dy_ctm_validateParams_2', 'create table config is mandatory');
     }
 
-    if (!oThis.params.updateContinuousBackupConfig) {
-      return responseHelper.error('l_dy_ctm_validateParams_3', 'updateContinuousBackupConfig config is mandatory');
-    }
+    // if (!oThis.params.updateContinuousBackupConfig) {
+    //   return responseHelper.error('l_dy_ctm_validateParams_3', 'updateContinuousBackupConfig config is mandatory');
+    // }
 
     if (!oThis.params.autoScalingConfig){
       return responseHelper.error('l_dy_ctm_validateParams_4', 'auto scaling configs are mandatory');
