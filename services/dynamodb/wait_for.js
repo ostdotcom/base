@@ -9,8 +9,8 @@
 
 const rootPrefix  = "../.."
   , base = require(rootPrefix + "/services/dynamodb/base")
-  , ResponseHelperKlass = require(rootPrefix + '/lib/formatter/response_helper')
-  , responseHelper = new ResponseHelperKlass({module_name: "DDBWaitForService"})
+  , responseHelper = require(rootPrefix + '/lib/response')
+  , coreConstants = require(rootPrefix + "/config/core_constants")
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
 ;
@@ -47,7 +47,13 @@ const waitForPrototype = {
     ;
     if (validationResponse.isFailure()) return validationResponse;
 
-    if (!oThis.waitForMethod) return responseHelper.error('l_dy_wf_validateParams_1', 'waitForMethod is mandatory');
+    if (!oThis.waitForMethod) return responseHelper.paramValidationError({
+        internal_error_identifier:"l_dy_wf_validateParams_1",
+        api_error_identifier: "invalid_api_params",
+        params_error_identifiers: ["wait_for_method_mandatory"],
+        debug_options: {},
+        error_config: coreConstants.ERROR_CONFIG
+    });
 
     return responseHelper.successWithData({});
   },
@@ -71,7 +77,12 @@ const waitForPrototype = {
 
     } catch (err) {
       logger.error("services/dynamodb/base.js:executeDdbRequest inside catch ", err);
-      return responseHelper.error('s_dy_b_executeDdbRequest_1', 'Something went wrong. ' + err.message);
+      return responseHelper.error({
+        internal_error_identifier:"s_dy_b_executeDdbRequest_1",
+        api_error_identifier: "ddb_exception",
+        debug_options: {error: err.message},
+        error_config: coreConstants.ERROR_CONFIG
+      });
     }
 
   },

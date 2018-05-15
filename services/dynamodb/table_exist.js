@@ -9,8 +9,8 @@
 
 const rootPrefix  = "../.."
   , DDBServiceBaseKlass = require(rootPrefix + "/services/dynamodb/base")
-  , ResponseHelperKlass = require(rootPrefix + '/lib/formatter/response_helper')
-  , responseHelper = new ResponseHelperKlass({module_name: "TableExist"})
+  , responseHelper = require(rootPrefix + '/lib/response')
+  , coreConstants = require(rootPrefix + "/config/core_constants")
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
 ;
@@ -47,7 +47,13 @@ const TableExistPrototype = {
     ;
     if (baseValidationResponse.isFailure()) return baseValidationResponse;
 
-    if (!oThis.params.TableName) return responseHelper.error('l_dy_te_validateParams_1', 'TableName is mandatory');
+    if (!oThis.params.TableName) return responseHelper.paramValidationError({
+        internal_error_identifier:"l_dy_te_validateParams_1",
+        api_error_identifier: "invalid_api_params",
+        params_error_identifiers: ["table_name_mandatory"],
+        debug_options: {},
+        error_config: coreConstants.ERROR_CONFIG
+    });
 
     return responseHelper.successWithData({});
   },

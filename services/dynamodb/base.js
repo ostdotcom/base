@@ -10,8 +10,8 @@
 const rootPrefix  = "../.."
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
-  , ResponseHelperKlass = require(rootPrefix + '/lib/formatter/response_helper')
-  , responseHelper = new ResponseHelperKlass({module_name: "DDBBaseService"})
+  , responseHelper = require(rootPrefix + '/lib/response')
+  , coreConstants = require(rootPrefix + "/config/core_constants")
 ;
 
 /**
@@ -57,7 +57,12 @@ Base.prototype = {
 
     } catch(err) {
       logger.error("services/dynamodb/base.js:perform inside catch ", err);
-      return responseHelper.error('s_dy_b_perform_1', 'Something went wrong. ' + err.message);
+      return responseHelper.error({
+        internal_error_identifier:"s_dy_b_perform_1",
+        api_error_identifier: "ddb_exception",
+        debug_options: {error: err.stack},
+        error_config: coreConstants.ERROR_CONFIG
+      });
     }
   },
 
@@ -71,15 +76,33 @@ Base.prototype = {
     const oThis = this;
 
     if (!oThis.methodName) {
-      return responseHelper.error('l_dy_b_validateParams_1', 'method name is missing.');
+      return responseHelper.paramValidationError({
+        internal_error_identifier:"l_dy_b_validateParams_1",
+        api_error_identifier: "invalid_api_params",
+        params_error_identifiers: ["ddb_method_missing"],
+        debug_options: {},
+        error_config: coreConstants.ERROR_CONFIG
+      });
     }
 
     if (!oThis.ddbObject){
-      return responseHelper.error('l_dy_b_validateParams_2', 'DDB object is missing');
+      return responseHelper.paramValidationError({
+        internal_error_identifier:"l_dy_b_validateParams_2",
+        api_error_identifier: "invalid_api_params",
+        params_error_identifiers: ["ddb_object_missing"],
+        debug_options: {},
+        error_config: coreConstants.ERROR_CONFIG
+      });
     }
 
     if (!oThis.params) {
-      return responseHelper.error('l_dy_b_validateParams_3', 'params is mandatory');
+      return responseHelper.paramValidationError({
+        internal_error_identifier:"l_dy_b_validateParams_3",
+        api_error_identifier: "invalid_api_params",
+        params_error_identifiers: ["ddb_params_missing"],
+        debug_options: {},
+        error_config: coreConstants.ERROR_CONFIG
+      });
     }
 
     return responseHelper.successWithData({});

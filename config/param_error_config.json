@@ -7,6 +7,10 @@
     "parameter": "Method name",
     "message": "Method name is missing for dynamoDB method call"
   },
+  "ddb_params_missing": {
+    "parameter": "Params",
+    "message": "Params is missing in dynamoDB method call"
+  },
   "auto_scale_object_missing": {
     "parameter": "Auto Scale Instance",
     "message": "Auto Scale object is missing"
@@ -14,5 +18,37 @@
   "auto_scale_method_missing": {
     "parameter": "Auto Scale Method Name",
     "message": "Method name is missing for autoscale method call"
+  },
+  "create_table_config_missing": {
+    "parameter": "Create Table Config",
+    "message": "Create Table params are missing"
+  },
+  "auto_scale_config_missing": {
+    "parameter": "Auto Scale Config",
+    "message": "Auto Scale params are missing"
+  },
+  "register_scalable_target_write_missing": {
+    "parameter": "Auto Scale Register Scalable Target Write Config",
+    "message": "Auto Scale Register Scalable Target Write Config Missing"
+  },
+  "register_scalable_target_read": {
+    "parameter": "Auto Scale Register Scalable Target Read Config",
+    "message": "Auto Scale Register Scalable Target Read Config Missing"
+  },
+  "put_scaling_policy_write": {
+    "parameter": "Auto Scale Put Scaling Policy Write Config",
+    "message": "Auto Scale Put Scaling Policy Write Config missing"
+  },
+  "put_scaling_policy_read": {
+    "parameter": "Auto Scale Put Scaling Policy Read Config",
+    "message": "Auto Scale Put Scaling Policy Read Config missing"
+  },
+  "table_name_mandatory": {
+    "parameter": "Table name",
+    "message": "table name is mandatory"
+  },
+  "wait_for_method_mandatory": {
+    "parameter": "Wait for method",
+    "message": "Wait for method is mandatory"
   }
 }
