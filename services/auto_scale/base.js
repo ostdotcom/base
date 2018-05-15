@@ -6,11 +6,10 @@
  * @module services/auto_scale/base
  *
  */
-const rootPrefix  = "../.."
+const rootPrefix = "../.."
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
-  , ResponseHelperKlass = require(rootPrefix + '/lib/formatter/response_helper')
-  , responseHelper = new ResponseHelperKlass({module_name: "AutoScaleService"})
+  , responseHelper = require(rootPrefix + '/lib/response')
 ;
 
 
@@ -23,11 +22,11 @@ const rootPrefix  = "../.."
  *
  * @constructor
  */
-const Base = function(autoScaleObject, methodName, params) {
+const Base = function (autoScaleObject, methodName, params) {
   const oThis = this
   ;
   logger.debug("=======AutoScale.Base.params=======");
-  logger.debug("\nmethodName: "+methodName, "\nparams: "+params);
+  logger.debug("\nmethodName: " + methodName, "\nparams: " + params);
   oThis.params = params;
   oThis.autoScaleObject = autoScaleObject;
   oThis.methodName = methodName;
@@ -57,7 +56,14 @@ Base.prototype = {
       return r;
     } catch (err) {
       logger.error("services/auto_scale/base.js:perform inside catch ", err);
-      return responseHelper.error('s_as_b_perform_1', 'Something went wrong. ' + err.message);
+      return responseHelper.paramValidationError({
+        internal_error_identifier: "s_as_b_perform_1",
+        api_error_identifier: "invalid_api_params",
+        params_error_identifiers: ["Something went wrong. "],
+        debug_options: {message: err.message},
+        error_config: coreConstants.ERROR_CONFIG
+      });
+
     }
   },
 
@@ -69,20 +75,33 @@ Base.prototype = {
    */
   validateParams: function () {
     const oThis = this;
+    // validate if the method is available
+    if (!oThis.methodName) return responseHelper.paramValidationError({
+      internal_error_identifier: "l_as_b_validateParams_1",
+      api_error_identifier: "invalid_api_params",
+      params_error_identifiers: ["method name is missing."],
+      debug_options: {},
+      error_config: coreConstants.ERROR_CONFIG
+    });
 
-    if (!oThis.methodName) {
-      return responseHelper.error('l_as_b_validateParams_1', 'method name is missing.');
-    }
+    if (!oThis.autoScaleObject) return responseHelper.paramValidationError({
+      internal_error_identifier: "l_as_b_validateParams_2",
+      api_error_identifier: "invalid_api_params",
+      params_error_identifiers: ["DDB object is missing"],
+      debug_options: {},
+      error_config: coreConstants.ERROR_CONFIG
+    });
 
-    if (!oThis.autoScaleObject){
-      return responseHelper.error('l_as_b_validateParams_2', 'DDB object is missing');
-    }
-
-    if (!oThis.params) {
-      return responseHelper.error('l_as_b_validateParams_3', 'params is mandatory');
-    }
+    if (!oThis.params) return responseHelper.paramValidationError({
+      internal_error_identifier: "l_as_b_validateParams_3",
+      api_error_identifier: "invalid_api_params",
+      params_error_identifiers: ["params is mandatory"],
+      debug_options: {},
+      error_config: coreConstants.ERROR_CONFIG
+    });
 
     return responseHelper.successWithData({});
+
   },
 
   /**
