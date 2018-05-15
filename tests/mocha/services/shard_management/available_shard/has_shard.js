@@ -18,7 +18,7 @@ const rootPrefix = "../../../../.."
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS)
   , shardManagementService = dynamoDbObject.shardManagement()
-  , shardName = "shard_00001_userBalances"
+  , shardName = testConstants.shardTableName
 
 ;
 
@@ -64,7 +64,7 @@ describe('services/dynamodb/shard_management/available_shard/has_shard', functio
 
     await shardManagementService.runShardMigration();
 
-    let entity_type = 'userBalances';
+    let entity_type = testConstants.shardEntityType;
     let schema = helper.createTableParamsFor("test");
 
     // delete table

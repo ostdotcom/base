@@ -31,7 +31,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
 
 
   it(optionsDesc, async function(){
-    let shardName = "shard_00001_userBalances"
+    let shardName = testConstants.shardTableName
       , allocation = availableShardConst.enabled;
 
     if (options.emptyShardName) {
@@ -69,15 +69,15 @@ describe('services/shard_management/available_shard/configure_shard', function (
 
     await shardManagementService.runShardMigration();
 
-    let entity_type = 'userBalances';
+    let entity_type = testConstants.shardEntityType;
     let schema = helper.createTableParamsFor("test");
 
     // delete table
     await dynamoDbObject.deleteTable({
-      TableName: 'shard_00001_userBalances'
+      TableName: testConstants.shardTableName
     });
 
-    let shardName = "shard_00001_userBalances";
+    let shardName = testConstants.shardTableName;
     await shardManagementService.addShard({shard_name: shardName, entity_type: entity_type, table_schema: schema});
   });
 

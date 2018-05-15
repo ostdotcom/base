@@ -18,7 +18,7 @@ const rootPrefix = "../../../../.."
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS)
   , shardManagementService = dynamoDbObject.shardManagement()
-  , userBalancesShardName = 'shard_00001_userBalances'
+  , userBalancesShardName = testConstants.shardTableName
 ;
 
 
@@ -30,7 +30,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
   };
   let shardName = userBalancesShardName
     , identifier = "0x1234"
-    , entityType = "userBalances"
+    , entityType = testConstants.shardEntityType
     , forceAssignment = true
   ;
 
@@ -82,7 +82,7 @@ describe('services/dynamodb/shard_management/managed_shard/assign_shard', functi
 
     // delete table
     await dynamoDbObject.deleteTable({
-      TableName: 'shard_00001_userBalances'
+      TableName: testConstants.shardTableName
     });
 
     let schema = helper.createTableParamsFor("test");

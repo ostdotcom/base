@@ -19,7 +19,7 @@ const rootPrefix = "../../../../.."
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS)
   , shardManagementService = dynamoDbObject.shardManagement()
   , identifier = '0x1234'
-  , shardName = "shard_00001_userBalances"
+  , shardName = testConstants.shardTableName
 ;
 
 
@@ -30,7 +30,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, retu
     inValidEntityType: false,
     inValidId: false
   };
-  let entity_type = 'userBalances';
+  let entity_type = testConstants.shardEntityType;
   let id = identifier;
 
   it(optionsDesc, async function(){

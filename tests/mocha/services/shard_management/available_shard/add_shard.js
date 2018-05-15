@@ -14,7 +14,6 @@ const rootPrefix = "../../../../.."
   , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
   , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
   , helper = require(rootPrefix + "/tests/mocha/services/shard_management/helper")
-
 ;
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS)
@@ -30,8 +29,9 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
   };
 
   it(optionsDesc, async function () {
-    let shardName = "shard_00001_userBalances";
-    let entity_type = 'userBalances';
+    this.timeout(100000);
+    let shardName = testConstants.shardTableName;
+    let entity_type =  testConstants.shardEntityType;
     let schema = helper.createTableParamsFor("test");
     if (options.wrongEntityType) {
       entity_type = '';
@@ -52,6 +52,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
 
 describe('services/shard_management/available_shard/add_shard', function () {
   before(async function () {
+    this.timeout(100000);
 
     // delete table
     await dynamoDbObject.deleteTable({
@@ -62,14 +63,15 @@ describe('services/shard_management/available_shard/add_shard', function () {
       TableName: availableShardConst.getTableName()
     });
 
+    console.debug("shardManagementService", shardManagementService);
     await shardManagementService.runShardMigration();
   });
 
   beforeEach(async function () {
-
+    this.timeout(100000);
     // delete table
     await dynamoDbObject.deleteTable({
-      TableName: 'shard_00001_userBalances'
+      TableName: testConstants.shardTableName
     });
   });
 
