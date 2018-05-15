@@ -3,9 +3,8 @@
 const rootPrefix = '../..'
   , baseCache = require(rootPrefix + '/services/cache_multi_management/base')
   , managedShard = require(rootPrefix + '/lib/models/dynamodb/managed_shard')
-  , ResponseHelper = require(rootPrefix + '/lib/formatter/response_helper')
+  , responseHelper = require(rootPrefix + '/lib/response')
   , moduleName = 'services/cache_multi_management/get_shard_details'
-  , responseHelper = new ResponseHelper({module_name: moduleName})
 ;
 
 /**
@@ -72,9 +71,14 @@ GetShardDetailsCacheKlass.prototype.fetchDataFromSource = async function (cacheI
   const oThis = this;
 
   if (!cacheIds) {
-    return responseHelper.error(
-      's_cmm_gsd_1', 'blank ids'
-    );
+    
+    return responseHelper.paramValidationError({
+      internal_error_identifier:"s_cmm_gsd_1",
+      api_error_identifier: "invalid_api_params",
+      params_error_identifiers: ["blank ids"],
+      debug_options: {},
+      error_config: coreConstants.ERROR_CONFIG
+    })
   }
 
   return await managedShard.getShard(Object.assign({}, oThis.params, {

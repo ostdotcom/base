@@ -2,10 +2,9 @@
 
 const rootPrefix = '../..'
   , baseCache = require(rootPrefix + '/services/cache_multi_management/base')
-  , availableShard = require( rootPrefix + '/lib/models/dynamodb/available_shard')
-  , ResponseHelper = require(rootPrefix + '/lib/formatter/response_helper')
+  , availableShard = require(rootPrefix + '/lib/models/dynamodb/available_shard')
+  , responseHelper = require(rootPrefix + '/lib/response')
   , moduleName = 'services/cache_multi_management/get_shard_list'
-  , responseHelper = new ResponseHelper({module_name: moduleName})
 ;
 
 /**
@@ -42,7 +41,7 @@ GetShardListCacheKlass.prototype.setCacheKeys = function () {
   oThis.cacheKeys = {};
   for (let i = 0; i < oThis.identifiers.length; i++) {
     let key = String(oThis.identifiers[i].entity_type + oThis.identifiers[i].shard_type);
-    oThis.cacheKeys[oThis._cacheKeyPrefix() + "dy_sm_gsl_" + "et_" + oThis.identifiers[i].entity_type +"st_" + oThis.identifiers[i].shard_type] = key;
+    oThis.cacheKeys[oThis._cacheKeyPrefix() + "dy_sm_gsl_" + "et_" + oThis.identifiers[i].entity_type + "st_" + oThis.identifiers[i].shard_type] = key;
     oThis.idToValueMap[key] = oThis.identifiers[i];
   }
 
@@ -75,9 +74,14 @@ GetShardListCacheKlass.prototype.fetchDataFromSource = async function (cacheIds)
   const oThis = this;
 
   if (!cacheIds) {
-    return responseHelper.error(
-      's_cmm_gsl_1', 'blank ids'
-    );
+
+    return responseHelper.paramValidationError({
+      internal_error_identifier: "s_cmm_gsl_1",
+      api_error_identifier: "invalid_api_params",
+      params_error_identifiers: ["blank ids"],
+      debug_options: {},
+      error_config: coreConstants.ERROR_CONFIG
+    });
   }
 
   return await availableShard.getShardsByEntityAllocation(Object.assign({}, oThis.params, {

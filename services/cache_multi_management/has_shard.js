@@ -2,7 +2,7 @@
 
 const rootPrefix = '../..'
   , baseCache = require(rootPrefix + '/services/cache_multi_management/base')
-  , availableShard = require( rootPrefix + '/lib/models/dynamodb/available_shard')
+  , availableShard = require(rootPrefix + '/lib/models/dynamodb/available_shard')
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response_helper')
   , moduleName = 'services/cache_multi_management/has_shard'
   , responseHelper = new ResponseHelper({module_name: moduleName})
@@ -71,9 +71,13 @@ HasShardKlass.prototype.fetchDataFromSource = async function (cacheIds) {
   const oThis = this;
 
   if (!cacheIds) {
-    return responseHelper.error(
-      's_cmm_hs_1', 'blank ids'
-    );
+    return responseHelper.paramValidationError({
+      internal_error_identifier: "s_cmm_hs_1",
+      api_error_identifier: "invalid_api_params",
+      params_error_identifiers: ["blank ids"],
+      debug_options: {},
+      error_config: coreConstants.ERROR_CONFIG
+    })
   }
 
   return await availableShard.hasShard(Object.assign({}, oThis.params, {
