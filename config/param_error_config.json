@@ -94,9 +94,5 @@
   "wrong_limit": {
     "parameter": "array length",
     "message": "input array length is more than limit."
-  },
-  "invalid_identifier": {
-    "parameter": "Identifier",
-    "message": "Identifier is invalid."
-  },
+  }
 }

@@ -9,10 +9,8 @@
  */
 
 const rootPrefix = '../../../..'
-  , ResponseHelper = require(rootPrefix + '/lib/formatter/response_helper')
   , managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard')
   , GetShardDetailsMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_details')
-  , moduleName = 'services/shard_management/managed_shard/get_shard'
   , responseHelper = require(rootPrefix + '/lib/response')
   , coreConstants = require(rootPrefix + "/config/core_constants")
   , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
@@ -117,7 +115,7 @@ GetShardDetails.prototype = {
         let id = oThis.identifiers[ind];
         if (!id) {
           errorCode = errorCodePrefix + '3';
-          params_error_identifier = "invalid_identifier";
+          params_error_identifier = "invalid_shard_identifier";
           break;
         }
       }

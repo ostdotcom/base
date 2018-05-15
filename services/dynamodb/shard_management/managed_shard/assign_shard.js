@@ -9,14 +9,12 @@
  */
 
 const rootPrefix = '../../../..'
-  , ResponseHelperKlass = require(rootPrefix + '/lib/formatter/response_helper')
-  , managedShard = require(rootPrefix + '/lib/models/dynamodb/managed_shard')
+  ,managedShard = require(rootPrefix + '/lib/models/dynamodb/managed_shard')
   , managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard')
   , GetShardNameMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_details')
   , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')
   , availableShard = require(rootPrefix + '/lib/models/dynamodb/available_shard')
   , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
-  , moduleName = 'services/shard_management/managed_shard/assign_shard'
   , responseHelper = require(rootPrefix + '/lib/response')
   , coreConstants = require(rootPrefix + "/config/core_constants")
   , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
@@ -100,9 +98,8 @@ AssignShard.prototype = {
     ;
 
     return new Promise(async function (onResolve) {
-      let errorCode = null
-        , errorMsg = null
-      ;
+      let errorCode = null;
+      let params_error_identifier = null;
 
       oThis.hasShard = async function () {
         const oThis = this
@@ -131,7 +128,7 @@ AssignShard.prototype = {
         let allocationType = shardInfo[String(availableShardConst.ALLOCATION_TYPE)];
         return allocationType === availableShardConst.enabled;
       };
-      let params_error_identifier = null;
+
       if (!oThis.identifier) {
         errorCode = errorCodePrefix + '1';
         params_error_identifier = "invalid_shard_identifier";
