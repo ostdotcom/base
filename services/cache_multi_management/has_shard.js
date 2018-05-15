@@ -6,6 +6,7 @@ const rootPrefix = '../..'
   , ResponseHelper = require(rootPrefix + '/lib/formatter/response_helper')
   , moduleName = 'services/cache_multi_management/has_shard'
   , responseHelper = new ResponseHelper({module_name: moduleName})
+  ,coreConstants = require(rootPrefix + "/config/core_constants")
 ;
 
 /**
@@ -74,7 +75,7 @@ HasShardKlass.prototype.fetchDataFromSource = async function (cacheIds) {
     return responseHelper.paramValidationError({
       internal_error_identifier: "s_cmm_hs_1",
       api_error_identifier: "invalid_api_params",
-      params_error_identifiers: ["blank ids"],
+      params_error_identifiers: ["blank_ids"],
       debug_options: {},
       error_config: coreConstants.ERROR_CONFIG
     })

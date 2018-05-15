@@ -10,6 +10,7 @@ const rootPrefix = "../.."
   , LoggerKlass = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new LoggerKlass()
   , responseHelper = require(rootPrefix + '/lib/response')
+  ,coreConstants = require(rootPrefix + "/config/core_constants")
 ;
 
 
@@ -56,10 +57,9 @@ Base.prototype = {
       return r;
     } catch (err) {
       logger.error("services/auto_scale/base.js:perform inside catch ", err);
-      return responseHelper.paramValidationError({
+      return responseHelper.error({
         internal_error_identifier: "s_as_b_perform_1",
-        api_error_identifier: "invalid_api_params",
-        params_error_identifiers: ["Something went wrong. "],
+        api_error_identifier: "exception",
         debug_options: {message: err.message},
         error_config: coreConstants.ERROR_CONFIG
       });
@@ -79,7 +79,7 @@ Base.prototype = {
     if (!oThis.methodName) return responseHelper.paramValidationError({
       internal_error_identifier: "l_as_b_validateParams_1",
       api_error_identifier: "invalid_api_params",
-      params_error_identifiers: ["method name is missing."],
+      params_error_identifiers: ["auto_scale_method_missing"],
       debug_options: {},
       error_config: coreConstants.ERROR_CONFIG
     });
@@ -87,7 +87,7 @@ Base.prototype = {
     if (!oThis.autoScaleObject) return responseHelper.paramValidationError({
       internal_error_identifier: "l_as_b_validateParams_2",
       api_error_identifier: "invalid_api_params",
-      params_error_identifiers: ["DDB object is missing"],
+      params_error_identifiers: ["auto_scale_object_missing"],
       debug_options: {},
       error_config: coreConstants.ERROR_CONFIG
     });
@@ -95,7 +95,7 @@ Base.prototype = {
     if (!oThis.params) return responseHelper.paramValidationError({
       internal_error_identifier: "l_as_b_validateParams_3",
       api_error_identifier: "invalid_api_params",
-      params_error_identifiers: ["params is mandatory"],
+      params_error_identifiers: ["auto_scale_params_missing"],
       debug_options: {},
       error_config: coreConstants.ERROR_CONFIG
     });

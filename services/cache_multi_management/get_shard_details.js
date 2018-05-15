@@ -4,6 +4,7 @@ const rootPrefix = '../..'
   , baseCache = require(rootPrefix + '/services/cache_multi_management/base')
   , managedShard = require(rootPrefix + '/lib/models/dynamodb/managed_shard')
   , responseHelper = require(rootPrefix + '/lib/response')
+  ,coreConstants = require(rootPrefix + "/config/core_constants")
   , moduleName = 'services/cache_multi_management/get_shard_details'
 ;
 
@@ -75,7 +76,7 @@ GetShardDetailsCacheKlass.prototype.fetchDataFromSource = async function (cacheI
     return responseHelper.paramValidationError({
       internal_error_identifier:"s_cmm_gsd_1",
       api_error_identifier: "invalid_api_params",
-      params_error_identifiers: ["blank ids"],
+      params_error_identifiers: ["blank_ids"],
       debug_options: {},
       error_config: coreConstants.ERROR_CONFIG
     })

@@ -19,6 +19,10 @@
     "parameter": "Auto Scale Method Name",
     "message": "Method name is missing for autoscale method call"
   },
+  "auto_scale_params_missing": {
+    "parameter": "Auto Scale params",
+    "message": "Params is mandatory"
+  },
   "create_table_config_missing": {
     "parameter": "Create Table Config",
     "message": "Create Table params are missing"
@@ -50,5 +54,9 @@
   "wait_for_method_mandatory": {
     "parameter": "Wait for method",
     "message": "Wait for method is mandatory"
+  },
+  "blank_ids": {
+    "parameter": "Blank ids",
+    "message": "Blank Ids"
   }
 }
