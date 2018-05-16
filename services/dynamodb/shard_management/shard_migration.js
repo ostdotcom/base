@@ -156,7 +156,7 @@ ShardMigration.prototype = {
 
     logger.debug(availableShardsResponse);
     if (availableShardsResponse.isFailure()) {
-      logger.error("Failure error ", availableShardsResponse.err.msg);
+      logger.error("Failure error ", availableShardsResponse);
     }
     logger.debug("========ShardMigration.runAvailableShardMigration Ended=======");
     return availableShardsResponse;
@@ -184,7 +184,7 @@ ShardMigration.prototype = {
     const managedShardsResponse = await oThis.ddbApiObject.createTableMigration(oThis.autoScalingApiObject, params);
     logger.debug(managedShardsResponse);
     if (managedShardsResponse.isFailure()) {
-      logger.error("Is Failure having err ", managedShardsResponse.err.msg);
+      logger.error("Is Failure having err ", managedShardsResponse);
     }
     logger.debug("========ShardMigration.runManagedShardMigration Ended=======");
     return managedShardsResponse;

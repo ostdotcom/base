@@ -105,9 +105,6 @@ AddShard.prototype = {
       } else if (!managedShardConst.getSupportedEntityTypes()[oThis.entityType]) {
         errorCode = errorCodePrefix + '3';
         params_error_identifier =  "invalid_entity_type"
-      } else if (!oThis.params['table_schema']['TableName']) {
-        errorCode = errorCodePrefix + '4';
-        params_error_identifier =  "table_name_mandatory"
       } else {
         return onResolve(responseHelper.successWithData({}));
       }

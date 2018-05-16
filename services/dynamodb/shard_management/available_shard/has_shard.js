@@ -140,11 +140,7 @@ HasShard.prototype = {
     logger.debug("=======HasShard.hasShard.result=======");
     logger.debug(r);
 
-    if (r.isSuccess()) {
-      return r;
-    } else {
-      return responseHelper.error(r.err.error_data, r.err.code, r.err.msg);
-    }
+    return r;
   }
 };
 

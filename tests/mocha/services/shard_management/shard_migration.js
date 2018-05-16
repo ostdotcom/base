@@ -7,18 +7,16 @@ const Chai = require('chai')
 
 // Load dependencies package
 const rootPrefix = "../../../.."
-  , DynamoDbObject = require(rootPrefix + "/index").Dynamodb
+  , DynamoDbKlass = require(rootPrefix + "/index").Dynamodb
   , AutoScaleApiKlass = require(rootPrefix + "/index").AutoScaling
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
   , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
 ;
 
-const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
+const dynamoDbObject = new DynamoDbKlass(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
   , autoScaleObj = new AutoScaleApiKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE)
-  , shardManagementService = dynamoDbObject.shardManagement()
-  , MANAGED_SHARD_TABLE = managedShardConst.getTableName()
-  , AVAILABLE_SHARD_TABLE = availableShardConst.getTableName()
+  , shardManagementObject = dynamoDbObject.shardManagement()
   , createTableParamsFor = function (tableName) {
   return {
     TableName: tableName,
@@ -51,15 +49,24 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
   };
 
   it(optionsDesc, async function () {
-    // if (options.availableShard) {
-    //   await dynamoDbObject.createTable(createTableParamsFor(AVAILABLE_SHARD_TABLE));
-    // }
-    //
-    // if (options.managedShard) {
-    //   await dynamoDbObject.createTable(createTableParamsFor(MANAGED_SHARD_TABLE));
-    // }
+    this.timeout(10000000);
+    console.log("deleting tables");
+    let checkTableExistsResponse = await dynamoDbObject.checkTableExist({TableName: managedShardConst.getTableName()});
+    if (checkTableExistsResponse.data.response === true) {
+      await dynamoDbObject.deleteTable({
+        TableName: managedShardConst.getTableName()
+      });
+    }
 
-    const response = await shardManagementService.runShardMigration(autoScaleObj);
+    checkTableExistsResponse = await dynamoDbObject.checkTableExist({TableName: availableShardConst.getTableName()});
+    if (checkTableExistsResponse.data.response === true) {
+      await dynamoDbObject.deleteTable({
+        TableName: availableShardConst.getTableName()
+      });
+    }
+
+    console.log("starting runShardMigration");
+    const response = await shardManagementObject.runShardMigration(dynamoDbObject, autoScaleObj);
     if (toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
     } else {
@@ -69,19 +76,6 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
 };
 
 describe('lib/services/shard_management/shard_migration', function () {
-
-  beforeEach(async function () {
-
-    // delete table
-    await dynamoDbObject.deleteTable({
-      TableName: MANAGED_SHARD_TABLE
-    });
-
-    await dynamoDbObject.deleteTable({
-      TableName: AVAILABLE_SHARD_TABLE
-    });
-
-  });
 
   createTestCasesForOptions("Shard migration happy case",{}, true);
   createTestCasesForOptions("Shard migration available shard table already exists", {
