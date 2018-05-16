@@ -8,6 +8,7 @@ const Chai    = require('chai')
 // Load dependencies package
 const rootPrefix = "../../../../.."
   , DynamoDbObject = require(rootPrefix + "/index").Dynamodb
+  , AutoScaleApiKlass = require(rootPrefix + "/index").AutoScaling
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new Logger()
@@ -18,7 +19,8 @@ const rootPrefix = "../../../../.."
 
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS)
-  , shardManagementService = dynamoDbObject.shardManagement()
+  , autoScaleObj = new AutoScaleApiKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE)
+  , shardManagementObject = dynamoDbObject.shardManagement()
   ;
 
 const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
@@ -43,7 +45,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
     if (options.redundantAllocationType) {
       allocation = availableShardConst.disabled;
     }
-    const response = await shardManagementService.configureShard({shard_name: shardName, allocation_type: allocation});
+    const response = await shardManagementObject.configureShard({shard_name: shardName, allocation_type: allocation});
 
     logger.log("LOG", response);
     if (toAssert) {
@@ -67,7 +69,7 @@ describe('services/shard_management/available_shard/configure_shard', function (
       TableName: availableShardConst.getTableName()
     });
 
-    await shardManagementService.runShardMigration();
+    await shardManagementObject.runShardMigration(dynamoDbObject, autoScaleObj);
 
     let entity_type = testConstants.shardEntityType;
     let schema = helper.createTableParamsFor("test");
@@ -78,7 +80,7 @@ describe('services/shard_management/available_shard/configure_shard', function (
     });
 
     let shardName = testConstants.shardTableName;
-    await shardManagementService.addShard({shard_name: shardName, entity_type: entity_type, table_schema: schema});
+    await shardManagementObject.addShard({shard_name: shardName, entity_type: entity_type, table_schema: schema});
   });
 
 

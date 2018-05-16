@@ -7,6 +7,7 @@ const Chai    = require('chai')
 
 const rootPrefix = "../../../../.."
   , DynamoDbObject = require(rootPrefix + "/index").Dynamodb
+  , AutoScaleApiKlass = require(rootPrefix + "/index").AutoScaling
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new Logger()
@@ -17,7 +18,8 @@ const rootPrefix = "../../../../.."
 
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS)
-  , shardManagementService = dynamoDbObject.shardManagement()
+  , autoScaleObj = new AutoScaleApiKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE)
+  , shardManagementObject = dynamoDbObject.shardManagement()
   , userBalancesShardName = testConstants.shardTableName
 ;
 
@@ -46,14 +48,14 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
         TableName: availableShardConst.getTableName()
       });
 
-      await shardManagementService.runShardMigration();
+      await shardManagementObject.runShardMigration(dynamoDbObject, autoScaleObj);
     }
 
     if (options.undefined_force_assignment) {
       forceAssignment = false;
     }
 
-    const response = await shardManagementService.assignShard({identifier: identifier, entity_type: entityType, shard_name: shardName, force_assignment: true});
+    const response = await shardManagementObject.assignShard({identifier: identifier, entity_type: entityType, shard_name: shardName, force_assignment: true});
 
     logger.log("LOG", response);
     if (toAssert) {
@@ -78,7 +80,7 @@ describe('services/dynamodb/shard_management/managed_shard/assign_shard', functi
       TableName: availableShardConst.getTableName()
     });
 
-    await shardManagementService.runShardMigration();
+    await shardManagementObject.runShardMigration(dynamoDbObject, autoScaleObj);
 
     // delete table
     await dynamoDbObject.deleteTable({
@@ -86,7 +88,7 @@ describe('services/dynamodb/shard_management/managed_shard/assign_shard', functi
     });
 
     let schema = helper.createTableParamsFor("test");
-    await shardManagementService.addShard({shard_name: userBalancesShardName, entity_type: 'userBalances', table_schema: schema});
+    await shardManagementObject.addShard({shard_name: userBalancesShardName, entity_type: 'userBalances', table_schema: schema});
   });
 
   createTestCasesForOptions("Assign shard adding happy case", {}, true);

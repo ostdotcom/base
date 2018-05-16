@@ -8,6 +8,7 @@ const Chai = require('chai')
 // Load dependencies package
 const rootPrefix = "../../../../.."
   , DynamoDbObject = require(rootPrefix + "/index").Dynamodb
+  , AutoScaleApiKlass = require(rootPrefix + "/index").AutoScaling
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new Logger()
@@ -17,7 +18,8 @@ const rootPrefix = "../../../../.."
 ;
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS)
-  , shardManagementService = dynamoDbObject.shardManagement()
+  , autoScaleObj = new AutoScaleApiKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE)
+  , shardManagementObject = dynamoDbObject.shardManagement()
 ;
 
 const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
@@ -39,7 +41,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
     if (options.invalidSchema) {
       schema = {};
     }
-    const response = await shardManagementService.addShard({shard_name: shardName ,entity_type: entity_type, table_schema: schema});
+    const response = await shardManagementObject.addShard({shard_name: shardName ,entity_type: entity_type, table_schema: schema});
     logger.log("LOG", response);
     if (toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
@@ -63,8 +65,7 @@ describe('services/shard_management/available_shard/add_shard', function () {
       TableName: availableShardConst.getTableName()
     });
 
-    console.debug("shardManagementService", shardManagementService);
-    await shardManagementService.runShardMigration();
+    await shardManagementObject.runShardMigration(dynamoDbObject, autoScaleObj);
   });
 
   beforeEach(async function () {

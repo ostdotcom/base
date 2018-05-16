@@ -328,33 +328,34 @@ const OSTBase = require('@openstfoundation/openst-base')
 ```bash
 const OSTBase = require('@openstfoundation/openst-base')
     , DynamodbApiObject  = new OSTBase.Dynamodb(DynamodbConnectionParams)
+    , ShardManagementObject = DynamodbApiObject.shardManagement()
    ;
     
     // Run Shard Migration
     // Created available_shards and managed_shards table
-    DynamodbApiObject.shardManagement.runShardMigration();
+    ShardManagementObject.runShardMigration(dynamoDbObject, autoScaleObj);
     
     // Add Shard
     // Creates item in available_shards table
-    DynamodbApiObject.shardManagement.addShard(addShardParams);
+    ShardManagementObject.addShard(addShardParams);
     
     // Configure Shard
     // Configure Enable/Disable allocation type
-    DynamodbApiObject.shardManagement.configureShard(configureShardParams);
+    ShardManagementObject.configureShard(configureShardParams);
     
     // Get Shards By Different Types
     // Type Values : all/enabled/disabled
-    DynamodbApiObject.shardManagement.getShardsByType(getShardsByTypeParams);
+    ShardManagementObject.getShardsByType(getShardsByTypeParams);
     
     // Does this shard exist in available_shards table
-    DynamodbApiObject.shardManagement.hasShard(hasShardParams);
+    ShardManagementObject.hasShard(hasShardParams);
     
     // Assign Shard to an identifier
     // Creates entry in managed_shards table
-    DynamodbApiObject.shardManagement.assignShard(assignShardParams);
+    ShardManagementObject.assignShard(assignShardParams);
     
     // Get Managed shards
-    DynamodbApiObject.shardManagement.getManagedShard(managedShardParams);
+    ShardManagementObject.getManagedShard(managedShardParams);
     
 ```
 

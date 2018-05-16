@@ -7,6 +7,7 @@ const Chai    = require('chai')
 
 const rootPrefix = "../../../../.."
   , DynamoDbObject = require(rootPrefix + "/index").Dynamodb
+  , AutoScaleApiKlass = require(rootPrefix + "/index").AutoScaling
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new Logger()
@@ -17,7 +18,8 @@ const rootPrefix = "../../../../.."
 
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS)
-  , shardManagementService = dynamoDbObject.shardManagement()
+  , autoScaleObj = new AutoScaleApiKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE)
+  , shardManagementObject = dynamoDbObject.shardManagement()
   , shardName = testConstants.shardTableName
 
 ;
@@ -36,7 +38,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
         TableName: shardName
       });
     }
-    const response = await shardManagementService.hasShard({shard_names: [shardName]});
+    const response = await shardManagementObject.hasShard({shard_names: [shardName]});
 
     logger.log("LOG", response);
     assert.isTrue(response.isSuccess(), "Success");
@@ -62,7 +64,7 @@ describe('services/dynamodb/shard_management/available_shard/has_shard', functio
       TableName: availableShardConst.getTableName()
     });
 
-    await shardManagementService.runShardMigration();
+    await shardManagementObject.runShardMigration(dynamoDbObject, autoScaleObj);
 
     let entity_type = testConstants.shardEntityType;
     let schema = helper.createTableParamsFor("test");
@@ -72,7 +74,7 @@ describe('services/dynamodb/shard_management/available_shard/has_shard', functio
       TableName: shardName
     });
 
-    await shardManagementService.addShard({shard_name: shardName, entity_type: entity_type, table_schema: schema});
+    await shardManagementObject.addShard({shard_name: shardName, entity_type: entity_type, table_schema: schema});
   });
 
   createTestCasesForOptions("has shard case", {}, true);

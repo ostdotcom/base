@@ -14,7 +14,6 @@ const rootPrefix      = '.'
     , Web3PoolFactory = require( rootPrefix + '/lib/web3_pool/ost_web3_pool_factory' )
     , Web3Pool        = require( rootPrefix + '/lib/web3_pool/ost_web3_pool' )
     , responseHelper  = require(rootPrefix + '/lib/formatter/response_helper')
-    , ShardMigration = require(rootPrefix + '/services/dynamodb/shard_management/shard_migration')
     , DynamodbApi  = require(rootPrefix + '/services/dynamodb/api')
     , AutoScalingApi  = require(rootPrefix + '/services/auto_scale/api')
 ;
@@ -36,7 +35,6 @@ module.exports = {
     Factory : Web3PoolFactory
     , Pool  : Web3Pool
   }
-  , ShardMigration: ShardMigration
   , Dynamodb : DynamodbApi
   , AutoScaling : AutoScalingApi
 };

@@ -7,6 +7,7 @@ const Chai    = require('chai')
 
 const rootPrefix = "../../../../.."
   , DynamoDbObject = require(rootPrefix + "/index").Dynamodb
+  , AutoScaleApiKlass = require(rootPrefix + "/index").AutoScaling
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new Logger()
@@ -17,7 +18,8 @@ const rootPrefix = "../../../../.."
 
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS)
-  , shardManagementService = dynamoDbObject.shardManagement()
+  , autoScaleObj = new AutoScaleApiKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE)
+  , shardManagementObject = dynamoDbObject.shardManagement()
   , identifier = '0x1234'
   , shardName = testConstants.shardTableName
 ;
@@ -43,9 +45,9 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, retu
       id = "0x2";
     }
 
-    const response = await shardManagementService.getManagedShard({entity_type: entity_type, identifiers: [id]});
+    const response = await shardManagementObject.getManagedShard({entity_type: entity_type, identifiers: [id]});
 
-    logger.log("shardManagementService Response", JSON.stringify(response));
+    logger.log("shardManagementObject Response", JSON.stringify(response));
     if (toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
       assert.equal(Object.keys(response.data).length, returnCount);
@@ -72,15 +74,15 @@ describe('services/dynamodb/shard_management/managed_shard/get_shard_details', f
       TableName: availableShardConst.getTableName()
     });
 
-    await shardManagementService.runShardMigration();
+    await shardManagementObject.runShardMigration(dynamoDbObject, autoScaleObj);
 
     await dynamoDbObject.deleteTable({
       TableName: shardName
     });
     let schema = helper.createTableParamsFor("test");
-    await shardManagementService.addShard({shard_name: shardName, entity_type: 'userBalances', table_schema: schema});
+    await shardManagementObject.addShard({shard_name: shardName, entity_type: 'userBalances', table_schema: schema});
 
-    await shardManagementService.assignShard({identifier: identifier, entity_type: "userBalances" ,shard_name: shardName});
+    await shardManagementObject.assignShard({identifier: identifier, entity_type: "userBalances" ,shard_name: shardName});
 
   });
 

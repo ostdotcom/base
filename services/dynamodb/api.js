@@ -48,7 +48,7 @@ DynamoDBService.prototype = {
   },
 
   /**
-   * Create table with added migration
+   * Run table migration with added features
    *  1. active status check
    *  2. enabling continuous back up
    *  3. enabling auto scaling

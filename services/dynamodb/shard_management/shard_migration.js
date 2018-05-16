@@ -23,16 +23,17 @@ const rootPrefix = '../../..'
  * @constructor
  *
  * @params {object} params
- * @params {object} params.ddb_object - ddb object
- * @params {object} params.auto_scaling_object - auto scaling object
+ * @params {object} params.ddb_api_object - ddb api object
+ * @params {object} params.auto_scaling_api_object - auto scaling api object
  *
  * @return {Object}
  *
  */
 const ShardMigration = function (params) {
-  const oThis = this;
-  oThis.ddbObject = params.ddb_object;
-  oThis.autoScalingObject = params.auto_scaling_object;
+  const oThis = this
+  ;
+  oThis.ddbApiObject = params.ddb_api_object;
+  oThis.autoScalingApiObject = params.auto_scaling_api_object;
 };
 
 ShardMigration.prototype = {
@@ -49,11 +50,12 @@ ShardMigration.prototype = {
 
     try {
       let r = null;
-      logger.info("=======ShardMigration.executeShardMigration.started=======");
+      r = oThis.validateParams();
+      logger.debug("ShardMigration.executeShardMigration.validateParams", r);
+      if (r.isFailure()) return r;
+
       r = await oThis.executeShardMigration();
-      logger.info("=======ShardMigration.executeShardMigration.result=======");
-      logger.debug(r);
-      logger.info("=======ShardMigration.executeShardMigration.finished=======");
+      logger.debug("ShardMigration.executeShardMigration.executeShardMigration", r);
       return r;
     } catch (err) {
       return responseHelper.error({
@@ -64,6 +66,39 @@ ShardMigration.prototype = {
       });
     }
 
+  },
+
+  /**
+   * Validation of params
+   *
+   * @return {Promise<any>}
+   *
+   */
+  validateParams: function () {
+    const oThis = this
+    ;
+
+    if (!oThis.ddbApiObject) {
+      return responseHelper.paramValidationError({
+        internal_error_identifier: "d_sm_sm_validateParams_1",
+        api_error_identifier: "invalid_api_params",
+        params_error_identifiers: ["ddb_object_missing"],
+        debug_options: {},
+        error_config: coreConstants.ERROR_CONFIG
+      });
+    }
+
+    if (!oThis.autoScalingApiObject) {
+      return responseHelper.paramValidationError({
+        internal_error_identifier: "d_sm_sm_validateParams_2",
+        api_error_identifier: "invalid_api_params",
+        params_error_identifiers: ["auto_scale_object_missing"],
+        debug_options: {},
+        error_config: coreConstants.ERROR_CONFIG
+      });
+    }
+
+    return responseHelper.successWithData({});
   },
 
   /**
@@ -117,7 +152,7 @@ ShardMigration.prototype = {
       , arn = "ARN"
     ;
     params.autoScalingConfig = oThis.getAvailableShardsAutoScalingParams(tableName, arn, resourceId);
-    const availableShardsResponse = await oThis.ddbObject.createTableMigration(oThis.autoScalingObject, params);
+    const availableShardsResponse = await oThis.ddbApiObject.createTableMigration(oThis.autoScalingApiObject, params);
 
     logger.debug(availableShardsResponse);
     if (availableShardsResponse.isFailure()) {
@@ -146,7 +181,7 @@ ShardMigration.prototype = {
     ;
     params.autoScalingConfig = await oThis.getManagedShardsAutoScalingParams(tableName, arn, resourceId);
 
-    const managedShardsResponse = await oThis.ddbObject.createTableMigration(oThis.autoScalingObject, params);
+    const managedShardsResponse = await oThis.ddbApiObject.createTableMigration(oThis.autoScalingApiObject, params);
     logger.debug(managedShardsResponse);
     if (managedShardsResponse.isFailure()) {
       logger.error("Is Failure having err ", managedShardsResponse.err.msg);

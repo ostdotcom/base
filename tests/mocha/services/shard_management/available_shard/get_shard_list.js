@@ -7,6 +7,7 @@ const Chai    = require('chai')
 
 const rootPrefix = "../../../../.."
   , DynamoDbObject = require(rootPrefix + "/index").Dynamodb
+  , AutoScaleApiKlass = require(rootPrefix + "/index").AutoScaling
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , Logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , logger = new Logger()
@@ -17,7 +18,8 @@ const rootPrefix = "../../../../.."
 
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS)
-  , shardManagementService = dynamoDbObject.shardManagement()
+  , autoScaleObj = new AutoScaleApiKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE)
+  , shardManagementObject = dynamoDbObject.shardManagement()
 ;
 
 
@@ -34,7 +36,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
     if (options.invalidShardType) {
       shardType = "test"
     }
-    const response = await shardManagementService.getShardsByType({entity_type: entity_type, shard_type: shardType});
+    const response = await shardManagementObject.getShardsByType({entity_type: entity_type, shard_type: shardType});
 
     logger.log("LOG", response);
     if (toAssert) {
@@ -61,7 +63,7 @@ describe('services/shard_management/available_shard/get_shards', function () {
       TableName: availableShardConst.getTableName()
     });
 
-    await shardManagementService.runShardMigration();
+    await shardManagementObject.runShardMigration(dynamoDbObject, autoScaleObj);
 
     let entity_type = testConstants.shardEntityType;
     let schema = helper.createTableParamsFor("test");
@@ -72,7 +74,7 @@ describe('services/shard_management/available_shard/get_shards', function () {
     });
 
     let shardName = testConstants.shardTableName;
-    await shardManagementService.addShard({shard_name: shardName, entity_type: entity_type, table_schema: schema});
+    await shardManagementObject.addShard({shard_name: shardName, entity_type: entity_type, table_schema: schema});
   });
 
   createTestCasesForOptions("Get shard list adding happy case", {}, true);
