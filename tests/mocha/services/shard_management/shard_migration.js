@@ -8,12 +8,14 @@ const Chai = require('chai')
 // Load dependencies package
 const rootPrefix = "../../../.."
   , DynamoDbObject = require(rootPrefix + "/index").Dynamodb
+  , AutoScaleApiKlass = require(rootPrefix + "/index").AutoScaling
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
   , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
 ;
 
-const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS)
+const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
+  , autoScaleObj = new AutoScaleApiKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE)
   , shardManagementService = dynamoDbObject.shardManagement()
   , MANAGED_SHARD_TABLE = managedShardConst.getTableName()
   , AVAILABLE_SHARD_TABLE = availableShardConst.getTableName()
@@ -49,15 +51,15 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
   };
 
   it(optionsDesc, async function () {
-    if (options.availableShard) {
-      await dynamoDbObject.createTable(createTableParamsFor(AVAILABLE_SHARD_TABLE));
-    }
+    // if (options.availableShard) {
+    //   await dynamoDbObject.createTable(createTableParamsFor(AVAILABLE_SHARD_TABLE));
+    // }
+    //
+    // if (options.managedShard) {
+    //   await dynamoDbObject.createTable(createTableParamsFor(MANAGED_SHARD_TABLE));
+    // }
 
-    if (options.managedShard) {
-      await dynamoDbObject.createTable(createTableParamsFor(MANAGED_SHARD_TABLE));
-    }
-
-    const response = await shardManagementService.runShardMigration();
+    const response = await shardManagementService.runShardMigration(autoScaleObj);
     if (toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
     } else {

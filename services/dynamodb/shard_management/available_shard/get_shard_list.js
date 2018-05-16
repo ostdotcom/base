@@ -131,7 +131,7 @@ GetShardList.prototype = {
     if (r.isSuccess()) {
       return responseHelper.successWithData({data: r.data[String(oThis.entityType + oThis.shardType)]});
     } else {
-      return responseHelper.error(r.err.error_data, r.err.code, r.err.msg);
+      return responseHelper;
     }
   }
 };

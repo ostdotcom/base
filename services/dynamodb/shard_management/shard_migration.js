@@ -49,11 +49,11 @@ ShardMigration.prototype = {
 
     try {
       let r = null;
-      logger.info("=======ShardMigration.runShardMigration.started=======");
-      r = await oThis.runShardMigration();
-      logger.info("=======ShardMigration.runShardMigration.result=======");
+      logger.info("=======ShardMigration.executeShardMigration.started=======");
+      r = await oThis.executeShardMigration();
+      logger.info("=======ShardMigration.executeShardMigration.result=======");
       logger.debug(r);
-      logger.info("=======ShardMigration.runShardMigration.finished=======");
+      logger.info("=======ShardMigration.executeShardMigration.finished=======");
       return r;
     } catch (err) {
       return responseHelper.error({
@@ -67,12 +67,12 @@ ShardMigration.prototype = {
   },
 
   /**
-   * Run the shard migration
+   * Execute the shard migration
    *
    * @return {Promise<any>}
    *
    */
-  runShardMigration: function () {
+  executeShardMigration: function () {
     const oThis = this
     ;
 
