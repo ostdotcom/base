@@ -42,7 +42,7 @@ const executorThatTimesout = function (resolve, reject) {
 const configTestCases = [
   {name: 'resolved', executor: executorThatResolves},
   {name: 'rejected', executor: executorThatRejects},
-  {name: 'timedout', executor:executorThatTimesout}
+  {name: 'timedout', executor: executorThatTimesout}
 ];
 
 const createTestCasesForOptions = function ( optionsDesc , options ) {
