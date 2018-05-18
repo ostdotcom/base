@@ -13,7 +13,7 @@ const rootPrefix      = '.'
     , PCQueueManager  = require( rootPrefix + '/lib/promise_context/promise_queue_manager' )
     , Web3PoolFactory = require( rootPrefix + '/lib/web3_pool/ost_web3_pool_factory' )
     , Web3Pool        = require( rootPrefix + '/lib/web3_pool/ost_web3_pool' )
-    , responseHelper  = require(rootPrefix + '/lib/formatter/response')
+    , responseHelper  = require(rootPrefix + '/lib/formatter/response_helper')
 ;
 
 // Expose all libs here. 
