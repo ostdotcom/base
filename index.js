@@ -33,6 +33,7 @@ module.exports = {
     Factory : Web3PoolFactory
     , Pool  : Web3Pool
   }
+
 };
 
 
