@@ -8,7 +8,6 @@ branches:
   only:
   - master
   - develop
-  - web3_version_change
 notifications:
   email:
     recipients:
