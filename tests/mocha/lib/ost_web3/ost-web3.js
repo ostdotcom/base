@@ -84,7 +84,7 @@ const expectedOutValues = {
   , confirmationEventNumber   : confirmation_event_number
   , errorEvent                : false
   , didResolveTxPromise       : true
-  , receiptStatus             : "0x1"
+  , receiptStatus             : true
 };
 
 // Test-Case Builder.
