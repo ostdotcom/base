@@ -1,5 +1,5 @@
 ## OpenST-Base v0.9.2
-- Common style guide followed across all openst repos using prettier. [openst-base#30]
+- Common style guide followed across all openst repos using prettier. [openst-base#30](https://github.com/OpenSTFoundation/openst-base/issues/30)
 
 ## OpenST-Base v0.9.1
 - If an object is passed for logging, it is logged after doing JSON stringify. This support was added to all the logging methods.
