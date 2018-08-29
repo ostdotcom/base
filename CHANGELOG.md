@@ -1,3 +1,6 @@
+## OpenST-Base v0.9.2
+- Minor fixes.
+
 ## OpenST-Base v0.9.1
 - If an object is passed for logging, it is logged after doing JSON stringify. This support was added to all the logging methods.
 
