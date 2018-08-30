@@ -2,6 +2,9 @@
 - Common style guide followed across all openst repos using prettier ([openst-base#30](https://github.com/OpenSTFoundation/openst-base/issues/30)).
 - Error object was earlier getting logged as {} in the custom logger. Fixed this issue.
 
+## OpenST-Base v0.9.2
+- Minor fixes.
+
 ## OpenST-Base v0.9.1
 - If an object is passed for logging, it is logged after doing JSON stringify. This support was added to all the logging methods.
 
