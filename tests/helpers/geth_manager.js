@@ -48,9 +48,13 @@ const gethSetupConfig = {
   passphraseFilePath: gethArgs.password
 };
 
-const gethSpawnOptions = {
-  // stdio : [ 'ignore', process.stdout, process.stderr ]
-};
+// const fs = require('fs');
+// const gethOut = fs.openSync( path.resolve(__dirname, rootPrefix +'/tests/geth.out.log') , 'a' );
+// const gethErr = fs.openSync( path.resolve(__dirname, rootPrefix +'/tests/geth.err.log') , 'a' );
+//
+// const gethSpawnOptions = {
+//   stdio : [ 'ignore', gethErr, gethOut ]
+// };
 
 const GethManager = function() {
   const oThis = this;
@@ -73,6 +77,9 @@ GethManager.prototype = {
     }
     console.log('[GETH-isAlive] oThis.gethProcess.killed', oThis.gethProcess.killed);
     return !oThis.gethProcess.killed;
+    // gethProcess.killed is not a sure-shot way of knowing whether a process has been killed.
+    // The killed property does not indicate that the child process has been terminated.
+    // TODO: Use either a callback or emit an event to get the status of the process.
   },
 
   _startPromise: null,
