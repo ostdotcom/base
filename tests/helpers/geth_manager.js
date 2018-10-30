@@ -52,9 +52,9 @@ const gethSetupConfig = {
 // const gethOut = fs.openSync( path.resolve(__dirname, rootPrefix +'/tests/geth.out.log') , 'a' );
 // const gethErr = fs.openSync( path.resolve(__dirname, rootPrefix +'/tests/geth.err.log') , 'a' );
 //
-// const gethSpawnOptions = {
-//   stdio : [ 'ignore', gethErr, gethOut ]
-// };
+const gethSpawnOptions = {
+  //   stdio : [ 'ignore', gethErr, gethOut ]
+};
 
 const GethManager = function() {
   const oThis = this;
