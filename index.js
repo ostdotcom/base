@@ -13,7 +13,8 @@ const rootPrefix = '.',
   PCQueueManager = require(rootPrefix + '/lib/promise_context/promise_queue_manager'),
   Web3PoolFactory = require(rootPrefix + '/lib/web3_pool/ost_web3_pool_factory'),
   Web3Pool = require(rootPrefix + '/lib/web3_pool/ost_web3_pool'),
-  responseHelper = require(rootPrefix + '/lib/formatter/response_helper');
+  responseHelper = require(rootPrefix + '/lib/formatter/response_helper'),
+  InstanceComposer = require('lib/instanceComposer');
 
 // Expose all libs here.
 // All classes should begin with Capital letter.
@@ -31,7 +32,8 @@ module.exports = {
   OstWeb3Pool: {
     Factory: Web3PoolFactory,
     Pool: Web3Pool
-  }
+  },
+  InstanceComposer: InstanceComposer
 };
 
 /*
