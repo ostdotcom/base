@@ -14,7 +14,7 @@ const rootPrefix = '.',
   Web3PoolFactory = require(rootPrefix + '/lib/web3_pool/ost_web3_pool_factory'),
   Web3Pool = require(rootPrefix + '/lib/web3_pool/ost_web3_pool'),
   responseHelper = require(rootPrefix + '/lib/formatter/response_helper'),
-  InstanceComposer = require('lib/InstanceComposer');
+  InstanceComposer = require(rootPrefix + '/lib/InstanceComposer');
 
 // Expose all libs here.
 // All classes should begin with Capital letter.
