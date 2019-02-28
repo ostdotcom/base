@@ -1,37 +1,35 @@
-# OpenST Base - Collection of Utilities & Helpers used by [OpenST network](https://simpletoken.org)
+# OST Base provides advanced blockchain interaction capabilities and other utilities.
 
-While OpenST 0.9 is available as-is for anyone to use, we caution that this is early stage software and under heavy ongoing development and improvement. Please report bugs and suggested improvements.
+![Build master](https://img.shields.io/travis/ostdotcom/base/master.svg?label=build%20master&style=flat)
+![Build develop](https://img.shields.io/travis/ostdotcom/base/develop.svg?label=build%20develop&style=flat)
+![npm version](https://img.shields.io/npm/v/ostdotcom/base.svg?style=flat)
 
-# Install OpenST Base
+# Install
 
 ```bash
-npm install @openstfoundation/openst-base --save
+npm install @ostdotcom/base --save
 ```
 
-
-
 # OSTWeb3 Usage
-```bash
-const OSTBase    = require('@openstfoundation/openst-base')
-    , wsEndPoint = "ws://127.0.0.1:8546"
-    , httpEndPoint = "http://127.0.0.1:8545"
-;
+```js
+const OSTBase = require('@ostdotcom/base'), 
+    wsEndPoint = "ws://127.0.0.1:8546",
+    rpcEndPoint = "http://127.0.0.1:8545";
 
 // The below instance of web3 uses OstWSProvider.
 // OstWSProvider automatically tries to reconnect when connection is broken.
-let wsWeb3 = new OSTBase.OSTWeb3( wsEndPoint );
+let wsWeb3 = new OSTBase.OstWeb3( wsEndPoint );
 
-// The below instance is same as new Web3( httpEndPoint );
-let httpWeb3 = new OSTBase.OSTWeb3( httpEndPoint );
+// The below instance is same as new Web3( rpcEndPoint );
+let rpcWeb3 = new OSTBase.OstWeb3( rpcEndPoint );
 
 
 ```
 
 # PromiseQueueManager Usage
-```bash
-const OSTBase = require('@openstfoundation/openst-base')
-    , logger  = new OSTBase.Logger("my_module_name")
-;
+```js
+const OSTBase = require('@ostdotcom/base'),
+  logger  = new OSTBase.Logger("my_module_name");
 
 const queueManagerOptions = {
   // Specify the name for easy identification in logs.
@@ -122,23 +120,22 @@ const promiseExecutor = function ( resolve, reject, params, promiseContext ) {
   setTimeout(function () {
     resolve( params.cnt ); // Try different things here.
   }, 1000);
-}
+};
 
 const manager = new OSTBase.OSTPromise.QueueManager( promiseExecutor, queueManagerOptions);
 
-for( var cnt = 0; cnt < 50; cnt++ ) {
+for( let cnt = 0; cnt < 50; cnt++ ) {
   manager.createPromise( {"cnt": (cnt + 1) } );
 }
 
 ```
 
 
-# OpenST Logger Usage
-```bash
-const OSTBase = require('@openstfoundation/openst-base')
-    , Logger  = OSTBase.Logger
-    , logger  = new Logger("my_module_name", Logger.LOG_LEVELS.TRACE)
-;
+# Logger Usage
+```js
+const OSTBase = require('@ostdotcom/base'),
+  Logger  = OSTBase.Logger,
+  logger  = new Logger("my_module_name", Logger.LOG_LEVELS.TRACE);
 
 //Log Level FATAL 
 logger.notify("notify called");
@@ -182,75 +179,72 @@ Log Level only controls what needs to be logged.
 | trace | TRACE |
 
 
-# OpenST response formatter usage
+# Response formatter usage
 
-```bash
+```js
 
-const rootPrefix = '.'
-    , paramErrorConfig = require(rootPrefix + '/tests/mocha/lib/formatter/param_error_config')
-    , apiErrorConfig = require(rootPrefix + '/tests/mocha/lib/formatter/api_error_config')
-;
+const rootPrefix = '.',
+  paramErrorConfig = require(rootPrefix + '/tests/mocha/lib/formatter/param_error_config'),
+  apiErrorConfig = require(rootPrefix + '/tests/mocha/lib/formatter/api_error_config');
 
-const OSTCore = require('@openstfoundation/openst-base')
-    , ResponseHelper  = OSTCore.responseHelper
-    , responseHelper = new ResponseHelper({
+const OSTBase = require('@ostdotcom/base'),
+  ResponseHelper  = OSTBase.responseHelper,
+  responseHelper = new ResponseHelper({
       moduleName: 'companyRestFulApi'
-    });
+  });
     
-    //using error function
-    responseHelper.error({
-        internal_error_identifier: 's_vt_1', 
-        api_error_identifier: 'test_1',
-        debug_options: {client_id: 1234},
-        error_config: {
-                param_error_config: paramErrorConfig,
-                api_error_config: apiErrorConfig   
-              }
-    });
+//using error function
+responseHelper.error({
+  internal_error_identifier: 's_vt_1', 
+  api_error_identifier: 'test_1',
+  debug_options: {id: 1234},
+  error_config: {
+    param_error_config: paramErrorConfig,
+    api_error_config: apiErrorConfig   
+  }
+});
     
-    //using paramValidationError function
-    responseHelper.paramValidationError({
-        internal_error_identifier:"s_vt_2", 
-        api_error_identifier: "test_1", 
-        params_error_identifiers: ["user_name_inappropriate"], 
-        debug_options: {client_id: 1234},
-        error_config: {
-            param_error_config: paramErrorConfig,
-            api_error_config: apiErrorConfig   
-          }
-    });
+//using paramValidationError function
+responseHelper.paramValidationError({
+  internal_error_identifier:"s_vt_2", 
+  api_error_identifier: "test_1", 
+  params_error_identifiers: ["user_name_inappropriate"], 
+  debug_options: {id: 1234},
+  error_config: {
+    param_error_config: paramErrorConfig,
+    api_error_config: apiErrorConfig   
+  }
+});
+
+// Result object is returned from responseHelper method invocations above, we can chain several methods as shown below
     
-    // Result object is returned from responseHelper method invocations above, we can chain several methods as shown below
-        
-    responseHelper.error({
-        internal_error_identifier: 's_vt_1', 
-        api_error_identifier: 'invalid_api_params',
-        debug_options: {client_id: 1234},
-        error_config: {
-            param_error_config: paramErrorConfig,
-            api_error_config: apiErrorConfig   
-          }
-    }).isSuccess();
-    
-    responseHelper.error({
-        internal_error_identifier: 's_vt_1', 
-        api_error_identifier: 'invalid_api_params',
-        debug_options: {client_id: 1234},
-        error_config: {
-            param_error_config: paramErrorConfig,
-            api_error_config: apiErrorConfig   
-          }
-    }).isFailure();
-    
-    responseHelper.error({
-        internal_error_identifier: 's_vt_1', 
-        api_error_identifier: 'invalid_api_params',
-        debug_options: {client_id: 1234},
-        error_config: {
-            param_error_config: paramErrorConfig,
-            api_error_config: apiErrorConfig   
-          }
-    }).toHash();
-   
-    
+responseHelper.error({
+  internal_error_identifier: 's_vt_1', 
+  api_error_identifier: 'invalid_api_params',
+  debug_options: {id: 1234},
+  error_config: {
+    param_error_config: paramErrorConfig,
+    api_error_config: apiErrorConfig   
+  }
+}).isSuccess();
+
+responseHelper.error({
+  internal_error_identifier: 's_vt_1', 
+  api_error_identifier: 'invalid_api_params',
+  debug_options: {id: 1234},
+  error_config: {
+    param_error_config: paramErrorConfig,
+    api_error_config: apiErrorConfig   
+  }
+}).isFailure();
+
+responseHelper.error({
+  internal_error_identifier: 's_vt_1', 
+  api_error_identifier: 'invalid_api_params',
+  debug_options: {id: 1234},
+  error_config: {
+    param_error_config: paramErrorConfig,
+    api_error_config: apiErrorConfig   
+  }
+}).toHash();    
 ```

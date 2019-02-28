@@ -1,5 +1,5 @@
 /**
- * Index File for openst-base
+ * Index File for @ostdotcom/base
  */
 
 'use strict';
