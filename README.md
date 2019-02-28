@@ -1,5 +1,9 @@
 # OST Base provides advanced blockchain interaction capabilities and other utilities.
 
+![Build master](https://img.shields.io/travis/ostdotcom/base/master.svg?label=build%20master&style=flat)
+![Build develop](https://img.shields.io/travis/ostdotcom/base/develop.svg?label=build%20develop&style=flat)
+![npm version](https://img.shields.io/npm/v/ostdotcom/base.svg?style=flat)
+
 # Install
 
 ```bash
@@ -14,10 +18,10 @@ const OSTBase = require('@ostdotcom/base'),
 
 // The below instance of web3 uses OstWSProvider.
 // OstWSProvider automatically tries to reconnect when connection is broken.
-let wsWeb3 = new OSTBase.OSTWeb3( wsEndPoint );
+let wsWeb3 = new OSTBase.OstWeb3( wsEndPoint );
 
 // The below instance is same as new Web3( rpcEndPoint );
-let rpcWeb3 = new OSTBase.OSTWeb3( rpcEndPoint );
+let rpcWeb3 = new OSTBase.OstWeb3( rpcEndPoint );
 
 
 ```
@@ -183,8 +187,8 @@ const rootPrefix = '.',
   paramErrorConfig = require(rootPrefix + '/tests/mocha/lib/formatter/param_error_config'),
   apiErrorConfig = require(rootPrefix + '/tests/mocha/lib/formatter/api_error_config');
 
-const ostBase = require('@ostdotcom/base'),
-  ResponseHelper  = ostBase.responseHelper,
+const OSTBase = require('@ostdotcom/base'),
+  ResponseHelper  = OSTBase.responseHelper,
   responseHelper = new ResponseHelper({
       moduleName: 'companyRestFulApi'
   });
