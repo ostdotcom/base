@@ -9,7 +9,6 @@ branches:
   - master
   - develop
   - release-0.9
-  - version_bump
 notifications:
   email:
     recipients:
