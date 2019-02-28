@@ -1,27 +1,27 @@
 {
-  "name": "@openstfoundation/openst-base",
-  "version": "0.9.3-beta.16",
-  "description": "openst-base provides basic blockchain interaction capabilities.",
+  "name": "@ostdotcom/base",
+  "version": "1.0.0-beta.1",
+  "description": "OST Base provides advanced blockchain interaction capabilities and other utilities.",
   "main": "index.js",
   "scripts": {
     "pre-commit": "lint-staged"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/OpenSTFoundation/openst-base.git"
+    "url": "https://github.com/ostdotcom/base.git"
   },
   "keywords": [
-    "openst",
+    "OpenST",
     "OST",
-    "simpletoken",
-    "openst-base"
+    "Simple Token",
+    "OST Base"
   ],
-  "author": "OpenST Foundation Ltd.",
+  "author": "OST.COM LTD",
   "license": "LGPL-3.0",
   "bugs": {
-    "url": "https://github.com/OpenSTFoundation/openst-base/issues"
+    "url": "https://github.com/ostdotcom/base/issues"
   },
-  "homepage": "https://github.com/OpenSTFoundation/openst-base#readme",
+  "homepage": "https://github.com/ostdotcom/base#readme",
   "dependencies": {
     "shortid": "2.2.13",
     "web3": "1.0.0-beta.37"
