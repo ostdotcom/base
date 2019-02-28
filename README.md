@@ -2,7 +2,7 @@
 
 ![Build master](https://img.shields.io/travis/ostdotcom/base/master.svg?label=build%20master&style=flat)
 ![Build develop](https://img.shields.io/travis/ostdotcom/base/develop.svg?label=build%20develop&style=flat)
-![npm version](https://img.shields.io/npm/v/ostdotcom/base.svg?style=flat)
+![npm version](https://img.shields.io/npm/v/@ostdotcom/base.svg?style=flat)
 
 # Install
 
