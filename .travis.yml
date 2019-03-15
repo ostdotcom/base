@@ -8,7 +8,7 @@ branches:
   only:
   - master
   - develop
-  - release-0.9
+  - /^release-.*/
 notifications:
   email:
     recipients:
