@@ -1,7 +1,5 @@
 # OST Base provides advanced blockchain interaction capabilities and other utilities.
-
-![Build master](https://img.shields.io/travis/ostdotcom/base/master.svg?label=build%20master&style=flat)
-![Build develop](https://img.shields.io/travis/ostdotcom/base/develop.svg?label=build%20develop&style=flat)
+[![Build Status](https://travis-ci.org/ostdotcom/base.svg?branch=develop)](https://travis-ci.org/ostdotcom/base)
 ![npm version](https://img.shields.io/npm/v/@ostdotcom/base.svg?style=flat)
 
 # Install
