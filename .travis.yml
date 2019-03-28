@@ -8,6 +8,7 @@ branches:
   only:
   - master
   - develop
+  - /^release-.*/
 notifications:
   email:
     recipients:
@@ -23,7 +24,7 @@ before_install:
   - sudo apt-get install software-properties-common
   - sudo add-apt-repository -y ppa:ethereum/ethereum
   - sudo apt-get update
-  - sudo bash tests/scripts/install_geth_1_8_3.sh
+  - sudo bash tests/scripts/install_geth_1_8_20.sh
   - geth version
 install: 
   - npm install 

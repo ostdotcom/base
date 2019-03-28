@@ -12,7 +12,7 @@ const api_error_key = Object.keys(apiErrorConfig)[0],
   param_error_key = Object.keys(paramErrorConfig)[0];
 
 const responseHelper = new OSTBase.responseHelper({
-  moduleName: 'openst-base'
+  moduleName: 'ostBase'
 });
 
 const errorConfig = {
