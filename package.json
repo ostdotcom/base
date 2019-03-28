@@ -1,6 +1,6 @@
 {
   "name": "@ostdotcom/base",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0",
   "description": "OST Base provides advanced blockchain interaction capabilities and other utilities.",
   "main": "index.js",
   "scripts": {
