@@ -8,22 +8,6 @@
 npm install @ostdotcom/base --save
 ```
 
-# OSTWeb3 Usage
-```js
-const OSTBase = require('@ostdotcom/base'), 
-    wsEndPoint = "ws://127.0.0.1:8546",
-    rpcEndPoint = "http://127.0.0.1:8545";
-
-// The below instance of web3 uses OstWSProvider.
-// OstWSProvider automatically tries to reconnect when connection is broken.
-let wsWeb3 = new OSTBase.OstWeb3( wsEndPoint );
-
-// The below instance is same as new Web3( rpcEndPoint );
-let rpcWeb3 = new OSTBase.OstWeb3( rpcEndPoint );
-
-
-```
-
 # PromiseQueueManager Usage
 ```js
 const OSTBase = require('@ostdotcom/base'),
