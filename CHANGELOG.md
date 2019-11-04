@@ -1,6 +1,6 @@
 ## Base v1.0.1
 - Upgraded node version to 10.x
-- Moved web3 related modules to x-web3 repo
+- Moved web3 related modules to xweb3 repo
 
 ## Base v1.0.0
 - Introduced namespacing in Instance Composer.
