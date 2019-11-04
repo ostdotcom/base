@@ -1,4 +1,4 @@
-# OST Base provides advanced blockchain interaction capabilities and other utilities.
+# OST Base provides advanced Promise Queue Manager and other utilities.
 [![Build Status](https://travis-ci.org/ostdotcom/base.svg?branch=develop)](https://travis-ci.org/ostdotcom/base)
 ![npm version](https://img.shields.io/npm/v/@ostdotcom/base.svg?style=flat)
 
