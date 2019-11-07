@@ -1,7 +1,7 @@
 {
   "name": "@ostdotcom/base",
-  "version": "1.0.0",
-  "description": "OST Base provides advanced blockchain interaction capabilities and other utilities.",
+  "version": "2.0.0",
+  "description": "OST Base provides advanced Promise Queue Manager and other utilities.",
   "main": "index.js",
   "scripts": {
     "pre-commit": "lint-staged"
@@ -16,15 +16,14 @@
     "Simple Token",
     "OST Base"
   ],
-  "author": "OST.COM LTD.",
+  "author": "OST.com Inc.",
   "license": "LGPL-3.0",
   "bugs": {
     "url": "https://github.com/ostdotcom/base/issues"
   },
   "homepage": "https://github.com/ostdotcom/base#readme",
   "dependencies": {
-    "shortid": "2.2.13",
-    "web3": "1.0.0-beta.37"
+    "shortid": "2.2.13"
   },
   "devDependencies": {
     "chai": "4.2.0",

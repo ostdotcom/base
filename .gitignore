@@ -31,13 +31,6 @@ build/Release
 # https://docs.npmjs.com/cli/shrinkwrap#caveats
 node_modules
 
-tests/scripts/st-poa/
-
-tests/scripts/poa-genesis.json
-
-tests/scripts/pw
-
-
 # Dev Folder
 .dev
 
