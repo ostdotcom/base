@@ -1,6 +1,6 @@
 {
   "name": "@ostdotcom/base",
-  "version": "1.0.1-beta.3",
+  "version": "1.0.1",
   "description": "OST Base provides advanced Promise Queue Manager and other utilities.",
   "main": "index.js",
   "scripts": {
