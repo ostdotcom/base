@@ -1,3 +1,7 @@
+## Base v1.0.1
+- Upgraded node version to 10.x
+- Moved web3 related modules to ([xweb3 repository](https://github.com/ostdotcom/xweb3))
+
 ## Base v1.0.0
 - Introduced namespacing in Instance Composer.
 - Migrated to ES6.

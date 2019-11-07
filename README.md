@@ -1,4 +1,4 @@
-# OST Base provides advanced blockchain interaction capabilities and other utilities.
+# OST Base provides advanced Promise Queue Manager and other utilities.
 [![Build Status](https://travis-ci.org/ostdotcom/base.svg?branch=develop)](https://travis-ci.org/ostdotcom/base)
 ![npm version](https://img.shields.io/npm/v/@ostdotcom/base.svg?style=flat)
 
@@ -6,22 +6,6 @@
 
 ```bash
 npm install @ostdotcom/base --save
-```
-
-# OSTWeb3 Usage
-```js
-const OSTBase = require('@ostdotcom/base'), 
-    wsEndPoint = "ws://127.0.0.1:8546",
-    rpcEndPoint = "http://127.0.0.1:8545";
-
-// The below instance of web3 uses OstWSProvider.
-// OstWSProvider automatically tries to reconnect when connection is broken.
-let wsWeb3 = new OSTBase.OstWeb3( wsEndPoint );
-
-// The below instance is same as new Web3( rpcEndPoint );
-let rpcWeb3 = new OSTBase.OstWeb3( rpcEndPoint );
-
-
 ```
 
 # PromiseQueueManager Usage
