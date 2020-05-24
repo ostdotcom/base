@@ -1,4 +1,4 @@
-## Base v2.0.1-beta.1
+## Base v2.0.1
 - Added support for new key go_to in response at the level of `data` or `err`.
 
 ## Base v2.0.0
